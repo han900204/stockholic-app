@@ -1,53 +1,52 @@
-const path = require("path");
-const HtmlWebPackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
-    index: "./client/index.tsx",
+    index: './client/index.tsx',
   },
   output: {
-    path: path.resolve(__dirname, "build"),
-    publicPath: "/",
-    filename: "bundle.js",
+    path: path.resolve(__dirname, 'build'),
+    publicPath: '/',
+    filename: 'bundle.js',
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            presets: ["@babel/preset-react", "@babel/preset-env"],
+            presets: ['@babel/preset-react', '@babel/preset-env'],
           },
         },
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new HtmlWebPackPlugin({
-      title: "Development",
-      template: "index.html",
+      title: 'Development',
+      template: 'index.html',
     }),
   ],
   devServer: {
     historyApiFallback: true,
     proxy: {
-      "/api/**": "http://localhost:3000/",
-      "/graphql": "http://localhost:3000/",
+      '/graphql': 'http://localhost:3000/',
     },
   },
 };

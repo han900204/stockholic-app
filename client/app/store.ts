@@ -1,8 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../features/example";
+import { configureStore } from '@reduxjs/toolkit';
+import InvestorReducer from '../features/investorSlice';
 
 export const store = configureStore({
-  reducer: { counter: counterReducer },
+  reducer: { investor: InvestorReducer },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

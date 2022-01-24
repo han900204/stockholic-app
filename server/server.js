@@ -1,11 +1,11 @@
-const express = require("express");
-const graphqlHTTP = require("express-graphql").graphqlHTTP;
-const cors = require("cors");
-const path = require("path");
+const express = require('express');
+const graphqlHTTP = require('express-graphql').graphqlHTTP;
+const schema = require('./models/gql');
+const cors = require('cors');
+const path = require('path');
 const app = express();
-const yFinanceSchema = require("./models/yFinanceModel");
-const investorApiRouter = require("./routes/investorApi");
-const runPy = require("./schedules/runPy");
+const runPy = require('./schedules/runPy');
+const tokenClear = require('./schedules/tokenClear');
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,35 +21,32 @@ app.use(express.urlencoded({ extended: false }));
 /**
  * Run scheduled jobs
  */
-// Run Python Scripts on Schedule
+// Run Python scripts on schedule
 runPy();
+// Clear tokens on schedule
+tokenClear();
 
 /**
  * GraphQL Router
  */
 app.use(
-  "/graphql",
+  '/graphql',
   graphqlHTTP({
-    schema: yFinanceSchema,
+    schema,
     graphiql: true,
   })
 );
 
 /**
- * REST API Router
- */
-app.use("/api/investors", investorApiRouter);
-
-/**
  * Production Build Mode
  */
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
   // Statically serve everything in the build folder on the route '/build'
-  app.use("/build", express.static(path.join(__dirname, "../build")));
+  app.use('/build', express.static(path.join(__dirname, '../build')));
 
   // Serve index.html on the route '/'
-  app.use("/", (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, "../index.html"));
+  app.use('/', (req, res) => {
+    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
   });
 }
 
@@ -58,9 +55,9 @@ if (process.env.NODE_ENV === "production") {
  */
 app.use((err, req, res, next) => {
   const defaultErr = {
-    log: "Express error handler caught unknown middleware error",
+    log: 'Express error handler caught unknown middleware error',
     status: 500,
-    message: { err: "An error occurred" },
+    message: { err: 'An error occurred' },
   };
   const errorObj = Object.assign({}, defaultErr, err);
   console.log(errorObj.log);

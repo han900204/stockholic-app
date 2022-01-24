@@ -1,7 +1,10 @@
-const { Pool } = require("pg");
+const { Pool } = require('pg');
 
-if (process.env.NODE_ENV === "development") {
-  const dotenv = require("dotenv");
+/**
+ * Load .env file if development mode
+ */
+if (process.env.NODE_ENV === 'development') {
+  const dotenv = require('dotenv');
   dotenv.config();
 }
 
