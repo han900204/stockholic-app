@@ -14,6 +14,7 @@ import { GetAuthPayload } from './constants/interfaces';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
+import LoadingForm from './components/LoadingForm';
 
 const App = () => {
   const { isAuthenticated, isPending } = useSelector(
@@ -43,7 +44,7 @@ const App = () => {
   }, []);
 
   if (!isAuthenticated && isPending) {
-    return <h1>Authenticating...</h1>;
+    return <LoadingForm />;
   } else {
     return isAuthenticated ? (
       <Router>
