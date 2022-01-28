@@ -58,8 +58,9 @@ investor.query.validateInvestor = {
       [`email = '${args.email}'`]
     );
     const res = await db.query(sqlQuery);
+
     if (res.rows.length === 0) {
-      throw new Error('Incorrect Email');
+      throw new Error('email_wrong');
     }
     const isPwValid = await comparePassword(
       args.password,
@@ -68,7 +69,7 @@ investor.query.validateInvestor = {
     if (isPwValid) {
       return res.rows[0];
     } else {
-      throw new Error('Incorrect Password');
+      throw new Error('password_wrong');
     }
   },
 };
@@ -90,13 +91,19 @@ investor.mutation.postInvestor = {
       'email',
       'password',
     ];
+
     const hashPw = await hashPassword(args.password);
     const sqlQuery = sql.getInsertQuery('investor', schema, {
       ...args,
       password: hashPw,
     });
-    const res = await db.query(sqlQuery[0], sqlQuery[1]);
-    return res.rows[0];
+
+    try {
+      const res = await db.query(sqlQuery[0], sqlQuery[1]);
+      return res.rows[0];
+    } catch (e) {
+      throw new Error(e.constraint);
+    }
   },
 };
 

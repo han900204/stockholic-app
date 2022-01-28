@@ -1,11 +1,14 @@
 import React from 'react';
+import Box from '@mui/material/Box';
+import Btn from './styleComponents/Btn';
+import Field from './styleComponents/Field';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import GQL_QUERY from '../constants/gqlQuery';
+import GQL_QUERY from '../constants/GQL_QUERY';
 import {
   CreateInvestorPayload,
   CreateAuthPayload,
-} from '../constants/interfaces';
+} from '../constants/GQL_INTERFACE';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setIsAuthenticated } from '../features/investorSlice';
@@ -16,6 +19,8 @@ const SignUpForm = () => {
   const [nickName, setNickName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailErr, setEmailErr] = useState(false);
+  const [nickNameErr, setNickNameErr] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -37,72 +42,90 @@ const SignUpForm = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const res = await createInvestor({ variables: investorPayload });
+    try {
+      const res = await createInvestor({ variables: investorPayload });
 
-    if (res.data.createInvestor.id) {
-      authPayload.investor_id = res.data.createInvestor.id;
-      const token = await createAuth({ variables: authPayload }).then(
-        (res) => res.data.createAuthentication.token
-      );
-      if (token) {
-        sessionStorage.setItem('token', token);
-        dispatch(setIsAuthenticated(true));
-        navigate('/');
+      if (res.data.createInvestor.id) {
+        authPayload.investor_id = res.data.createInvestor.id;
+        const token = await createAuth({ variables: authPayload }).then(
+          (res) => res.data.createAuthentication.token
+        );
+        if (token) {
+          sessionStorage.setItem('token', token);
+          dispatch(setIsAuthenticated(true));
+          navigate('/');
+        }
       }
+    } catch (e: any) {
+      if (e.message === 'email_unique') setEmailErr(true);
+      if (e.message === 'nick_name_unique') setNickNameErr(true);
     }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <Box
+        component='form'
+        onSubmit={handleSubmit}
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+        }}
+        autoComplete='off'
+      >
         <div>
-          <label htmlFor='text'>First Name</label>
-          <input
-            type='text'
-            onChange={(e) => {
+          <Field
+            eHandler={(e) => {
               setFirstName(e.target.value);
             }}
+            type='text'
+            label='First Name'
           />
         </div>
         <div>
-          <label htmlFor='text'>Last Name</label>
-          <input
-            type='text'
-            onChange={(e) => {
+          <Field
+            eHandler={(e) => {
               setLastName(e.target.value);
             }}
-          />
-        </div>
-        <div>
-          <label htmlFor='text'>Nick Name</label>
-          <input
             type='text'
-            onChange={(e) => {
+            label='Last Name'
+          />
+        </div>
+        <div>
+          <Field
+            eHandler={(e) => {
               setNickName(e.target.value);
+              setNickNameErr(false);
             }}
+            type='text'
+            label='Nick Name'
+            errState={nickNameErr}
+            errMsg={'Nick Name Exists!'}
           />
         </div>
         <div>
-          <label htmlFor='email'>Email address</label>
-          <input
-            type='email'
-            onChange={(e) => {
+          <Field
+            eHandler={(e) => {
               setEmail(e.target.value);
+              setEmailErr(false);
             }}
+            type='email'
+            label='Email'
+            errState={emailErr}
+            errMsg={'Email Exists!'}
           />
         </div>
         <div>
-          <label htmlFor='password'>Password</label>
-          <input
-            type='password'
-            onChange={(e) => {
+          <Field
+            eHandler={(e) => {
               setPassword(e.target.value);
             }}
+            type='password'
+            label='Password'
           />
         </div>
         <br />
-        <button type='submit'>Register</button>
-      </form>
+        <Btn text='Register' />
+      </Box>
     </>
   );
 };
