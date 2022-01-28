@@ -37,7 +37,7 @@ const GQL_QUERY: QueryInterface = {
     }
   `,
   VALIDATE_INVESTOR_QUERY: gql`
-    query ValidateInvestor($email: String!, $password: String!) {
+    mutation ValidateInvestor($email: String!, $password: String!) {
       validateInvestor(email: $email, password: $password) {
         id
       }

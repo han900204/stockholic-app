@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import Field from './styleComponents/Field';
@@ -32,12 +32,14 @@ const LoginForm = () => {
 
   const [createAuth] = useMutation(GQL_QUERY.CREATE_AUTH_QUERY);
 
-  const [validateInvestor] = useLazyQuery(GQL_QUERY.VALIDATE_INVESTOR_QUERY, {
-    fetchPolicy: 'network-only',
-    variables: validatePayload,
-    onCompleted: async (data) => {
-      if (data.validateInvestor.id) {
-        authPayload.investor_id = data.validateInvestor.id;
+  const [validateInvestor] = useMutation(GQL_QUERY.VALIDATE_INVESTOR_QUERY);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const res = await validateInvestor({ variables: validatePayload });
+      if (res.data.validateInvestor.id) {
+        authPayload.investor_id = res.data.validateInvestor.id;
         const token = await createAuth({ variables: authPayload }).then(
           (res) => res.data.createAuthentication.token
         );
@@ -47,17 +49,10 @@ const LoginForm = () => {
           navigate('/');
         }
       }
-    },
-    onError: (err) => {
-      console.log('fail!', err.message);
-      if (err.message === 'email_wrong') setEmailErr(true);
-      if (err.message === 'password_wrong') setPwErr(true);
-    },
-  });
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const res = await validateInvestor();
+    } catch (e: any) {
+      if (e.message === 'email_wrong') setEmailErr(true);
+      if (e.message === 'password_wrong') setPwErr(true);
+    }
   };
 
   return (
@@ -75,6 +70,7 @@ const LoginForm = () => {
             eHandler={(e) => {
               setEmail(e.target.value);
               setEmailErr(false);
+              setPwErr(false);
             }}
             type='email'
             label='Email'
@@ -86,6 +82,7 @@ const LoginForm = () => {
           <Field
             eHandler={(e) => {
               setPassword(e.target.value);
+              setEmailErr(false);
               setPwErr(false);
             }}
             type='password'

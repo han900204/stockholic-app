@@ -26,7 +26,6 @@ const RootQueryType = new GraphQLObjectType({
   name: 'RootQuery',
   fields: {
     getInvestor: investor.query.getInvestor,
-    validateInvestor: investor.query.validateInvestor,
     getAuthentication: authentication.query.getAuthentication,
   },
 });
@@ -35,6 +34,7 @@ const RootMutationType = new GraphQLObjectType({
   name: 'RootMutation',
   fields: {
     createInvestor: investor.mutation.postInvestor,
+    validateInvestor: investor.mutation.validateInvestor,
     createAuthentication: authentication.mutation.postAuthentication,
   },
 });
