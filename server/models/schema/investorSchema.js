@@ -45,34 +45,6 @@ investor.query.getInvestor = {
   },
 };
 
-investor.query.validateInvestor = {
-  type: investor.type,
-  args: {
-    email: { type: GraphQLString },
-    password: { type: GraphQLString },
-  },
-  async resolve(parent, args) {
-    const sqlQuery = sql.getSelectQuery(
-      'investor',
-      ['*'],
-      [`email = '${args.email}'`]
-    );
-    const res = await db.query(sqlQuery);
-    if (res.rows.length === 0) {
-      throw new Error('Incorrect Email');
-    }
-    const isPwValid = await comparePassword(
-      args.password,
-      res.rows[0].password
-    );
-    if (isPwValid) {
-      return res.rows[0];
-    } else {
-      throw new Error('Incorrect Password');
-    }
-  },
-};
-
 investor.mutation.postInvestor = {
   type: investor.type,
   args: {
@@ -90,13 +62,48 @@ investor.mutation.postInvestor = {
       'email',
       'password',
     ];
+
     const hashPw = await hashPassword(args.password);
     const sqlQuery = sql.getInsertQuery('investor', schema, {
       ...args,
       password: hashPw,
     });
-    const res = await db.query(sqlQuery[0], sqlQuery[1]);
-    return res.rows[0];
+
+    try {
+      const res = await db.query(sqlQuery[0], sqlQuery[1]);
+      return res.rows[0];
+    } catch (e) {
+      throw new Error(e.constraint);
+    }
+  },
+};
+
+investor.mutation.validateInvestor = {
+  type: investor.type,
+  args: {
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+  },
+  async resolve(parent, args) {
+    const sqlQuery = sql.getSelectQuery(
+      'investor',
+      ['*'],
+      [`email = '${args.email}'`]
+    );
+    const res = await db.query(sqlQuery);
+
+    if (res.rows.length === 0) {
+      throw new Error('email_wrong');
+    }
+    const isPwValid = await comparePassword(
+      args.password,
+      res.rows[0].password
+    );
+    if (isPwValid) {
+      return res.rows[0];
+    } else {
+      throw new Error('password_wrong');
+    }
   },
 };
 

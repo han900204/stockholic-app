@@ -8,12 +8,13 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './app/store';
 import { setIsAuthenticated, setIsPending } from './features/investorSlice';
-import GQL_QUERY from './constants/gqlQuery';
+import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
-import { GetAuthPayload } from './constants/interfaces';
+import { GetAuthPayload } from './constants/GQL_INTERFACE';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
+import LoadingForm from './components/LoadingForm';
 
 const App = () => {
   const { isAuthenticated, isPending } = useSelector(
@@ -21,9 +22,7 @@ const App = () => {
   );
   const dispatch = useDispatch();
 
-  const [getAuthentication, { loading }] = useLazyQuery(
-    GQL_QUERY.GET_AUTHENTICATION_QUERY
-  );
+  const [getAuthentication] = useLazyQuery(GQL_QUERY.GET_AUTHENTICATION_QUERY);
 
   const authPayload: GetAuthPayload = {
     token: sessionStorage.getItem('token'),
@@ -33,8 +32,7 @@ const App = () => {
     const asyncGetAuth = async () => {
       await dispatch(setIsPending(true));
       const res = await getAuthentication({ variables: authPayload });
-      console.log(res);
-      if (!res.error) {
+      if (res.data.getAuthentication) {
         await dispatch(setIsAuthenticated(true));
       }
       await dispatch(setIsPending(false));
@@ -43,7 +41,7 @@ const App = () => {
   }, []);
 
   if (!isAuthenticated && isPending) {
-    return <h1>Authenticating...</h1>;
+    return <LoadingForm />;
   } else {
     return isAuthenticated ? (
       <Router>

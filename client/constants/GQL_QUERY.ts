@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { QueryInterface } from '../constants/interfaces';
+import { QueryInterface } from './GQL_INTERFACE';
 
 const GQL_QUERY: QueryInterface = {
   CREATE_INVESTOR_QUERY: gql`
@@ -30,14 +30,14 @@ const GQL_QUERY: QueryInterface = {
   `,
 
   GET_AUTHENTICATION_QUERY: gql`
-    query GetAuthentication($token: String!) {
+    query GetAuthentication($token: String) {
       getAuthentication(token: $token) {
         investor_id
       }
     }
   `,
   VALIDATE_INVESTOR_QUERY: gql`
-    query ValidateInvestor($email: String!, $password: String!) {
+    mutation ValidateInvestor($email: String!, $password: String!) {
       validateInvestor(email: $email, password: $password) {
         id
       }

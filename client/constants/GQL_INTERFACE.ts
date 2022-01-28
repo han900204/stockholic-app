@@ -28,8 +28,3 @@ export interface ValidateInvestorPayload {
   email: string;
   password: string;
 }
-
-export interface InvestorState {
-  isAuthenticated: boolean;
-  isPending: boolean;
-}

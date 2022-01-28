@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { InvestorState } from '../constants/interfaces';
+import { InvestorState } from '../constants/STATE_INTERFACE';
 
 const initialState: InvestorState = {
   isAuthenticated: false,
