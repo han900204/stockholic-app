@@ -62,6 +62,24 @@ authentication.mutation.postAuthentication = {
       }
     );
     const res = await db.query(sqlQuery[0], sqlQuery[1]);
+    console.log('token created', res.rows[0]);
+    return res.rows[0];
+  },
+};
+
+authentication.mutation.deleteAuthentication = {
+  type: authentication.type,
+  args: {
+    token: { type: GraphQLString },
+  },
+  async resolve(parent, args) {
+    const sqlQuery = sql.getDeleteQuery(
+      'authentication',
+      [`token = '${args.token}'`],
+      ['token']
+    );
+    const res = await db.query(sqlQuery);
+    console.log('token deleted', res.rows[0]);
     return res.rows[0];
   },
 };

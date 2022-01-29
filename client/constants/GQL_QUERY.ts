@@ -55,6 +55,13 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+  DELETE_AUTH_QUERY: gql`
+    mutation DeleteAuthentication($token: String) {
+      deleteAuthentication(token: $token) {
+        id
+      }
+    }
+  `,
 };
 
 export default GQL_QUERY;

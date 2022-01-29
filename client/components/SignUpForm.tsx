@@ -124,7 +124,7 @@ const SignUpForm = () => {
           />
         </div>
         <br />
-        <Btn text='Register' />
+        <Btn text='Register' type='submit' />
       </Box>
     </>
   );
