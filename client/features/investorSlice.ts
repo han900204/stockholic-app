@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { InvestorState } from '../constants/STATE_INTERFACE';
 
 const initialState: InvestorState = {

@@ -36,6 +36,7 @@ const RootMutationType = new GraphQLObjectType({
     createInvestor: investor.mutation.postInvestor,
     validateInvestor: investor.mutation.validateInvestor,
     createAuthentication: authentication.mutation.postAuthentication,
+    deleteAuthentication: authentication.mutation.deleteAuthentication,
   },
 });
 

@@ -6,6 +6,7 @@ export interface QueryInterface {
   GET_AUTHENTICATION_QUERY: DocumentNode;
   VALIDATE_INVESTOR_QUERY: DocumentNode;
   GET_INVESTOR_QUERY: DocumentNode;
+  DELETE_AUTH_QUERY: DocumentNode;
 }
 
 export interface CreateInvestorPayload {

@@ -72,4 +72,22 @@ sql.getSelectQuery = (table, schema, whereClause = []) => {
   return query;
 };
 
+/**
+ *
+ * @param {string} table - name of table
+ * @param {array} whereClause - array of where clauses
+ * @param {array} returnFields - array of fields to be returned
+ * @returns SQL query
+ */
+sql.getDeleteQuery = (table, whereClause = [], returnFields = []) => {
+  let query = '';
+
+  query = `
+  DELETE FROM ${table}
+  WHERE ${whereClause.join(', ')}
+  RETURNING id, ${returnFields.join(', ')}
+  `;
+  return query;
+};
+
 module.exports = sql;

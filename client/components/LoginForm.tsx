@@ -92,7 +92,7 @@ const LoginForm = () => {
           />
         </div>
         <br />
-        <Btn text='Login' />
+        <Btn text='Login' type='submit' />
       </Box>
     </>
   );
