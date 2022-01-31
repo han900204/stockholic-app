@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import Logout from '../components/LogoutButton';
+import useLogout from '../hooks/useLogout';
 import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,6 +21,8 @@ const NavContainer = () => {
     (state: RootState) => state.investor.investorId
   );
 
+  const { logout } = useLogout();
+
   const pages: any[] = [
     { name: 'Dashboard', url: '/dashboard' },
     { name: 'Stock Search', url: '/stock_search' },
@@ -31,7 +33,7 @@ const NavContainer = () => {
     { name: 'Profile', url: `/profile/${investorId}` },
     { name: 'Account', url: '' },
     { name: 'Portfolio', url: `/portfolio/${investorId}` },
-    { name: 'Logout', url: '' },
+    { name: 'Logout' },
   ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -151,13 +153,25 @@ const NavContainer = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting, idx) => (
-                <Link to={setting.url} style={{ textDecoration: 'none' }}>
-                  <MenuItem key={idx} onClick={handleCloseUserMenu}>
+              {settings.map((setting, idx) =>
+                setting.name !== 'Logout' ? (
+                  <Link to={setting.url} style={{ textDecoration: 'none' }}>
+                    <MenuItem key={idx} onClick={handleCloseUserMenu}>
+                      <Typography textAlign='center'>{setting.name}</Typography>
+                    </MenuItem>
+                  </Link>
+                ) : (
+                  <MenuItem
+                    key={idx}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      logout();
+                    }}
+                  >
                     <Typography textAlign='center'>{setting.name}</Typography>
                   </MenuItem>
-                </Link>
-              ))}
+                )
+              )}
             </Menu>
           </Box>
         </Toolbar>

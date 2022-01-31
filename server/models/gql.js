@@ -10,6 +10,7 @@ const {
 } = require('graphql');
 const investor = require('./schema/investorSchema');
 const authentication = require('./schema/authenticationSchema');
+const forum = require('./schema/forumSchema');
 
 /**
  * Load .env file
@@ -27,6 +28,7 @@ const RootQueryType = new GraphQLObjectType({
   fields: {
     getInvestor: investor.query.getInvestor,
     getAuthentication: authentication.query.getAuthentication,
+    getForums: forum.query.getForums,
   },
 });
 
@@ -37,6 +39,9 @@ const RootMutationType = new GraphQLObjectType({
     validateInvestor: investor.mutation.validateInvestor,
     createAuthentication: authentication.mutation.postAuthentication,
     deleteAuthentication: authentication.mutation.deleteAuthentication,
+    postForum: forum.mutation.postForum,
+    deleteForum: forum.mutation.deleteForum,
+    updateForum: forum.mutation.updateForum,
   },
 });
 

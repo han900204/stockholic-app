@@ -20,8 +20,9 @@ dbRecords = [data[1] for data in dbRecords]
 # Exclude existing symbols in db from upload
 symbols = [s for s in symbols if s not in dbRecords]
 
-for s in symbols:
-  rows += ((s,),)
+if len(symbols) > 0:
+  for s in symbols:
+    rows += ((s,),)
 
 args_str = ','.join(cur.mogrify("(%s)", x).decode("utf-8") for x in rows)
 

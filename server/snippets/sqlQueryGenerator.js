@@ -2,19 +2,30 @@ const sql = {};
 
 /**
  *
- * @param {array} schema - array of fields
+ * @param {string} table - name of table
  * @param {object} payload - object of field and value pair
+ * @param {array} whereClause - array of where clauses
+ * @param {array} returnFields - array of fields to be returned
  * @returns SQL query
  */
-sql.getUpdateQuery = (schema, payload) => {
-  // return schema
-  //   .reduce((query, field) => {
-  //     if (field in payload) {
-  //       query += field + ' = ' + "'" + payload[field] + "', ";
-  //     }
-  //     return query;
-  //   }, '')
-  //   .replace(/(,\s$)/g, '');
+sql.getUpdateQuery = (table, payload, whereClause, returnFields) => {
+  const values = Object.keys(payload)
+    .reduce((value, field) => {
+      if (field === 'id') {
+        return value;
+      }
+      const fieldVal = payload[field].replace(/'/g, "''");
+      value += field + ' = ' + "'" + fieldVal + "', ";
+      return value;
+    }, '')
+    .replace(/(,\s$)/g, '');
+
+  return `
+  UPDATE ${table}
+  SET ${values}
+  WHERE ${whereClause.join(', ')}
+  RETURNING id, ${returnFields.join(', ')}
+  `;
 };
 
 /**
