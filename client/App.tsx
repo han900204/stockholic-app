@@ -7,13 +7,19 @@ import {
 } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './app/store';
-import { setIsAuthenticated, setIsPending } from './features/investorSlice';
+import {
+  setIsAuthenticated,
+  setIsPending,
+  setInvestorId,
+} from './features/investorSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
 import { GetAuthPayload } from './constants/GQL_INTERFACE';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
+import ForumContainer from './containers/ForumContainer';
+import NavContainer from './containers/NavContainer';
 import LoadingForm from './components/LoadingForm';
 
 const App = () => {
@@ -34,6 +40,7 @@ const App = () => {
       const res = await getAuthentication({ variables: authPayload });
       if (res.data.getAuthentication) {
         await dispatch(setIsAuthenticated(true));
+        await dispatch(setInvestorId(res.data.getAuthentication.investor_id));
       }
       await dispatch(setIsPending(false));
     };
@@ -45,10 +52,19 @@ const App = () => {
   } else {
     return isAuthenticated ? (
       <Router>
+        <NavContainer />
         <div>
           <Routes>
-            <Route path='*' element={<Navigate to='/profile' />} />
-            <Route path='/profile' element={<ProfileContainer />} />
+            <Route path='*' element={<Navigate to='/forum' />} />
+            <Route path='/profile/:investorId' element={<ProfileContainer />} />
+            <Route
+              path='/portfolio/:investorId'
+              element={<div>Portfolio</div>}
+            />
+            <Route path='/chat/:investorId' element={<div>Chat</div>} />
+            <Route path='/forum' element={<ForumContainer />} />
+            <Route path='/dashboard' element={<div>Dashboard</div>} />
+            <Route path='/stock_search' element={<div>Stock Search</div>} />
           </Routes>
         </div>
       </Router>

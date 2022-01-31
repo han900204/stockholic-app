@@ -29,7 +29,8 @@ try:
   cur.execute("INSERT INTO symbol (name) VALUES " + args_str)
   conn.commit()
   print("Query to add symbols successful for ", symbols)
-except:
+except Exception as e:
+  print(e)
   print("Query to add symbols failed for ", symbols)
 
 conn.close()

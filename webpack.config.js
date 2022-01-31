@@ -48,7 +48,6 @@ module.exports = {
     historyApiFallback: true,
     proxy: {
       '/graphql': 'http://localhost:3000/',
-      '/build/**': 'http://localhost:3000/',
     },
   },
 };
