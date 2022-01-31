@@ -11,7 +11,7 @@ import {
 } from '../constants/GQL_INTERFACE';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setIsAuthenticated } from '../features/investorSlice';
+import { setIsAuthenticated, setInvestorId } from '../features/investorSlice';
 
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -52,8 +52,9 @@ const SignUpForm = () => {
         );
         if (token) {
           sessionStorage.setItem('token', token);
-          dispatch(setIsAuthenticated(true));
-          navigate('/');
+          await dispatch(setIsAuthenticated(true));
+          await dispatch(setInvestorId(res.data.createInvestor.id));
+          navigate('/forum');
         }
       }
     } catch (e: any) {
