@@ -63,23 +63,107 @@ sql.getInsertQuery = (table, schema, payload) => {
  * @param {string} table - name of table
  * @param {array} schema - array of fields
  * @param {array} whereClause - array of where clauses
+ * @param {object} orderBy - object with fields and sorting option property
  * @returns SQL query
  */
-sql.getSelectQuery = (table, schema, whereClause = []) => {
+sql.getSelectQuery = (
+  table,
+  schema,
+  whereClause = [],
+  orderBy = { fields: [], option: 'ASC' }
+) => {
   let query = '';
+
+  query = `
+    SELECT ${schema.join(', ')}
+    FROM ${table}
+    `;
 
   if (whereClause.length !== 0) {
     query = `
-    SELECT ${schema.join(', ')}
-    FROM ${table}
+    ${query}
     WHERE ${whereClause.join(', ')}
     `;
-  } else {
+  }
+
+  if (orderBy.fields.length !== 0) {
     query = `
-    SELECT ${schema.join(', ')}
-    FROM ${table}
+    ${query}
+    ORDER BY ${orderBy.fields.join(', ')} ${option}
     `;
   }
+  return query;
+};
+
+/**
+ *
+ * @param {array} schema - array of object with table / field array pair
+ * @param {array} join - array of object with table / field pairs
+ * @param {array} whereClause - array of object with table / whereCalues array pair
+ * @returns SQL query
+ */
+
+// const schema = [
+//   { table1: ['f1', 'f2', 'f4'] },
+//   { table2: ['f1', 'f3'] },
+//   { table3: ['f1', 'f5'] },
+// ];
+// const join = [
+//   { table1: 'f1', table2: 'f1' },
+//   { table2: 'f1', table3: 'f1' },
+// ];
+
+// const whereClause = [{ table1: [`f2 = 2`, `f4 = 4`] }, { table2: [`f3 = 3`] }];
+
+sql.getSelectJoinQuery = (schema, join, whereClause = []) => {
+  let query = '';
+
+  const alias = {};
+
+  const selectVal = schema
+    .reduce((str, table, idx) => {
+      const tableName = Object.keys(table)[0];
+      alias[tableName] = `alias${idx}`;
+      table[tableName].forEach((field, idx) => {
+        str += `${alias[tableName]}.${field}, `;
+      });
+      return str;
+    }, '')
+    .replace(/(,\s$)/g, '');
+
+  query += `SELECT ${selectVal} FROM ${Object.keys(schema[0])[0]} ${
+    alias[Object.keys(schema[0])[0]]
+  }`;
+
+  const joinVal = join.reduce((str, j) => {
+    str += 'LEFT JOIN ';
+    const tables = Object.keys(j);
+    for (let i = tables.length - 1; i >= 0; i--) {
+      if (i === tables.length - 1)
+        str += `${tables[i]} ${alias[Object.keys(j)[i]]} ON ${
+          alias[tables[i]]
+        }.${j[tables[i]]} = `;
+      else str += `${alias[tables[i]]}.${j[tables[i]]} `;
+    }
+    return str;
+  }, '');
+
+  query = `${query} ${joinVal}`;
+
+  if (whereClause.length > 0) {
+    const whereClauseVal = whereClause
+      .reduce((str, table) => {
+        const tableName = Object.keys(table)[0];
+        table[tableName].forEach((field) => {
+          str += `${alias[tableName]}.${field}, `;
+        });
+        return str;
+      }, 'WHERE ')
+      .replace(/(,\s$)/g, '');
+
+    query = `${query} ${whereClauseVal}`;
+  }
+
   return query;
 };
 

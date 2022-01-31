@@ -28,15 +28,23 @@ forum.type = new GraphQLObjectType({
     name: { type: GraphQLString },
     description: { type: GraphQLString },
     date_created: { type: DateTime },
+    nick_name: { type: GraphQLString },
   }),
 });
 
 forum.query.getForums = {
-  type: forum.type,
+  type: GraphQLList(forum.type),
   async resolve(parent, args) {
-    const sqlQuery = sql.getSelectQuery('forum', ['*']);
+    const sqlQuery = sql.getSelectJoinQuery(
+      [
+        { forum: ['id', 'name', 'description', 'date_created'] },
+        { investor: ['nick_name'] },
+      ],
+      [{ forum: 'owner_user_id', investor: 'id' }]
+    );
+    console.log('query: ', sqlQuery);
     const res = await db.query(sqlQuery);
-    return res.rows[0];
+    return res.rows;
   },
 };
 

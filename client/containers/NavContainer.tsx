@@ -101,8 +101,12 @@ const NavContainer = () => {
               }}
             >
               {pages.map((page, idx) => (
-                <Link to={page.url} style={{ textDecoration: 'none' }}>
-                  <MenuItem key={idx} onClick={handleCloseNavMenu}>
+                <Link
+                  key={idx}
+                  to={page.url}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <MenuItem onClick={handleCloseNavMenu}>
                     <Typography textAlign='center'>{page.name}</Typography>
                   </MenuItem>
                 </Link>
@@ -119,9 +123,8 @@ const NavContainer = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page, idx) => (
-              <Link to={page.url} style={{ textDecoration: 'none' }}>
+              <Link key={idx} to={page.url} style={{ textDecoration: 'none' }}>
                 <Button
-                  key={idx}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
@@ -134,7 +137,7 @@ const NavContainer = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title='Open settings'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+                <Avatar alt='Remy Sharp' src='' />
               </IconButton>
             </Tooltip>
             <Menu
@@ -155,8 +158,12 @@ const NavContainer = () => {
             >
               {settings.map((setting, idx) =>
                 setting.name !== 'Logout' ? (
-                  <Link to={setting.url} style={{ textDecoration: 'none' }}>
-                    <MenuItem key={idx} onClick={handleCloseUserMenu}>
+                  <Link
+                    key={idx}
+                    to={setting.url}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <MenuItem onClick={handleCloseUserMenu}>
                       <Typography textAlign='center'>{setting.name}</Typography>
                     </MenuItem>
                   </Link>

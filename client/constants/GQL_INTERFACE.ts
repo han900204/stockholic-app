@@ -7,6 +7,10 @@ export interface QueryInterface {
   VALIDATE_INVESTOR_QUERY: DocumentNode;
   GET_INVESTOR_QUERY: DocumentNode;
   DELETE_AUTH_QUERY: DocumentNode;
+  GET_FORUMS_QUERY: DocumentNode;
+  CREATE_FORUM_QUERY: DocumentNode;
+  DELETE_FORUM_QUERY: DocumentNode;
+  UPDATE_FORUM_QUERY: DocumentNode;
 }
 
 export interface CreateInvestorPayload {
