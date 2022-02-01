@@ -40,7 +40,12 @@ forum.query.getForums = {
         { forum: ['id', 'name', 'description', 'date_created'] },
         { investor: ['nick_name'] },
       ],
-      [{ forum: 'owner_user_id', investor: 'id' }]
+      [{ forum: 'owner_user_id', investor: 'id' }],
+      [],
+      {
+        forum: 'id',
+        option: 'DESC',
+      }
     );
     console.log('query: ', sqlQuery);
     const res = await db.query(sqlQuery);

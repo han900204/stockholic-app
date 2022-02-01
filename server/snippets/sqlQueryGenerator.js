@@ -100,6 +100,7 @@ sql.getSelectQuery = (
  * @param {array} schema - array of object with table / field array pair
  * @param {array} join - array of object with table / field pairs
  * @param {array} whereClause - array of object with table / whereCalues array pair
+ * @param {array} orderBy - object with table / field pair and sort option
  * @returns SQL query
  */
 
@@ -115,7 +116,12 @@ sql.getSelectQuery = (
 
 // const whereClause = [{ table1: [`f2 = 2`, `f4 = 4`] }, { table2: [`f3 = 3`] }];
 
-sql.getSelectJoinQuery = (schema, join, whereClause = []) => {
+// const orderBy = {
+//   table1: 'f1',
+//   option: 'DESC',
+// };
+
+sql.getSelectJoinQuery = (schema, join, whereClause = [], orderBy = {}) => {
   let query = '';
 
   const alias = {};
@@ -164,8 +170,24 @@ sql.getSelectJoinQuery = (schema, join, whereClause = []) => {
     query = `${query} ${whereClauseVal}`;
   }
 
+  if ('option' in orderBy) {
+    let orderVal = Object.keys(orderBy)
+      .reduce((str, key) => {
+        if (key !== 'option') {
+          str += alias[key] + ', ';
+        }
+        return str;
+      }, 'ORDER BY ')
+      .replace(/(,\s$)/g, '');
+    orderVal += ' ' + orderBy['option'];
+
+    query = `${query} ${orderVal}`;
+  }
+
   return query;
 };
+
+// console.log(sql.getSelectJoinQuery(schema, join, whereClause, orderBy));
 
 /**
  *
