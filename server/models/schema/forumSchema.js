@@ -53,6 +53,26 @@ forum.query.getForums = {
   },
 };
 
+forum.query.getForum = {
+  type: forum.type,
+  args: {
+    id: { type: GraphQLInt },
+  },
+  async resolve(parent, args) {
+    const sqlQuery = sql.getSelectJoinQuery(
+      [
+        { forum: ['id', 'name', 'description', 'date_created'] },
+        { investor: ['nick_name'] },
+      ],
+      [{ forum: 'owner_user_id', investor: 'id' }],
+      [{ forum: [`id = ${args.id}`] }]
+    );
+    const res = await db.query(sqlQuery);
+    console.log('forum retrieved', res.rows[0]);
+    return res.rows[0];
+  },
+};
+
 forum.mutation.postForum = {
   type: forum.type,
   args: {

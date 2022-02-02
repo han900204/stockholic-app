@@ -11,6 +11,7 @@ export interface QueryInterface {
   CREATE_FORUM_QUERY: DocumentNode;
   DELETE_FORUM_QUERY: DocumentNode;
   UPDATE_FORUM_QUERY: DocumentNode;
+  GET_FORUM_QUERY: DocumentNode;
 }
 
 export interface CreateInvestorPayload {
@@ -34,8 +35,35 @@ export interface ValidateInvestorPayload {
   password: string;
 }
 
+// Forum Interfaces
+
+export interface ForumData {
+  id: number;
+  name: string;
+  description: string;
+  date_created: string;
+  nick_name: string;
+  owner_user_id: number;
+}
+
+export interface GetForumPayload {
+  id: number;
+}
+
 export interface CreateForumPayload {
   owner_user_id: number;
   name: string;
   description: string | null;
+}
+
+export interface CreateForumResponse {
+  createForum: ForumData;
+}
+
+export interface GetForumsResponse {
+  getForums: ForumData[];
+}
+
+export interface GetForumResponse {
+  getForum: ForumData;
 }

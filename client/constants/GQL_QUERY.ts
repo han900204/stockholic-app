@@ -71,9 +71,24 @@ const GQL_QUERY: QueryInterface = {
         description
         date_created
         nick_name
+        owner_user_id
       }
     }
   `,
+
+  GET_FORUM_QUERY: gql`
+    query GetForum($id: Int!) {
+      getForum(id: $id) {
+        id
+        name
+        owner_user_id
+        description
+        date_created
+        nick_name
+      }
+    }
+  `,
+
   CREATE_FORUM_QUERY: gql`
     mutation CreateForum(
       $owner_user_id: Int!

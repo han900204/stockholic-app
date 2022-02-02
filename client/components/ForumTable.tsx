@@ -1,20 +1,10 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
-import GQL_QUERY from '../constants/GQL_QUERY';
-import {} from '../constants/GQL_INTERFACE';
-import { useSelector } from 'react-redux';
-import { RootState } from '../app/store';
-import LoadingForm from '../components/LoadingForm';
 import SimpleTable from '../components/styleComponents/SimpleTable';
 import { ForumColumn, ForumData } from '../constants/STYLE_INTERFACE';
-import Typography from '@mui/material/Typography';
 
 const ForumTable = ({ data }) => {
-  const investorId = useSelector(
-    (state: RootState) => state.investor.investorId
-  );
-
   const columns: readonly ForumColumn[] = [
+    { id: 'id', label: 'id', minWidth: 100 },
     { id: 'name', label: 'Name', minWidth: 300 },
     {
       id: 'nick_name',
@@ -33,16 +23,18 @@ const ForumTable = ({ data }) => {
   ];
 
   function createData(
+    id: number,
     name: string,
     nick_name: string,
     date_created: string
   ): ForumData {
-    return { name, nick_name, date_created };
+    return { id, name, nick_name, date_created };
   }
 
   const rows = data.getForums.reduce((row, forum) => {
     row.push(
       createData(
+        forum.id,
         forum.name,
         forum.nick_name,
         new Date(forum.date_created).toISOString().split('T')[0]
@@ -51,7 +43,7 @@ const ForumTable = ({ data }) => {
     return row;
   }, []);
 
-  return <SimpleTable columns={columns} rows={rows} />;
+  return <SimpleTable columns={columns} rows={rows} link='name' />;
 };
 
 export default ForumTable;

@@ -1,5 +1,5 @@
 export interface ForumColumn {
-  id: 'name' | 'nick_name' | 'date_created';
+  id: 'id' | 'name' | 'nick_name' | 'date_created';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -7,6 +7,7 @@ export interface ForumColumn {
 }
 
 export interface ForumData {
+  id: number;
   name: string;
   nick_name: string;
   date_created: string;

@@ -7,8 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { Link } from 'react-router-dom';
 
-export default function SimpleTable({ columns, rows }) {
+export default function SimpleTable({ columns, rows, link }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -45,11 +46,28 @@ export default function SimpleTable({ columns, rows }) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+                  <TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
+                      return link && column.id === link ? (
+                        <TableCell
+                          key={String(column.id) + '-' + String(row.id)}
+                          align={column.align}
+                        >
+                          <Link
+                            to={`/forum/${row.id}`}
+                            style={{ textDecoration: 'none' }}
+                          >
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </Link>
+                        </TableCell>
+                      ) : (
+                        <TableCell
+                          key={String(column.id) + '-' + String(row.id)}
+                          align={column.align}
+                        >
                           {column.format && typeof value === 'number'
                             ? column.format(value)
                             : value}

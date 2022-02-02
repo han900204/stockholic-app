@@ -18,9 +18,10 @@ import { GetAuthPayload } from './constants/GQL_INTERFACE';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
-import ForumContainer from './containers/ForumContainer';
+import ForumListContainer from './containers/ForumListContainer';
 import NavContainer from './containers/NavContainer';
 import LoadingForm from './components/LoadingForm';
+import ForumContainer from './containers/ForumContainer';
 
 const App = () => {
   const { isAuthenticated, isPending } = useSelector(
@@ -62,7 +63,8 @@ const App = () => {
               element={<div>Portfolio</div>}
             />
             <Route path='/chat/:investorId' element={<div>Chat</div>} />
-            <Route path='/forum' element={<ForumContainer />} />
+            <Route path='/forum' element={<ForumListContainer />} />
+            <Route path='/forum/:id' element={<ForumContainer />} />
             <Route path='/dashboard' element={<div>Dashboard</div>} />
             <Route path='/stock_search' element={<div>Stock Search</div>} />
           </Routes>

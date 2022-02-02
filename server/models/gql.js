@@ -29,6 +29,7 @@ const RootQueryType = new GraphQLObjectType({
     getInvestor: investor.query.getInvestor,
     getAuthentication: authentication.query.getAuthentication,
     getForums: forum.query.getForums,
+    getForum: forum.query.getForum,
   },
 });
 

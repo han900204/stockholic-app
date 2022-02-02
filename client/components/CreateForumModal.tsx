@@ -7,6 +7,7 @@ import TextArea from './styleComponents/TextArea';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
+import { useCreateForum } from '../hooks/useCreateForum';
 
 export default function CreateForumModal({ investorId }) {
   const [name, setName] = useState('');
@@ -18,7 +19,7 @@ export default function CreateForumModal({ investorId }) {
     description,
   };
 
-  const [createForum] = useMutation(GQL_QUERY.CREATE_FORUM_QUERY);
+  const { createForum, data, error } = useCreateForum();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
