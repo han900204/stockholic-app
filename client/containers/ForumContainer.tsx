@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import LoadingForm from '../components/LoadingForm';
 import { useParams } from 'react-router-dom';
+import ForumForm from '../components/ForumForm';
 
 const ForumContainer = () => {
   const params = useParams();
@@ -20,7 +21,11 @@ const ForumContainer = () => {
 
   if (loading) return <LoadingForm />;
 
-  return <div>Forum Detail</div>;
+  return (
+    <>
+      <ForumForm data={data} />
+    </>
+  );
 };
 
 export default ForumContainer;

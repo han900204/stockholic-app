@@ -1,5 +1,8 @@
 import { DocumentNode } from 'graphql';
 
+/**
+ * GraphQL Query Interface
+ */
 export interface QueryInterface {
   CREATE_INVESTOR_QUERY: DocumentNode;
   CREATE_AUTH_QUERY: DocumentNode;
@@ -14,6 +17,9 @@ export interface QueryInterface {
   GET_FORUM_QUERY: DocumentNode;
 }
 
+/**
+ * Investor / Authentication Interfaces
+ */
 export interface CreateInvestorPayload {
   first_name: string;
   last_name: string;
@@ -35,7 +41,9 @@ export interface ValidateInvestorPayload {
   password: string;
 }
 
-// Forum Interfaces
+/**
+ * Forum Interfaces
+ */
 
 export interface ForumData {
   id: number;
@@ -45,9 +53,20 @@ export interface ForumData {
   nick_name: string;
   owner_user_id: number;
 }
+export interface GetForumsResponse {
+  getForums: ForumData[];
+}
+
+export interface GetForumResponse {
+  getForum: ForumData;
+}
 
 export interface GetForumPayload {
   id: number;
+}
+
+export interface CreateForumResponse {
+  createForum: ForumData;
 }
 
 export interface CreateForumPayload {
@@ -56,14 +75,20 @@ export interface CreateForumPayload {
   description: string | null;
 }
 
-export interface CreateForumResponse {
-  createForum: ForumData;
+export interface UpdateForumResponse {
+  updateForum: ForumData;
 }
 
-export interface GetForumsResponse {
-  getForums: ForumData[];
+export interface UpdateForumPayload {
+  id: number;
+  name?: string;
+  description?: string;
 }
 
-export interface GetForumResponse {
-  getForum: ForumData;
+export interface DeleteForumResponse {
+  deleteForum: ForumData;
+}
+
+export interface DeleteForumPayload {
+  id: number;
 }

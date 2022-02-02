@@ -5,9 +5,9 @@ import {} from '../constants/GQL_INTERFACE';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import LoadingForm from '../components/LoadingForm';
-import Typography from '@mui/material/Typography';
 import ForumTable from '../components/ForumTable';
 import CreateForumModal from '../components/CreateForumModal';
+import Subheading from '../components/styleComponents/Subheading';
 
 const ForumListContainer = () => {
   const investorId = useSelector(
@@ -20,9 +20,7 @@ const ForumListContainer = () => {
 
   return (
     <>
-      <Typography variant='h3' component='div' gutterBottom>
-        Investor Forum
-      </Typography>
+      <Subheading title='Investor Forum' />
       <CreateForumModal investorId={investorId} />
 
       <ForumTable data={data} />

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import { CreateForumPayload } from '../constants/GQL_INTERFACE';
-import TextArea from './styleComponents/TextArea';
+import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
@@ -47,7 +47,7 @@ export default function CreateForumModal({ investorId }) {
         autoComplete='off'
       >
         <div>
-          <TextArea
+          <TextAreaField
             eHandler={(e) => {
               setName(e.target.value);
             }}
@@ -57,7 +57,7 @@ export default function CreateForumModal({ investorId }) {
           />
         </div>
         <div>
-          <TextArea
+          <TextAreaField
             eHandler={(e) => {
               setDescription(e.target.value);
             }}

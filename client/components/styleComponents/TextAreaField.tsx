@@ -1,7 +1,7 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-const TextArea = ({
+const TextAreaField = ({
   eHandler,
   label,
   type,
@@ -47,4 +47,4 @@ const TextArea = ({
   );
 };
 
-export default TextArea;
+export default TextAreaField;

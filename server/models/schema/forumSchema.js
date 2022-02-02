@@ -37,7 +37,9 @@ forum.query.getForums = {
   async resolve(parent, args) {
     const sqlQuery = sql.getSelectJoinQuery(
       [
-        { forum: ['id', 'name', 'description', 'date_created'] },
+        {
+          forum: ['id', 'name', 'description', 'date_created', 'owner_user_id'],
+        },
         { investor: ['nick_name'] },
       ],
       [{ forum: 'owner_user_id', investor: 'id' }],
@@ -61,7 +63,9 @@ forum.query.getForum = {
   async resolve(parent, args) {
     const sqlQuery = sql.getSelectJoinQuery(
       [
-        { forum: ['id', 'name', 'description', 'date_created'] },
+        {
+          forum: ['id', 'name', 'description', 'date_created', 'owner_user_id'],
+        },
         { investor: ['nick_name'] },
       ],
       [{ forum: 'owner_user_id', investor: 'id' }],
@@ -117,8 +121,26 @@ forum.mutation.deleteForum = {
     id: { type: GraphQLInt },
   },
   async resolve(parent, args) {
-    const sqlQuery = sql.getDeleteQuery('forum', [`id = '${args.id}'`], ['id']);
+    const sqlQuery = sql.getDeleteQuery(
+      'forum',
+      [`id = '${args.id}'`],
+      ['id', 'name', 'description', 'date_created', 'owner_user_id']
+    );
     const res = await db.query(sqlQuery);
+
+    // Get a nick_name
+    const sqlInvestorQuery = sql.getSelectQuery(
+      'investor',
+      ['*'],
+      [`id = ${res.rows[0]['owner_user_id']}`]
+    );
+
+    const nick_name = await db
+      .query(sqlInvestorQuery)
+      .then((data) => data.rows[0]['nick_name']);
+
+    res.rows[0]['nick_name'] = nick_name;
+
     console.log('forum deleted', res.rows[0]);
     return res.rows[0];
   },
@@ -136,11 +158,24 @@ forum.mutation.updateForum = {
       'forum',
       args,
       [`id = ${args.id}`],
-      ['name', 'description']
+      ['id', 'name', 'description', 'date_created', 'owner_user_id']
     );
-    console.log(sqlQuery);
 
+    // Update forum
     const res = await db.query(sqlQuery);
+
+    // Get a nick_name
+    const sqlInvestorQuery = sql.getSelectQuery(
+      'investor',
+      ['*'],
+      [`id = ${res.rows[0]['owner_user_id']}`]
+    );
+
+    const nick_name = await db
+      .query(sqlInvestorQuery)
+      .then((data) => data.rows[0]['nick_name']);
+
+    res.rows[0]['nick_name'] = nick_name;
     console.log('forum updated', res.rows[0]);
 
     return res.rows[0];

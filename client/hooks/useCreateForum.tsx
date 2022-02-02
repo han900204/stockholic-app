@@ -17,8 +17,6 @@ export function useCreateForum() {
       const existingForums = cache.readQuery<GetForumsResponse>({
         query: GQL_QUERY.GET_FORUMS_QUERY,
       });
-
-      console.log(newForum, existingForums?.getForums);
       if (existingForums && newForum) {
         cache.writeQuery({
           query: GQL_QUERY.GET_FORUMS_QUERY,

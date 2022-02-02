@@ -105,6 +105,7 @@ const GQL_QUERY: QueryInterface = {
         description
         date_created
         nick_name
+        owner_user_id
       }
     }
   `,
@@ -112,6 +113,11 @@ const GQL_QUERY: QueryInterface = {
     mutation UpdateForum($id: Int!, $name: String, $description: String) {
       updateForum(id: $id, name: $name, description: $description) {
         id
+        name
+        description
+        date_created
+        nick_name
+        owner_user_id
       }
     }
   `,
@@ -119,6 +125,11 @@ const GQL_QUERY: QueryInterface = {
     mutation DeleteForum($id: Int!) {
       deleteForum(id: $id) {
         id
+        name
+        description
+        date_created
+        nick_name
+        owner_user_id
       }
     }
   `,
