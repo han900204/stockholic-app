@@ -33,3 +33,9 @@ export interface ValidateInvestorPayload {
   email: string;
   password: string;
 }
+
+export interface CreateForumPayload {
+  owner_user_id: number;
+  name: string;
+  description: string | null;
+}

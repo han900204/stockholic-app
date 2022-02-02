@@ -47,8 +47,8 @@ forum.query.getForums = {
         option: 'DESC',
       }
     );
-    console.log('query: ', sqlQuery);
     const res = await db.query(sqlQuery);
+    console.log(`${res.rows.length} forums retrieved`);
     return res.rows;
   },
 };
