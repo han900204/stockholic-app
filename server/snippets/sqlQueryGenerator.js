@@ -92,6 +92,7 @@ sql.getSelectQuery = (
     ORDER BY ${orderBy.fields.join(', ')} ${option}
     `;
   }
+
   return query;
 };
 

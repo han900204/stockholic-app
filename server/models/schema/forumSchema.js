@@ -70,7 +70,22 @@ forum.mutation.postForum = {
         description: args.description,
       }
     );
+
+    // Create a forum
     const res = await db.query(sqlQuery[0], sqlQuery[1]);
+
+    // Get a nick_name
+    const sqlInvestorQuery = sql.getSelectQuery(
+      'investor',
+      ['*'],
+      [`id = ${res.rows[0]['owner_user_id']}`]
+    );
+
+    const nick_name = await db
+      .query(sqlInvestorQuery)
+      .then((data) => data.rows[0]['nick_name']);
+
+    res.rows[0]['nick_name'] = nick_name;
     console.log('forum created', res.rows[0]);
     return res.rows[0];
   },

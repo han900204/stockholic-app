@@ -86,6 +86,10 @@ const GQL_QUERY: QueryInterface = {
         description: $description
       ) {
         id
+        name
+        description
+        date_created
+        nick_name
       }
     }
   `,
