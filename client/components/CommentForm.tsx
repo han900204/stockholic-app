@@ -21,7 +21,7 @@ const CommentForm = () => {
           eHandler={(e) => {
             console.log('add!');
           }}
-          rows={8}
+          rows={5}
         />
       </Box>
     </>
