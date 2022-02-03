@@ -8,6 +8,8 @@ const TextAreaField = ({
   errState,
   errMsg,
   required,
+  defaultValue,
+  rows,
 }: {
   eHandler: (e: any) => void;
   label: string;
@@ -15,6 +17,8 @@ const TextAreaField = ({
   errState?: boolean;
   errMsg?: string;
   required: boolean;
+  defaultValue?: string;
+  rows?: number;
 }) => {
   return errState === undefined ? (
     <TextField
@@ -23,11 +27,12 @@ const TextAreaField = ({
       variant='outlined'
       label={label}
       multiline
-      rows={3}
+      rows={rows ? rows : 3}
       minRows={3}
       maxRows={Infinity}
       fullWidth
       type={type}
+      defaultValue={defaultValue ? defaultValue : null}
     />
   ) : (
     <TextField
@@ -39,10 +44,11 @@ const TextAreaField = ({
       error={errState}
       helperText={errState ? `${errMsg}` : ''}
       multiline
-      rows={3}
+      rows={rows ? rows : 3}
       minRows={3}
       maxRows={Infinity}
       fullWidth
+      defaultValue={defaultValue ? defaultValue : null}
     />
   );
 };

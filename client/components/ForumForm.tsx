@@ -5,16 +5,48 @@ import TextBox from '../components/styleComponents/TextBox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
+import TextAreaField from './styleComponents/TextAreaField';
+import { useUpdateForum } from '../hooks/useUpdateForum';
+import {
+  UpdateForumPayload,
+  DeleteForumPayload,
+} from '../constants/GQL_INTERFACE';
+import { useDeleteForum } from '../hooks/useDeleteForum';
+import { useNavigate } from 'react-router-dom';
 
-const ForumForm = ({ data }) => {
-  const [description, setDescription] = useState('');
+const ForumForm = ({ data, investorId }) => {
   const [isEdit, setIsEdit] = useState(false);
+  const [desc, setDesc] = useState('');
+  const navigate = useNavigate();
 
   const forum: ForumData = data.getForum;
 
   useEffect(() => {
-    setDescription(forum.description);
+    setDesc(forum.description);
   }, []);
+
+  const { updateForum } = useUpdateForum();
+
+  const { deleteForum } = useDeleteForum();
+
+  const updateForumPayload: UpdateForumPayload = {
+    id: forum.id,
+    description: desc,
+  };
+
+  const deleteForumPayload: DeleteForumPayload = {
+    id: forum.id,
+  };
+
+  const handleClick = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await updateForum({ variables: updateForumPayload });
+    } catch (e: any) {
+      console.log('ERROR: ', e);
+    }
+  };
 
   return (
     <>
@@ -24,8 +56,8 @@ const ForumForm = ({ data }) => {
           width: '80%',
         }}
       >
-        <Subheading title='HI' />
-        <Grid container spacing={2}>
+        <Subheading title={forum.name} />
+        <Grid container spacing={2} sx={{ mb: 1 }}>
           <Grid item xs={8}>
             Posted By: {forum.nick_name}
           </Grid>
@@ -39,21 +71,45 @@ const ForumForm = ({ data }) => {
         {!isEdit ? (
           <>
             <TextBox data={forum.description} />
-            <Btn
-              text='Edit'
-              type='button'
-              eHandler={() => {
-                setIsEdit(true);
-              }}
-            />
+            {investorId === forum.owner_user_id ? (
+              <>
+                <Btn
+                  text='Edit'
+                  type='button'
+                  eHandler={() => {
+                    setIsEdit(true);
+                  }}
+                />
+                <Btn
+                  text='Delete'
+                  type='button'
+                  eHandler={async (e) => {
+                    await deleteForum({ variables: deleteForumPayload });
+                    navigate('/forum');
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
           </>
         ) : (
           <>
-            HIHI
+            <TextAreaField
+              label='Description'
+              type='text'
+              required={true}
+              eHandler={(e) => {
+                setDesc(e.target.value);
+              }}
+              defaultValue={desc}
+              rows={15}
+            />
             <Btn
               text='Done'
               type='button'
-              eHandler={() => {
+              eHandler={(e) => {
+                handleClick(e);
                 setIsEdit(false);
               }}
             />

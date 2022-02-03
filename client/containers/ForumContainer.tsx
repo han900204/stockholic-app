@@ -10,7 +10,7 @@ import ForumForm from '../components/ForumForm';
 
 const ForumContainer = () => {
   const params = useParams();
-  const investorId = useSelector(
+  const investorId: number | null = useSelector(
     (state: RootState) => state.investor.investorId
   );
 
@@ -23,7 +23,7 @@ const ForumContainer = () => {
 
   return (
     <>
-      <ForumForm data={data} />
+      <ForumForm data={data} investorId={investorId} />
     </>
   );
 };

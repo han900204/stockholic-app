@@ -7,7 +7,7 @@ import {
   GetForumResponse,
 } from '../constants/GQL_INTERFACE';
 
-export function useCreateForum() {
+export function useUpdateForum() {
   const [updateForum, { data, error }] = useMutation<
     UpdateForumResponse,
     UpdateForumPayload

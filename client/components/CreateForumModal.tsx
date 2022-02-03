@@ -2,16 +2,21 @@ import React from 'react';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
-import { CreateForumPayload } from '../constants/GQL_INTERFACE';
+import {
+  CreateForumPayload,
+  CreateForumResponse,
+} from '../constants/GQL_INTERFACE';
 import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
 import { useCreateForum } from '../hooks/useCreateForum';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateForumModal({ investorId }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const navigate = useNavigate();
 
   const forumPayload: CreateForumPayload = {
     owner_user_id: investorId,
@@ -19,13 +24,16 @@ export default function CreateForumModal({ investorId }) {
     description,
   };
 
-  const { createForum, data, error } = useCreateForum();
+  const { createForum } = useCreateForum();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
-      await createForum({ variables: forumPayload });
+      const { data } = await createForum({
+        variables: forumPayload,
+      });
+      navigate(`/forum/${data?.createForum.id}`);
     } catch (e: any) {
       console.log('ERROR: ', e);
     }
@@ -54,6 +62,7 @@ export default function CreateForumModal({ investorId }) {
             type='text'
             label='Topic'
             required={true}
+            rows={3}
           />
         </div>
         <div>
@@ -64,6 +73,7 @@ export default function CreateForumModal({ investorId }) {
             type='text'
             label='Description'
             required={false}
+            rows={15}
           />
         </div>
         <br />
