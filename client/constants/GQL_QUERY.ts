@@ -62,6 +62,77 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+
+  GET_FORUMS_QUERY: gql`
+    query GetForums {
+      getForums {
+        id
+        name
+        description
+        date_created
+        nick_name
+        owner_user_id
+      }
+    }
+  `,
+
+  GET_FORUM_QUERY: gql`
+    query GetForum($id: Int!) {
+      getForum(id: $id) {
+        id
+        name
+        owner_user_id
+        description
+        date_created
+        nick_name
+      }
+    }
+  `,
+
+  CREATE_FORUM_QUERY: gql`
+    mutation CreateForum(
+      $owner_user_id: Int!
+      $name: String!
+      $description: String
+    ) {
+      createForum(
+        owner_user_id: $owner_user_id
+        name: $name
+        description: $description
+      ) {
+        id
+        name
+        description
+        date_created
+        nick_name
+        owner_user_id
+      }
+    }
+  `,
+  UPDATE_FORUM_QUERY: gql`
+    mutation UpdateForum($id: Int!, $name: String, $description: String) {
+      updateForum(id: $id, name: $name, description: $description) {
+        id
+        name
+        description
+        date_created
+        nick_name
+        owner_user_id
+      }
+    }
+  `,
+  DELETE_FORUM_QUERY: gql`
+    mutation DeleteForum($id: Int!) {
+      deleteForum(id: $id) {
+        id
+        name
+        description
+        date_created
+        nick_name
+        owner_user_id
+      }
+    }
+  `,
 };
 
 export default GQL_QUERY;

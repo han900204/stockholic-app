@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import Logout from '../components/LogoutButton';
+import useLogout from '../hooks/useLogout';
 import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -21,6 +21,8 @@ const NavContainer = () => {
     (state: RootState) => state.investor.investorId
   );
 
+  const { logout } = useLogout();
+
   const pages: any[] = [
     { name: 'Dashboard', url: '/dashboard' },
     { name: 'Stock Search', url: '/stock_search' },
@@ -31,7 +33,7 @@ const NavContainer = () => {
     { name: 'Profile', url: `/profile/${investorId}` },
     { name: 'Account', url: '' },
     { name: 'Portfolio', url: `/portfolio/${investorId}` },
-    { name: 'Logout', url: '' },
+    { name: 'Logout' },
   ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -99,8 +101,12 @@ const NavContainer = () => {
               }}
             >
               {pages.map((page, idx) => (
-                <Link to={page.url} style={{ textDecoration: 'none' }}>
-                  <MenuItem key={idx} onClick={handleCloseNavMenu}>
+                <Link
+                  key={idx}
+                  to={page.url}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <MenuItem onClick={handleCloseNavMenu}>
                     <Typography textAlign='center'>{page.name}</Typography>
                   </MenuItem>
                 </Link>
@@ -117,9 +123,8 @@ const NavContainer = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page, idx) => (
-              <Link to={page.url} style={{ textDecoration: 'none' }}>
+              <Link key={idx} to={page.url} style={{ textDecoration: 'none' }}>
                 <Button
-                  key={idx}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
                 >
@@ -132,7 +137,7 @@ const NavContainer = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title='Open settings'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+                <Avatar alt='Remy Sharp' src='' />
               </IconButton>
             </Tooltip>
             <Menu
@@ -151,13 +156,29 @@ const NavContainer = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting, idx) => (
-                <Link to={setting.url} style={{ textDecoration: 'none' }}>
-                  <MenuItem key={idx} onClick={handleCloseUserMenu}>
+              {settings.map((setting, idx) =>
+                setting.name !== 'Logout' ? (
+                  <Link
+                    key={idx}
+                    to={setting.url}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography textAlign='center'>{setting.name}</Typography>
+                    </MenuItem>
+                  </Link>
+                ) : (
+                  <MenuItem
+                    key={idx}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      logout();
+                    }}
+                  >
                     <Typography textAlign='center'>{setting.name}</Typography>
                   </MenuItem>
-                </Link>
-              ))}
+                )
+              )}
             </Menu>
           </Box>
         </Toolbar>

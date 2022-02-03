@@ -20,18 +20,22 @@ dbRecords = [data[1] for data in dbRecords]
 # Exclude existing symbols in db from upload
 symbols = [s for s in symbols if s not in dbRecords]
 
-for s in symbols:
-  rows += ((s,),)
+if len(symbols) > 0:
+  for s in symbols:
+    rows += ((s,),)
 
-args_str = ','.join(cur.mogrify("(%s)", x).decode("utf-8") for x in rows)
+  args_str = ','.join(cur.mogrify("(%s)", x).decode("utf-8") for x in rows)
 
-try:
-  cur.execute("INSERT INTO symbol (name) VALUES " + args_str)
-  conn.commit()
-  print("Query to add symbols successful for ", symbols)
-except Exception as e:
-  print(e)
-  print("Query to add symbols failed for ", symbols)
+  try:
+    cur.execute("INSERT INTO symbol (name) VALUES " + args_str)
+    conn.commit()
+    print("Query to add symbols successful for ", symbols)
+  except Exception as e:
+    print(e)
+    print("Query to add symbols failed for ", symbols)
+else:
+  print("There is no new symbols to update DB")
+
 
 conn.close()
 
