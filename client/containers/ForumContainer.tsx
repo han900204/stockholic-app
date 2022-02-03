@@ -7,6 +7,7 @@ import { RootState } from '../app/store';
 import LoadingForm from '../components/LoadingForm';
 import { useParams } from 'react-router-dom';
 import ForumForm from '../components/ForumForm';
+import CommentForm from '../components/CommentForm';
 
 const ForumContainer = () => {
   const params = useParams();
@@ -24,6 +25,7 @@ const ForumContainer = () => {
   return (
     <>
       <ForumForm data={data} investorId={investorId} />
+      <CommentForm />
     </>
   );
 };
