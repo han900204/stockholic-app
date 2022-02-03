@@ -13,6 +13,7 @@ import {
 } from '../constants/GQL_INTERFACE';
 import { useDeleteForum } from '../hooks/useDeleteForum';
 import { useNavigate } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
 
 const ForumForm = ({ data, investorId }) => {
   const [isEdit, setIsEdit] = useState(false);
@@ -73,21 +74,28 @@ const ForumForm = ({ data, investorId }) => {
             <TextBox data={forum.description} />
             {investorId === forum.owner_user_id ? (
               <>
-                <Btn
-                  text='Edit'
-                  type='button'
-                  eHandler={() => {
-                    setIsEdit(true);
-                  }}
-                />
-                <Btn
-                  text='Delete'
-                  type='button'
-                  eHandler={async (e) => {
-                    await deleteForum({ variables: deleteForumPayload });
-                    navigate('/forum');
-                  }}
-                />
+                <Stack
+                  direction='row'
+                  spacing={2}
+                  justifyContent='right'
+                  alignItems='right'
+                >
+                  <Btn
+                    text='Edit'
+                    type='button'
+                    eHandler={() => {
+                      setIsEdit(true);
+                    }}
+                  />
+                  <Btn
+                    text='Delete'
+                    type='button'
+                    eHandler={async (e) => {
+                      await deleteForum({ variables: deleteForumPayload });
+                      navigate('/forum');
+                    }}
+                  />
+                </Stack>
               </>
             ) : (
               <></>
