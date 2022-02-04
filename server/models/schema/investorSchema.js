@@ -64,10 +64,23 @@ investor.mutation.postInvestor = {
     ];
 
     const hashPw = await hashPassword(args.password);
-    const sqlQuery = sql.getInsertQuery('investor', schema, {
-      ...args,
-      password: hashPw,
-    });
+    const sqlQuery = sql.getInsertQuery(
+      'investor',
+      schema,
+      {
+        ...args,
+        password: hashPw,
+      },
+      [
+        'id',
+        'first_name',
+        'last_name',
+        'nick_name',
+        'email',
+        'password',
+        'date_created',
+      ]
+    );
 
     try {
       const res = await db.query(sqlQuery[0], sqlQuery[1]);

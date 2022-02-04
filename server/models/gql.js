@@ -11,6 +11,7 @@ const {
 const investor = require('./schema/investorSchema');
 const authentication = require('./schema/authenticationSchema');
 const forum = require('./schema/forumSchema');
+const comment = require('./schema/commentSchema');
 
 /**
  * Load .env file
@@ -30,6 +31,7 @@ const RootQueryType = new GraphQLObjectType({
     getAuthentication: authentication.query.getAuthentication,
     getForums: forum.query.getForums,
     getForum: forum.query.getForum,
+    getComments: comment.query.getComments,
   },
 });
 
@@ -43,6 +45,9 @@ const RootMutationType = new GraphQLObjectType({
     createForum: forum.mutation.postForum,
     deleteForum: forum.mutation.deleteForum,
     updateForum: forum.mutation.updateForum,
+    createComment: comment.mutation.postComment,
+    deleteComment: comment.mutation.deleteComment,
+    updateComment: comment.mutation.updateComment,
   },
 });
 

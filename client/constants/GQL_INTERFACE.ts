@@ -15,6 +15,10 @@ export interface QueryInterface {
   DELETE_FORUM_QUERY: DocumentNode;
   UPDATE_FORUM_QUERY: DocumentNode;
   GET_FORUM_QUERY: DocumentNode;
+  GET_COMMENTS_QUERY: DocumentNode;
+  CREATE_COMMENT_QUERY: DocumentNode;
+  UPDATE_COMMENT_QUERY: DocumentNode;
+  DELETE_COMMENT_QUERY: DocumentNode;
 }
 
 /**
@@ -90,5 +94,55 @@ export interface DeleteForumResponse {
 }
 
 export interface DeleteForumPayload {
+  id: number;
+}
+
+/**
+ * Comment Interfaces
+ */
+
+export interface CommentData {
+  id: number;
+  owner_user_id: number;
+  forum_id: number;
+  date_created: string;
+  description: string;
+  likes: string;
+  dislikes: string;
+  nick_name;
+}
+
+export interface GetCommentsResponse {
+  getComments: CommentData[];
+}
+
+export interface GetCommentsPayload {
+  forum_id: number;
+}
+
+export interface CreateCommentResponse {
+  createComment: CommentData;
+}
+
+export interface CreateCommentPayload {
+  owner_user_id: number;
+  forum_id: number;
+  description: string;
+}
+
+export interface UpdateCommentResponse {
+  updateComment: CommentData;
+}
+
+export interface UpdateCommentPayload {
+  id: number;
+  description: string;
+}
+
+export interface DeleteCommentResponse {
+  deleteComment: CommentData;
+}
+
+export interface DeleteCommentPayload {
   id: number;
 }

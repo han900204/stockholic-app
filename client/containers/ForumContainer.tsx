@@ -1,7 +1,12 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
-import { GetForumPayload, GetForumResponse } from '../constants/GQL_INTERFACE';
+import {
+  GetForumPayload,
+  GetForumResponse,
+  GetCommentsPayload,
+  GetCommentsResponse,
+} from '../constants/GQL_INTERFACE';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import LoadingForm from '../components/LoadingForm';
@@ -11,6 +16,7 @@ import CommentForm from '../components/CommentForm';
 
 const ForumContainer = () => {
   const params = useParams();
+
   const investorId: number | null = useSelector(
     (state: RootState) => state.investor.investorId
   );
@@ -20,12 +26,21 @@ const ForumContainer = () => {
     { variables: { id: Number(params.id) } }
   );
 
-  if (loading) return <LoadingForm />;
+  const comments = useQuery<GetCommentsResponse, GetCommentsPayload>(
+    GQL_QUERY.GET_COMMENTS_QUERY,
+    { variables: { forum_id: Number(params.id) } }
+  );
+
+  if (loading || comments.loading) return <LoadingForm />;
 
   return (
     <>
       <ForumForm data={data} investorId={investorId} />
-      <CommentForm />
+      <CommentForm
+        data={comments.data}
+        investorId={investorId}
+        forumId={Number(params.id)}
+      />
     </>
   );
 };
