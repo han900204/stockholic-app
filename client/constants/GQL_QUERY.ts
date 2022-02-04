@@ -109,6 +109,7 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+
   UPDATE_FORUM_QUERY: gql`
     mutation UpdateForum($id: Int!, $name: String, $description: String) {
       updateForum(id: $id, name: $name, description: $description) {
@@ -130,6 +131,70 @@ const GQL_QUERY: QueryInterface = {
         date_created
         nick_name
         owner_user_id
+      }
+    }
+  `,
+
+  GET_COMMENTS_QUERY: gql`
+    query GetComments {
+      getComments {
+        id
+        owner_user_id
+        forum_id
+        date_created
+        description
+        likes
+        dislikes
+      }
+    }
+  `,
+
+  CREATE_COMMENT_QUERY: gql`
+    mutation CreateComment(
+      $owner_user_id: Int!
+      $forum_id: Int!
+      $description: String!
+    ) {
+      createComment(
+        owner_user_id: $owner_user_id
+        forum_id: $forum_id
+        description: $description
+      ) {
+        id
+        owner_user_id
+        forum_id
+        date_created
+        description
+        likes
+        dislikes
+      }
+    }
+  `,
+
+  UPDATE_COMMENT_QUERY: gql`
+    mutation UpdateComment($id: Int!, $description: String!) {
+      updateComment(id: $id, description: $description) {
+        id
+        owner_user_id
+        forum_id
+        date_created
+        description
+        likes
+        dislikes
+      }
+    }
+  `,
+
+  DELETE_COMMENT_QUERY: gql`
+    mutation DeleteComment($id: Int!) {
+      deleteComment(id: $id) {
+        id
+        owner_user_id
+        forum_id
+        date_created
+        description
+        likes
+        dislikes
       }
     }
   `,

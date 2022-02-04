@@ -33,9 +33,10 @@ sql.getUpdateQuery = (table, payload, whereClause, returnFields) => {
  * @param {string} table - name of table
  * @param {array} schema - array of fields
  * @param {object} payload - object of field and value pair
+ * @param {array} returnFields - array of fields to be returned
  * @returns SQL query
  */
-sql.getInsertQuery = (table, schema, payload) => {
+sql.getInsertQuery = (table, schema, payload, returnFields) => {
   const fields = [];
   const params = [];
   const values = [];
@@ -52,7 +53,7 @@ sql.getInsertQuery = (table, schema, payload) => {
     `
   INSERT INTO ${table} (${fields.join(', ')})
   VALUES (${params.join(', ')})
-  RETURNING id, date_created, ${fields.join(', ')}
+  RETURNING id, ${returnFields.join(', ')}
   `,
     values,
   ];

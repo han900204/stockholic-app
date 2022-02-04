@@ -12,91 +12,88 @@ const {
 const DateTime = require('./customScalar/DateTime');
 
 /**
- * Forum Schema
+ * Comment Schema
  */
-forum = {
+comment = {
   type: null,
   query: {},
   mutation: {},
 };
 
-forum.type = new GraphQLObjectType({
-  name: 'forum',
+comment.type = new GraphQLObjectType({
+  name: 'comment',
   fields: () => ({
     id: { type: GraphQLInt },
     owner_user_id: { type: GraphQLInt },
-    name: { type: GraphQLString },
-    description: { type: GraphQLString },
+    forum_id: { type: GraphQLInt },
     date_created: { type: DateTime },
-    nick_name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    likes: { type: GraphQLInt },
+    dislikes: { type: GraphQLInt },
   }),
 });
 
-forum.query.getForums = {
-  type: GraphQLList(forum.type),
+comment.query.getComments = {
+  type: GraphQLList(comment.type),
+  args: {
+    forum_id: { type: GraphQLInt },
+  },
   async resolve(parent, args) {
     const sqlQuery = sql.getSelectJoinQuery(
       [
         {
-          forum: ['id', 'name', 'description', 'date_created', 'owner_user_id'],
+          comment: [
+            'id',
+            'forum_id',
+            'description',
+            'date_created',
+            'owner_user_id',
+            'likes',
+            'dislikes',
+          ],
         },
         { investor: ['nick_name'] },
       ],
-      [{ forum: 'owner_user_id', investor: 'id' }],
-      [],
+      [{ comment: 'owner_user_id', investor: 'id' }],
+      [{ comment: [`forum_id = ${args.forum_id}`] }],
       {
-        forum: 'id',
+        comment: 'id',
         option: 'DESC',
       }
     );
     const res = await db.query(sqlQuery);
-    console.log(`${res.rows.length} forums retrieved`);
+    console.log(`${res.rows.length} comments retrieved`);
     return res.rows;
   },
 };
 
-forum.query.getForum = {
-  type: forum.type,
+comment.mutation.postComment = {
+  type: comment.type,
   args: {
-    id: { type: GraphQLInt },
-  },
-  async resolve(parent, args) {
-    const sqlQuery = sql.getSelectJoinQuery(
-      [
-        {
-          forum: ['id', 'name', 'description', 'date_created', 'owner_user_id'],
-        },
-        { investor: ['nick_name'] },
-      ],
-      [{ forum: 'owner_user_id', investor: 'id' }],
-      [{ forum: [`id = ${args.id}`] }]
-    );
-    const res = await db.query(sqlQuery);
-    console.log('forum retrieved', res.rows[0]);
-    return res.rows[0];
-  },
-};
-
-forum.mutation.postForum = {
-  type: forum.type,
-  args: {
+    forum_id: { type: GraphQLInt },
     owner_user_id: { type: GraphQLInt },
-    name: { type: GraphQLString },
     description: { type: GraphQLString },
   },
   async resolve(parent, args) {
     const sqlQuery = sql.getInsertQuery(
-      'forum',
-      ['owner_user_id', 'name', 'description'],
+      'comment',
+      ['forum_id', 'owner_user_id', 'description'],
       {
+        forum_id: args.forum_id,
         owner_user_id: args.owner_user_id,
-        name: args.name,
         description: args.description,
       },
-      ['name', 'description', 'date_created', 'owner_user_id']
+      [
+        'forum_id',
+        'owner_user_id',
+        'description',
+        'date_created',
+        'likes',
+        'dislikes',
+      ]
     );
 
-    // Create a forum
+    // Create a comment
     const res = await db.query(sqlQuery[0], sqlQuery[1]);
 
     // Get a nick_name
@@ -111,24 +108,31 @@ forum.mutation.postForum = {
       .then((data) => data.rows[0]['nick_name']);
 
     res.rows[0]['nick_name'] = nick_name;
-    console.log('forum created', res.rows[0]);
+    console.log('comment created', res.rows[0]);
     return res.rows[0];
   },
 };
 
-forum.mutation.deleteForum = {
-  type: forum.type,
+comment.mutation.deleteComment = {
+  type: comment.type,
   args: {
     id: { type: GraphQLInt },
   },
   async resolve(parent, args) {
     const sqlQuery = sql.getDeleteQuery(
-      'forum',
+      'comment',
       [`id = '${args.id}'`],
-      ['name', 'description', 'date_created', 'owner_user_id']
+      [
+        'forum_id',
+        'owner_user_id',
+        'description',
+        'date_created',
+        'likes',
+        'dislikes',
+      ]
     );
 
-    // Delete forum
+    // Delete comment
     const res = await db.query(sqlQuery);
 
     // Get a nick_name
@@ -144,27 +148,33 @@ forum.mutation.deleteForum = {
 
     res.rows[0]['nick_name'] = nick_name;
 
-    console.log('forum deleted', res.rows[0]);
+    console.log('comment deleted', res.rows[0]);
     return res.rows[0];
   },
 };
 
-forum.mutation.updateForum = {
-  type: forum.type,
+comment.mutation.updateComment = {
+  type: comment.type,
   args: {
     id: { type: GraphQLInt },
-    name: { type: GraphQLString },
     description: { type: GraphQLString },
   },
   async resolve(parent, args) {
     const sqlQuery = sql.getUpdateQuery(
-      'forum',
+      'comment',
       args,
       [`id = ${args.id}`],
-      ['name', 'description', 'date_created', 'owner_user_id']
+      [
+        'forum_id',
+        'owner_user_id',
+        'description',
+        'date_created',
+        'likes',
+        'dislikes',
+      ]
     );
 
-    // Update forum
+    // Update comment
     const res = await db.query(sqlQuery);
 
     // Get a nick_name
@@ -179,10 +189,10 @@ forum.mutation.updateForum = {
       .then((data) => data.rows[0]['nick_name']);
 
     res.rows[0]['nick_name'] = nick_name;
-    console.log('forum updated', res.rows[0]);
+    console.log('comment updated', res.rows[0]);
 
     return res.rows[0];
   },
 };
 
-module.exports = forum;
+module.exports = comment;
