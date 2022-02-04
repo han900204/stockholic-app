@@ -12,6 +12,8 @@ const investor = require('./schema/investorSchema');
 const authentication = require('./schema/authenticationSchema');
 const forum = require('./schema/forumSchema');
 const comment = require('./schema/commentSchema');
+const room = require('./schema/roomSchema');
+const message = require('./schema/messageSchema');
 
 /**
  * Load .env file
@@ -32,6 +34,8 @@ const RootQueryType = new GraphQLObjectType({
     getForums: forum.query.getForums,
     getForum: forum.query.getForum,
     getComments: comment.query.getComments,
+    getRooms: room.query.getRooms,
+    getMessages: message.query.getMessages,
   },
 });
 
@@ -48,6 +52,10 @@ const RootMutationType = new GraphQLObjectType({
     createComment: comment.mutation.postComment,
     deleteComment: comment.mutation.deleteComment,
     updateComment: comment.mutation.updateComment,
+    createRoom: room.mutation.postRoom,
+    deleteRoom: room.mutation.deleteRoom,
+    createMessage: message.mutation.postMessage,
+    deleteMessage: message.mutation.deleteMessage,
   },
 });
 

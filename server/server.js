@@ -6,8 +6,14 @@ const path = require('path');
 const app = express();
 const runPy = require('./schedules/runPy');
 const tokenClear = require('./schedules/tokenClear');
+const connectMongo = require('./models/mongo');
 
 const PORT = process.env.PORT || 3000;
+
+/**
+ * Connect Mongo DB
+ */
+connectMongo();
 
 /**
  * Middlewares
