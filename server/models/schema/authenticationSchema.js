@@ -59,7 +59,8 @@ authentication.mutation.postAuthentication = {
       {
         investor_id: args.investor_id,
         token: token,
-      }
+      },
+      ['id', 'token', 'investor_id', 'date_created']
     );
     const res = await db.query(sqlQuery[0], sqlQuery[1]);
     console.log('token created', res.rows[0]);

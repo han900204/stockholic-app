@@ -93,7 +93,7 @@ forum.mutation.postForum = {
         name: args.name,
         description: args.description,
       },
-      ['name', 'description', 'date_created', 'owner_user_id']
+      ['id', 'name', 'description', 'date_created', 'owner_user_id']
     );
 
     // Create a forum
@@ -125,7 +125,7 @@ forum.mutation.deleteForum = {
     const sqlQuery = sql.getDeleteQuery(
       'forum',
       [`id = '${args.id}'`],
-      ['name', 'description', 'date_created', 'owner_user_id']
+      ['id', 'name', 'description', 'date_created', 'owner_user_id']
     );
 
     // Delete forum
@@ -161,7 +161,7 @@ forum.mutation.updateForum = {
       'forum',
       args,
       [`id = ${args.id}`],
-      ['name', 'description', 'date_created', 'owner_user_id']
+      ['id', 'name', 'description', 'date_created', 'owner_user_id']
     );
 
     // Update forum

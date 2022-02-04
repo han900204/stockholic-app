@@ -1,12 +1,12 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 
-const TextBox = ({ data }) => {
+const TextBox = ({ data, height }: { data: string; height?: number }) => {
   return (
     <Box
       sx={{
         width: '100%',
-        height: 300,
+        height: height ? height : 300,
         backgroundColor: '#e3f2fd',
         overflow: 'scroll',
       }}

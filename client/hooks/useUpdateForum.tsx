@@ -13,15 +13,15 @@ export function useUpdateForum() {
     UpdateForumPayload
   >(GQL_QUERY.UPDATE_FORUM_QUERY, {
     update(cache, { data }) {
-      const newForum = data?.updateForum;
+      const updatedForum = data?.updateForum;
       const existingForum = cache.readQuery<GetForumResponse>({
         query: GQL_QUERY.GET_FORUM_QUERY,
       });
-      if (existingForum && newForum) {
+      if (existingForum && updatedForum) {
         cache.writeQuery({
           query: GQL_QUERY.GET_FORUM_QUERY,
           data: {
-            getForum: { ...existingForum?.getForum, ...newForum },
+            getForum: { ...existingForum?.getForum, ...updatedForum },
           },
         });
       }

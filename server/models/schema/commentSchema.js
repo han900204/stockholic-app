@@ -30,6 +30,7 @@ comment.type = new GraphQLObjectType({
     description: { type: GraphQLString },
     likes: { type: GraphQLInt },
     dislikes: { type: GraphQLInt },
+    nick_name: { type: GraphQLString },
   }),
 });
 
@@ -84,6 +85,7 @@ comment.mutation.postComment = {
         description: args.description,
       },
       [
+        'id',
         'forum_id',
         'owner_user_id',
         'description',
@@ -123,6 +125,7 @@ comment.mutation.deleteComment = {
       'comment',
       [`id = '${args.id}'`],
       [
+        'id',
         'forum_id',
         'owner_user_id',
         'description',
@@ -165,6 +168,7 @@ comment.mutation.updateComment = {
       args,
       [`id = ${args.id}`],
       [
+        'id',
         'forum_id',
         'owner_user_id',
         'description',

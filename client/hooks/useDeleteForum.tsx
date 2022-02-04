@@ -18,7 +18,6 @@ export function useDeleteForum() {
       const existingForums = cache.readQuery<GetForumsResponse>({
         query: GQL_QUERY.GET_FORUMS_QUERY,
       });
-      console.log(deletedForum, existingForums);
       if (existingForums && deletedForum) {
         cache.writeQuery({
           query: GQL_QUERY.GET_FORUMS_QUERY,

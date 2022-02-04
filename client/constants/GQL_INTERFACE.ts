@@ -109,6 +109,7 @@ export interface CommentData {
   description: string;
   likes: string;
   dislikes: string;
+  nick_name;
 }
 
 export interface GetCommentsResponse {

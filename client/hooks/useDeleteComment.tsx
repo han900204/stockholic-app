@@ -2,38 +2,36 @@ import React from 'react';
 import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
-  UpdateCommentResponse,
-  UpdateCommentPayload,
+  DeleteCommentResponse,
+  DeleteCommentPayload,
   GetCommentsResponse,
   CommentData,
 } from '../constants/GQL_INTERFACE';
 
-export function useUpdateComment() {
-  const [updateComment, { data, error }] = useMutation<
-    UpdateCommentResponse,
-    UpdateCommentPayload
-  >(GQL_QUERY.UPDATE_COMMENT_QUERY, {
+export function useDeleteComment() {
+  const [deleteComment, { data, error }] = useMutation<
+    DeleteCommentResponse,
+    DeleteCommentPayload
+  >(GQL_QUERY.DELETE_COMMENT_QUERY, {
     update(cache, { data }) {
-      const updatedComment = data?.updateComment;
+      const deletedComment = data?.deleteComment;
       const existingComments = cache.readQuery<GetCommentsResponse>({
         query: GQL_QUERY.GET_COMMENTS_QUERY,
         variables: {
-          forum_id: updatedComment?.forum_id,
+          forum_id: deletedComment?.forum_id,
         },
       });
-      if (existingComments && updatedComment) {
+      if (existingComments && deletedComment) {
         cache.writeQuery({
           query: GQL_QUERY.GET_COMMENTS_QUERY,
           variables: {
-            forum_id: updatedComment?.forum_id,
+            forum_id: deletedComment?.forum_id,
           },
           data: {
             getComments: existingComments?.getComments.reduce(
               (comments: CommentData[], comment) => {
-                if (comment.id !== updatedComment.id) {
+                if (comment.id !== deletedComment.id) {
                   comments.push(comment);
-                } else {
-                  comments.push(updatedComment);
                 }
                 return comments;
               },
@@ -44,5 +42,5 @@ export function useUpdateComment() {
       }
     },
   });
-  return { updateComment, data, error };
+  return { deleteComment, data, error };
 }

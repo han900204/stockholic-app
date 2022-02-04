@@ -16,10 +16,16 @@ export function useCreateComment() {
       const newComment = data?.createComment;
       const existingComments = cache.readQuery<GetCommentsResponse>({
         query: GQL_QUERY.GET_COMMENTS_QUERY,
+        variables: {
+          forum_id: newComment?.forum_id,
+        },
       });
       if (existingComments && newComment) {
         cache.writeQuery({
           query: GQL_QUERY.GET_COMMENTS_QUERY,
+          variables: {
+            forum_id: newComment?.forum_id,
+          },
           data: {
             getComments: [newComment, ...existingComments?.getComments],
           },

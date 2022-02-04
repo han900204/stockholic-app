@@ -136,8 +136,8 @@ const GQL_QUERY: QueryInterface = {
   `,
 
   GET_COMMENTS_QUERY: gql`
-    query GetComments {
-      getComments {
+    query GetComments($forum_id: Int!) {
+      getComments(forum_id: $forum_id) {
         id
         owner_user_id
         forum_id
@@ -145,6 +145,7 @@ const GQL_QUERY: QueryInterface = {
         description
         likes
         dislikes
+        nick_name
       }
     }
   `,
@@ -167,6 +168,7 @@ const GQL_QUERY: QueryInterface = {
         description
         likes
         dislikes
+        nick_name
       }
     }
   `,
@@ -181,6 +183,7 @@ const GQL_QUERY: QueryInterface = {
         description
         likes
         dislikes
+        nick_name
       }
     }
   `,
@@ -195,6 +198,7 @@ const GQL_QUERY: QueryInterface = {
         description
         likes
         dislikes
+        nick_name
       }
     }
   `,

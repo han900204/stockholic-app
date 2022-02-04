@@ -10,6 +10,7 @@ const TextAreaField = ({
   required,
   defaultValue,
   rows,
+  value,
 }: {
   eHandler: (e: any) => void;
   label: string;
@@ -19,6 +20,7 @@ const TextAreaField = ({
   required: boolean;
   defaultValue?: string;
   rows?: number;
+  value?: any;
 }) => {
   return errState === undefined ? (
     <TextField
@@ -28,11 +30,10 @@ const TextAreaField = ({
       label={label}
       multiline
       rows={rows ? rows : 3}
-      minRows={3}
-      maxRows={Infinity}
       fullWidth
       type={type}
       defaultValue={defaultValue ? defaultValue : null}
+      value={value ? value : null}
     />
   ) : (
     <TextField
@@ -45,10 +46,9 @@ const TextAreaField = ({
       helperText={errState ? `${errMsg}` : ''}
       multiline
       rows={rows ? rows : 3}
-      minRows={3}
-      maxRows={Infinity}
       fullWidth
       defaultValue={defaultValue ? defaultValue : null}
+      value={value ? value : null}
     />
   );
 };

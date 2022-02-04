@@ -24,7 +24,7 @@ sql.getUpdateQuery = (table, payload, whereClause, returnFields) => {
   UPDATE ${table}
   SET ${values}
   WHERE ${whereClause.join(', ')}
-  RETURNING id, ${returnFields.join(', ')}
+  RETURNING ${returnFields.join(', ')}
   `;
 };
 
@@ -53,7 +53,7 @@ sql.getInsertQuery = (table, schema, payload, returnFields) => {
     `
   INSERT INTO ${table} (${fields.join(', ')})
   VALUES (${params.join(', ')})
-  RETURNING id, ${returnFields.join(', ')}
+  RETURNING ${returnFields.join(', ')}
   `,
     values,
   ];
@@ -204,7 +204,7 @@ sql.getDeleteQuery = (table, whereClause = [], returnFields = []) => {
   query = `
   DELETE FROM ${table}
   WHERE ${whereClause.join(', ')}
-  RETURNING id, ${returnFields.join(', ')}
+  RETURNING ${returnFields.join(', ')}
   `;
   return query;
 };

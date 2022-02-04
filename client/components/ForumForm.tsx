@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Subheading from './styleComponents/Subheading';
-import { ForumData } from '../constants/GQL_INTERFACE';
 import TextBox from '../components/styleComponents/TextBox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -8,6 +7,7 @@ import Btn from './styleComponents/Btn';
 import TextAreaField from './styleComponents/TextAreaField';
 import { useUpdateForum } from '../hooks/useUpdateForum';
 import {
+  ForumData,
   UpdateForumPayload,
   DeleteForumPayload,
 } from '../constants/GQL_INTERFACE';
@@ -21,10 +21,6 @@ const ForumForm = ({ data, investorId }) => {
   const navigate = useNavigate();
 
   const forum: ForumData = data.getForum;
-
-  useEffect(() => {
-    setDesc(forum.description);
-  }, []);
 
   const { updateForum } = useUpdateForum();
 
@@ -84,6 +80,7 @@ const ForumForm = ({ data, investorId }) => {
                     text='Edit'
                     type='button'
                     eHandler={() => {
+                      setDesc(forum.description);
                       setIsEdit(true);
                     }}
                   />
@@ -110,7 +107,7 @@ const ForumForm = ({ data, investorId }) => {
               eHandler={(e) => {
                 setDesc(e.target.value);
               }}
-              defaultValue={desc}
+              defaultValue={forum.description}
               rows={15}
             />
             <Btn
