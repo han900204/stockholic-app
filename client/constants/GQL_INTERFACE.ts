@@ -280,6 +280,7 @@ export interface SubscribeMessageResponse {
   subscribeMessage: MessageData;
 }
 
-export interface SUbscribeMessagePayload {
+export interface SubscribeMessagePayload {
   _room: string;
+  sender_id: number | null;
 }

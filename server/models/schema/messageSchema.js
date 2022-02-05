@@ -108,15 +108,20 @@ message.subscription.subscribeMessage = {
   type: message.type,
   args: {
     _room: { type: GraphQLString },
+    sender_id: { type: GraphQLInt },
   },
   subscribe: withFilter(
     () => pubsub.asyncIterator('MESSAGE_CREATED'),
     (payload, variables) => {
       console.log(
         'subscription message filter result: ',
-        payload.subscribeMessage._room.toString() === variables._room
+        payload.subscribeMessage._room.toString() === variables._room &&
+          payload.subscribeMessage.sender_id !== variables.sender_id
       );
-      return payload.subscribeMessage._room.toString() === variables._room;
+      return (
+        payload.subscribeMessage._room.toString() === variables._room &&
+        payload.subscribeMessage.sender_id !== variables.sender_id
+      );
     }
   ),
 };

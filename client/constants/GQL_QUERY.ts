@@ -396,8 +396,8 @@ const GQL_QUERY: QueryInterface = {
     }
   `,
   SUBSCRIBE_MESSAGE: gql`
-    subscription SubscribeMessage($_room: String!) {
-      subscribeMessage(_room: $_room) {
+    subscription SubscribeMessage($_room: String!, $sender_id: Int!) {
+      subscribeMessage(_room: $_room, sender_id: $sender_id) {
         _id
         _room
         sender_id

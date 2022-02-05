@@ -8,12 +8,14 @@ import TextAreaField from './styleComponents/TextAreaField';
 import { RootState } from '../app/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { setNewMessage } from '../features/messageSlice';
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
   GetMessagesResponse,
   GetMessagesPayload,
   CreateMessagePayload,
+  SubscribeMessageResponse,
+  SubscribeMessagePayload,
 } from '../constants/GQL_INTERFACE';
 import { useCreateMessage } from '../hooks/useCreateMessage';
 import Btn from './styleComponents/Btn';
@@ -43,6 +45,15 @@ const ChatRoom = ({
     nick_name: nickName,
     message: newMessage,
   };
+
+  const subs = useSubscription<
+    SubscribeMessageResponse,
+    SubscribeMessagePayload
+  >(GQL_QUERY.SUBSCRIBE_MESSAGE, {
+    variables: { _room: roomId, sender_id: investorId },
+  });
+
+  console.log('In app subscription: ', subs.data);
 
   const { createMessage } = useCreateMessage();
 
