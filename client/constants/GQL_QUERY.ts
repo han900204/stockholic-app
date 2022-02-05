@@ -395,6 +395,18 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+  SUBSCRIBE_MESSAGE: gql`
+    subscription SubscribeMessage($_room: String!) {
+      subscribeMessage(_room: $_room) {
+        _id
+        _room
+        sender_id
+        nick_name
+        message
+        date_created
+      }
+    }
+  `,
 };
 
 export default GQL_QUERY;

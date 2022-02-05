@@ -62,7 +62,15 @@ const RootMutationType = new GraphQLObjectType({
   },
 });
 
+const RootSubscriptionType = new GraphQLObjectType({
+  name: 'RootSubscription',
+  fields: {
+    subscribeMessage: message.subscription.subscribeMessage,
+  },
+});
+
 module.exports = new GraphQLSchema({
   query: RootQueryType,
   mutation: RootMutationType,
+  subscription: RootSubscriptionType,
 });

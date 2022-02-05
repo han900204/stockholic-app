@@ -28,6 +28,7 @@ export interface QueryInterface {
   DELETE_MESSAGE_QUERY: DocumentNode;
   ADD_SUBSCRIBERS_QUERY: DocumentNode;
   REMOVE_SUBSCRIBER_QUERY: DocumentNode;
+  SUBSCRIBE_MESSAGE: DocumentNode;
 }
 
 /**
@@ -273,4 +274,12 @@ export interface DeleteMessageResponse {
 
 export interface DeleteMessagePayload {
   _id: string;
+}
+
+export interface SubscribeMessageResponse {
+  subscribeMessage: MessageData;
+}
+
+export interface SUbscribeMessagePayload {
+  _room: string;
 }

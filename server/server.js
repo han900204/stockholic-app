@@ -7,6 +7,9 @@ const app = express();
 const runPy = require('./schedules/runPy');
 const tokenClear = require('./schedules/tokenClear');
 const connectMongo = require('./models/mongo');
+const { execute, subscribe } = require('graphql');
+const { createServer } = require('http');
+const { SubscriptionServer } = require('subscriptions-transport-ws');
 
 const PORT = process.env.PORT || 3000;
 
@@ -39,7 +42,7 @@ app.use(
   '/graphql',
   graphqlHTTP({
     schema,
-    graphiql: true,
+    graphiql: { subscriptionEndpoint: `ws://localhost:${PORT}/subscriptions` },
   })
 );
 
@@ -73,6 +76,26 @@ app.use((err, req, res, next) => {
 /**
  * Start server
  */
-app.listen(PORT, () => {
+const ws = createServer(app);
+
+ws.listen(PORT, () => {
   console.log(`Server is running on the server ${PORT}`);
+  // Set up the WebSocket for handling GraphQL subscriptions.
+  new SubscriptionServer(
+    {
+      execute,
+      subscribe,
+      schema,
+      onConnect: (connectionParams, webSocket, context) => {
+        console.log('websocket connected');
+      },
+      onDisconnect: (webSocket, context) => {
+        console.log('websocket disconnected');
+      },
+    },
+    {
+      server: ws,
+      path: '/subscriptions',
+    }
+  );
 });

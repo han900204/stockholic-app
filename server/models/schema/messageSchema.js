@@ -1,6 +1,8 @@
 const { Room } = require('../mongoModels/roomModel');
 const { Message } = require('../mongoModels/messageModel');
 const mongoose = require('mongoose');
+const pubsub = require('./pubsub');
+const { withFilter } = require('graphql-subscriptions');
 
 const {
   GraphQLObjectType,
@@ -20,6 +22,7 @@ message = {
   type: null,
   query: {},
   mutation: {},
+  subscription: {},
 };
 
 message.type = new GraphQLObjectType({
@@ -71,6 +74,11 @@ message.mutation.postMessage = {
     );
 
     console.log('message created', message);
+
+    pubsub.publish('MESSAGE_CREATED', { subscribeMessage: message });
+
+    console.log('publishing "MESSAGE_CREATED"');
+
     return message;
   },
 };
@@ -94,6 +102,23 @@ message.mutation.deleteMessage = {
     console.log('message deleted', message);
     return message;
   },
+};
+
+message.subscription.subscribeMessage = {
+  type: message.type,
+  args: {
+    _room: { type: GraphQLString },
+  },
+  subscribe: withFilter(
+    () => pubsub.asyncIterator('MESSAGE_CREATED'),
+    (payload, variables) => {
+      console.log(
+        'subscription message filter result: ',
+        payload.subscribeMessage._room.toString() === variables._room
+      );
+      return payload.subscribeMessage._room.toString() === variables._room;
+    }
+  ),
 };
 
 module.exports = message;
