@@ -4,3 +4,7 @@ export interface InvestorState {
   investorId: number | null;
   nickName: string | null;
 }
+
+export interface NewMessageState {
+  newMessage: string;
+}
