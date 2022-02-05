@@ -6,6 +6,7 @@ const roomSchema = new Schema({
   nick_name: { type: String, required: true },
   name: { type: String, required: true },
   date_created: { type: Date, default: Date.now },
+  subscribers: [{ type: Number }],
   messages: [
     {
       type: Schema.Types.ObjectId,

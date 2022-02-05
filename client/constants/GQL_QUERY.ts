@@ -228,6 +228,7 @@ const GQL_QUERY: QueryInterface = {
         nick_name
         name
         date_created
+        subscribers
         messages {
           _id
           sender_id
@@ -244,17 +245,27 @@ const GQL_QUERY: QueryInterface = {
       $owner_user_id: Int!
       $nick_name: String!
       $name: String!
+      $subscribers: [Int!]
     ) {
       createRoom(
         owner_user_id: $owner_user_id
         nick_name: $nick_name
         name: $name
+        subscribers: $subscribers
       ) {
         _id
         owner_user_id
         nick_name
         name
         date_created
+        subscribers
+        messages {
+          _id
+          sender_id
+          nick_name
+          message
+          date_created
+        }
       }
     }
   `,
@@ -267,6 +278,54 @@ const GQL_QUERY: QueryInterface = {
         nick_name
         name
         date_created
+        subscribers
+        messages {
+          _id
+          sender_id
+          nick_name
+          message
+          date_created
+        }
+      }
+    }
+  `,
+
+  ADD_SUBSCRIBERS_QUERY: gql`
+    mutation AddSubscribers($_id: String!, $subscribers: [Int!]) {
+      addSubscribers(_id: $_id, subscribers: $subscribers) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+        messages {
+          _id
+          nick_name
+          sender_id
+          message
+          date_created
+        }
+      }
+    }
+  `,
+
+  REMOVE_SUBSCRIBER_QUERY: gql`
+    mutation RemoveSubscriber($_id: String!, $subscriber: Int!) {
+      removeSubscriber(_id: $_id, subscribers: $subscriber) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+        messages {
+          _id
+          nick_name
+          sender_id
+          message
+          date_created
+        }
       }
     }
   `,

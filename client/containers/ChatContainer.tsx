@@ -10,6 +10,7 @@ import ChatRoomList from '../components/ChatRoomList';
 import Grid from '@mui/material/Grid';
 import LoadingForm from '../components/LoadingForm';
 import ChatRoom from '../components/ChatRoom';
+import CreateRoomModal from '../components/CreateRoomModal';
 
 const ChatContainer = () => {
   const [currentRoom, setCurrentRoom] = useState('');
@@ -46,6 +47,7 @@ const ChatContainer = () => {
       }}
     >
       <Subheading title={`${nickName}'s chat rooms`} />
+      <CreateRoomModal investorId={investorId} nickName={nickName} />
       <Grid container spacing={2} sx={{ mb: 1 }}>
         <Grid item xs={4}>
           <ChatRoomList

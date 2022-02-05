@@ -30,6 +30,7 @@ const RootQueryType = new GraphQLObjectType({
   name: 'RootQuery',
   fields: {
     getInvestor: investor.query.getInvestor,
+    getInvestors: investor.query.getInvestors,
     getAuthentication: authentication.query.getAuthentication,
     getForums: forum.query.getForums,
     getForum: forum.query.getForum,
@@ -56,6 +57,8 @@ const RootMutationType = new GraphQLObjectType({
     deleteRoom: room.mutation.deleteRoom,
     createMessage: message.mutation.postMessage,
     deleteMessage: message.mutation.deleteMessage,
+    addSubscribers: room.mutation.addSubscribers,
+    removeSubscriber: room.mutation.removeSubscriber,
   },
 });
 

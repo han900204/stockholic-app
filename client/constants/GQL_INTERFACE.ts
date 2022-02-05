@@ -25,6 +25,8 @@ export interface QueryInterface {
   GET_MESSAGES_QUERY: DocumentNode;
   CREATE_MESSAGE_QUERY: DocumentNode;
   DELETE_MESSAGE_QUERY: DocumentNode;
+  ADD_SUBSCRIBERS_QUERY: DocumentNode;
+  REMOVE_SUBSCRIBER_QUERY: DocumentNode;
 }
 
 /**
@@ -171,6 +173,7 @@ export interface RoomData {
   nick_name: string;
   name: string;
   date_created: string;
+  subscribers?: number[];
   messages?: ChildMessages[];
 }
 
@@ -190,6 +193,7 @@ export interface CreateRoomPayload {
   owner_user_id: number;
   nick_name: string;
   name: string;
+  subscribers?: number[];
 }
 
 export interface DeleteRoomResponse {
@@ -198,6 +202,24 @@ export interface DeleteRoomResponse {
 
 export interface DeleteRoomPayload {
   _id: string;
+}
+
+export interface AddSubscribersResponse {
+  addSubscribers: RoomData;
+}
+
+export interface AddSubscribersPayload {
+  _id: string;
+  subscribers: any[];
+}
+
+export interface RemoveSubscriberResponse {
+  removeSubscriber: RoomData;
+}
+
+export interface RemoveSubscriberPayload {
+  _id: string;
+  subscriber: number;
 }
 
 /**

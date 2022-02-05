@@ -38,6 +38,7 @@ room.type = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     owner_user_id: { type: GraphQLInt },
+    subscribers: { type: GraphQLList(GraphQLInt) },
     nick_name: { type: GraphQLString },
     name: { type: GraphQLString },
     date_created: { type: DateTime },
@@ -51,15 +52,23 @@ room.query.getRooms = {
     owner_user_id: { type: GraphQLInt },
   },
   async resolve(parent, args) {
-    const rooms = await Room.find({
-      owner_user_id: args.owner_user_id,
-    }).populate('messages', [
+    let rooms = await Room.find().populate('messages', [
       '_id',
       'sender_id',
       'nick_name',
       'message',
       'date_created',
     ]);
+
+    rooms = rooms.filter((room) => {
+      if (
+        room.owner_user_id === args.owner_user_id ||
+        room.subscribers.includes(args.owner_user_id)
+      ) {
+        return room;
+      }
+    });
+
     console.log(`${rooms.length} rooms retrieved`);
     return rooms;
   },
@@ -71,12 +80,14 @@ room.mutation.postRoom = {
     owner_user_id: { type: GraphQLInt },
     nick_name: { type: GraphQLString },
     name: { type: GraphQLString },
+    subscribers: { type: GraphQLList(GraphQLInt) },
   },
   async resolve(parent, args) {
     const room = await Room.create({
       owner_user_id: args.owner_user_id,
       nick_name: args.nick_name,
       name: args.name,
+      subscribers: args.subscribers,
     });
     console.log('room created', room);
     return room;
@@ -97,6 +108,40 @@ room.mutation.deleteRoom = {
       _id: mongoose.Types.ObjectId(args._id),
     });
     console.log('room deleted', room);
+    return room;
+  },
+};
+
+room.mutation.addSubscribers = {
+  type: room.type,
+  args: {
+    _id: { type: GraphQLString },
+    subscribers: { type: GraphQLList(GraphQLInt) },
+  },
+  async resolve(parent, args) {
+    const room = await Room.findOneAndUpdate(
+      { _id: mongoose.Types.ObjectId(args._id) },
+      { $push: { subscribers: { $each: args.subscribers } } },
+      { new: true }
+    );
+    console.log('subscribers added to the room', room);
+    return room;
+  },
+};
+
+room.mutation.removeSubscriber = {
+  type: room.type,
+  args: {
+    _id: { type: GraphQLString },
+    subscriber: { type: GraphQLInt },
+  },
+  async resolve(parent, args) {
+    const room = await Room.findOneAndUpdate(
+      { _id: mongoose.Types.ObjectId(args._id) },
+      { $pull: { subscribers: args.subscriber } },
+      { new: true }
+    );
+    console.log('subscriber removed from the room', room);
     return room;
   },
 };
