@@ -2,36 +2,36 @@ import React from 'react';
 import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
-  CreateRoomResponse,
-  CreateRoomPayload,
-  GetRoomsResponse,
+  CreateMessageResponse,
+  CreateMessagePayload,
+  GetMessagesResponse,
 } from '../constants/GQL_INTERFACE';
 
-export function useCreateRoom() {
-  const [createRoom, { data, error }] = useMutation<
-    CreateRoomResponse,
-    CreateRoomPayload
-  >(GQL_QUERY.CREATE_ROOM_QUERY, {
+export function useCreateMessage() {
+  const [createMessage, { data, error }] = useMutation<
+    CreateMessageResponse,
+    CreateMessagePayload
+  >(GQL_QUERY.CREATE_MESSAGE_QUERY, {
     update(cache, { data }) {
-      const newRoom = data?.createRoom;
-      const existingRooms = cache.readQuery<GetRoomsResponse>({
-        query: GQL_QUERY.GET_ROOMS_QUERY,
+      const newMessage = data?.createMessage;
+      const existingMessages = cache.readQuery<GetMessagesResponse>({
+        query: GQL_QUERY.GET_MESSAGES_QUERY,
         variables: {
-          owner_user_id: newRoom?.owner_user_id,
+          _room: newMessage?._room,
         },
       });
-      if (existingRooms && newRoom) {
+      if (existingMessages && newMessage) {
         cache.writeQuery({
-          query: GQL_QUERY.GET_ROOMS_QUERY,
+          query: GQL_QUERY.GET_MESSAGES_QUERY,
           variables: {
-            owner_user_id: newRoom?.owner_user_id,
+            _room: newMessage?._room,
           },
           data: {
-            getRooms: [...existingRooms?.getRooms, newRoom],
+            getMessages: [...existingMessages?.getMessages, newMessage],
           },
         });
       }
     },
   });
-  return { createRoom, data, error };
+  return { createMessage, data, error };
 }

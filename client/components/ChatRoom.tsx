@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -8,18 +8,53 @@ import TextAreaField from './styleComponents/TextAreaField';
 import { RootState } from '../app/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { setNewMessage } from '../features/messageSlice';
+import { useQuery } from '@apollo/client';
+import GQL_QUERY from '../constants/GQL_QUERY';
+import {
+  GetMessagesResponse,
+  GetMessagesPayload,
+  CreateMessagePayload,
+} from '../constants/GQL_INTERFACE';
+import { useCreateMessage } from '../hooks/useCreateMessage';
+import Btn from './styleComponents/Btn';
+import TextField from '@mui/material/TextField';
 
 const ChatRoom = ({
-  messages,
+  roomId,
   investorId,
+  nickName,
 }: {
-  messages: any[] | null;
+  roomId: string | '';
   investorId: number | null;
+  nickName: string | null;
 }) => {
   const dispatch = useDispatch();
   const newMessage: string = useSelector(
     (state: RootState) => state.message.newMessage
   );
+  const { loading, error, data } = useQuery<
+    GetMessagesResponse,
+    GetMessagesPayload
+  >(GQL_QUERY.GET_MESSAGES_QUERY, { variables: { _room: roomId } });
+
+  const CreateMessagePayload: CreateMessagePayload = {
+    _room: roomId,
+    sender_id: investorId,
+    nick_name: nickName,
+    message: newMessage,
+  };
+
+  const { createMessage } = useCreateMessage();
+
+  const handleClick = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      await createMessage({ variables: CreateMessagePayload });
+    } catch (e: any) {
+      console.log('ERROR: ', e);
+    }
+  };
 
   return (
     <Box
@@ -27,7 +62,7 @@ const ChatRoom = ({
         height: '80vh',
       }}
     >
-      {!messages ? (
+      {!roomId ? (
         <Subheading title='Please select the Chat room!' />
       ) : (
         <>
@@ -38,7 +73,7 @@ const ChatRoom = ({
             }}
           >
             <List>
-              {messages.map((message, index) => {
+              {data?.getMessages.map((message, index) => {
                 return investorId === message.sender_id ? (
                   <ListItem key={index} style={{ textAlign: 'right' }}>
                     <ListItemText
@@ -77,15 +112,39 @@ const ChatRoom = ({
               overflow: 'scroll',
             }}
           >
-            <TextAreaField
-              label='Type...'
-              type='text'
-              required={true}
-              eHandler={(e) => {
+            <TextField
+              onChange={(e) => {
                 dispatch(setNewMessage(e.target.value));
               }}
+              required={true}
+              variant='outlined'
+              label='Type...'
+              multiline
               rows={5}
+              fullWidth
+              type='text'
               value={newMessage}
+              onKeyPress={(e: any) => {
+                if (!e.shiftKey && e.key === 'Enter') {
+                  e.preventDefault();
+                  handleClick(e);
+                  dispatch(setNewMessage(' '));
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.shiftKey && e.key === 'Enter') {
+                  e.preventDefault();
+                  dispatch(setNewMessage(`${newMessage}` + '\n'));
+                }
+              }}
+            />
+            <Btn
+              text='Post'
+              type='button'
+              eHandler={(e) => {
+                handleClick(e);
+                dispatch(setNewMessage(' '));
+              }}
             />
           </Box>
         </>

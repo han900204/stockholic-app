@@ -262,8 +262,8 @@ export interface CreateMessageResponse {
 
 export interface CreateMessagePayload {
   _room: string;
-  sender_id: number;
-  nick_name: string;
+  sender_id: number | null;
+  nick_name: string | null;
   message: string;
 }
 

@@ -37,16 +37,6 @@ const ChatContainer = () => {
 
   if (loading) return <LoadingForm />;
 
-  const getMessages = (roomId) => {
-    const messages = data?.getRooms.reduce((msg: any, room) => {
-      if (room._id === roomId) {
-        msg = room.messages;
-      }
-      return msg;
-    }, null);
-    return messages;
-  };
-
   return (
     <Box
       sx={{
@@ -65,8 +55,9 @@ const ChatContainer = () => {
         </Grid>
         <Grid item xs={8}>
           <ChatRoom
-            messages={getMessages(currentRoom)}
+            roomId={currentRoom}
             investorId={investorId}
+            nickName={nickName}
           />
         </Grid>
       </Grid>
