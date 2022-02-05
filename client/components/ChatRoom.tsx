@@ -14,12 +14,12 @@ import {
   GetMessagesResponse,
   GetMessagesPayload,
   CreateMessagePayload,
-  SubscribeMessageResponse,
   SubscribeMessagePayload,
 } from '../constants/GQL_INTERFACE';
 import { useCreateMessage } from '../hooks/useCreateMessage';
 import Btn from './styleComponents/Btn';
 import TextField from '@mui/material/TextField';
+import { useSubscribeMessage } from '../hooks/useSubscribeMessage';
 
 const ChatRoom = ({
   roomId,
@@ -39,29 +39,31 @@ const ChatRoom = ({
     GetMessagesPayload
   >(GQL_QUERY.GET_MESSAGES_QUERY, { variables: { _room: roomId } });
 
-  const CreateMessagePayload: CreateMessagePayload = {
+  const createMessagePayload: CreateMessagePayload = {
     _room: roomId,
     sender_id: investorId,
     nick_name: nickName,
     message: newMessage,
   };
 
-  const subs = useSubscription<
-    SubscribeMessageResponse,
-    SubscribeMessagePayload
-  >(GQL_QUERY.SUBSCRIBE_MESSAGE, {
-    variables: { _room: roomId, sender_id: investorId },
-  });
-
-  console.log('In app subscription: ', subs.data);
-
   const { createMessage } = useCreateMessage();
+
+  /**
+   * Subscribe message for real time updates
+   */
+
+  const subscribeMessagePayload: SubscribeMessagePayload = {
+    _room: roomId,
+    sender_id: investorId,
+  };
+
+  const subs = useSubscribeMessage(subscribeMessagePayload);
 
   const handleClick = async (e: any) => {
     e.preventDefault();
 
     try {
-      await createMessage({ variables: CreateMessagePayload });
+      await createMessage({ variables: createMessagePayload });
     } catch (e: any) {
       console.log('ERROR: ', e);
     }
