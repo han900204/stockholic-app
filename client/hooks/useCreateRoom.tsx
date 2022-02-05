@@ -16,12 +16,18 @@ export function useCreateRoom() {
       const newRoom = data?.createRoom;
       const existingRooms = cache.readQuery<GetRoomsResponse>({
         query: GQL_QUERY.GET_ROOMS_QUERY,
+        variables: {
+          owner_user_id: newRoom?.owner_user_id,
+        },
       });
       if (existingRooms && newRoom) {
         cache.writeQuery({
           query: GQL_QUERY.GET_ROOMS_QUERY,
+          variables: {
+            owner_user_id: newRoom?.owner_user_id,
+          },
           data: {
-            getForums: [...existingRooms?.getRooms, newRoom],
+            getRooms: [...existingRooms?.getRooms, newRoom],
           },
         });
       }

@@ -61,6 +61,19 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+  GET_INVESTORS_QUERY: gql`
+    query GetInvestors {
+      getInvestors {
+        id
+        first_name
+        last_name
+        nick_name
+        email
+        date_created
+      }
+    }
+  `,
+
   DELETE_AUTH_QUERY: gql`
     mutation DeleteAuthentication($token: String) {
       deleteAuthentication(token: $token) {

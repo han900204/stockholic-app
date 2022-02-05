@@ -26,7 +26,7 @@ const DropdownSelect = ({
         value={state}
         displayEmpty
         required
-        fullWidth
+        style={{ minWidth: 100 }}
       >
         <MenuItem value='' disabled>
           {name}

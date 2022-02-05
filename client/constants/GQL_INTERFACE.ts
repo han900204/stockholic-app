@@ -9,6 +9,7 @@ export interface QueryInterface {
   GET_AUTHENTICATION_QUERY: DocumentNode;
   VALIDATE_INVESTOR_QUERY: DocumentNode;
   GET_INVESTOR_QUERY: DocumentNode;
+  GET_INVESTORS_QUERY: DocumentNode;
   DELETE_AUTH_QUERY: DocumentNode;
   GET_FORUMS_QUERY: DocumentNode;
   CREATE_FORUM_QUERY: DocumentNode;
@@ -32,6 +33,18 @@ export interface QueryInterface {
 /**
  * Investor / Authentication Interfaces
  */
+
+export interface InvestorData {
+  id: number;
+  email: string;
+  date_created: string;
+  nick_name: string;
+}
+
+export interface GetInvestorsResponse {
+  getInvestors: InvestorData[];
+}
+
 export interface CreateInvestorPayload {
   first_name: string;
   last_name: string;
