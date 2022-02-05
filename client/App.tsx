@@ -11,6 +11,7 @@ import {
   setIsAuthenticated,
   setIsPending,
   setInvestorId,
+  setNickName,
 } from './features/investorSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
@@ -22,6 +23,7 @@ import ForumListContainer from './containers/ForumListContainer';
 import NavContainer from './containers/NavContainer';
 import LoadingForm from './components/LoadingForm';
 import ForumContainer from './containers/ForumContainer';
+import ChatContainer from './containers/ChatContainer';
 
 const App = () => {
   const { isAuthenticated, isPending } = useSelector(
@@ -42,6 +44,7 @@ const App = () => {
       if (res.data.getAuthentication) {
         await dispatch(setIsAuthenticated(true));
         await dispatch(setInvestorId(res.data.getAuthentication.investor_id));
+        await dispatch(setNickName(res.data.getAuthentication.nick_name));
       }
       await dispatch(setIsPending(false));
     };
@@ -62,7 +65,7 @@ const App = () => {
               path='/portfolio/:investorId'
               element={<div>Portfolio</div>}
             />
-            <Route path='/chat/:investorId' element={<div>Chat</div>} />
+            <Route path='/chat/:investorId' element={<ChatContainer />} />
             <Route path='/forum' element={<ForumListContainer />} />
             <Route path='/forum/:id' element={<ForumContainer />} />
             <Route path='/dashboard' element={<div>Dashboard</div>} />

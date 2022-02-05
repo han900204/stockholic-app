@@ -27,6 +27,7 @@ authentication.type = new GraphQLObjectType({
     investor_id: { type: GraphQLInt },
     token: { type: GraphQLString },
     date_created: { type: DateTime },
+    nick_name: { type: GraphQLString },
   }),
 });
 
@@ -36,10 +37,15 @@ authentication.query.getAuthentication = {
     token: { type: GraphQLString },
   },
   async resolve(parent, args) {
-    const sqlQuery = sql.getSelectQuery(
-      'authentication',
-      ['*'],
-      [`token = '${args.token}'`]
+    const sqlQuery = sql.getSelectJoinQuery(
+      [
+        {
+          authentication: ['*'],
+        },
+        { investor: ['nick_name'] },
+      ],
+      [{ authentication: 'investor_id', investor: 'id' }],
+      [{ authentication: [`token = '${args.token}'`] }]
     );
     const res = await db.query(sqlQuery);
     return res.rows[0];

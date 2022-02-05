@@ -11,16 +11,20 @@ import {
 } from '../constants/GQL_INTERFACE';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setIsAuthenticated, setInvestorId } from '../features/investorSlice';
+import {
+  setIsAuthenticated,
+  setInvestorId,
+  setNickName,
+} from '../features/investorSlice';
 
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailErr, setEmailErr] = useState(false);
-  const [nickNameErr, setNickNameErr] = useState(false);
+  const [nicknameErr, setNicknameErr] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -30,7 +34,7 @@ const SignUpForm = () => {
   const investorPayload: CreateInvestorPayload = {
     first_name: firstName,
     last_name: lastName,
-    nick_name: nickName,
+    nick_name: nickname,
     email,
     password,
   };
@@ -51,15 +55,17 @@ const SignUpForm = () => {
           (res) => res.data.createAuthentication.token
         );
         if (token) {
+          console.log('yo', res.data.createInvestor);
           sessionStorage.setItem('token', token);
           await dispatch(setIsAuthenticated(true));
           await dispatch(setInvestorId(res.data.createInvestor.id));
+          await dispatch(setNickName(res.data.createInvestor.nick_name));
           navigate('/forum');
         }
       }
     } catch (e: any) {
       if (e.message === 'email_unique') setEmailErr(true);
-      if (e.message === 'nick_name_unique') setNickNameErr(true);
+      if (e.message === 'nick_name_unique') setNicknameErr(true);
     }
   };
 
@@ -94,12 +100,12 @@ const SignUpForm = () => {
         <div>
           <Field
             eHandler={(e) => {
-              setNickName(e.target.value);
-              setNickNameErr(false);
+              setNickname(e.target.value);
+              setNicknameErr(false);
             }}
             type='text'
             label='Nick Name'
-            errState={nickNameErr}
+            errState={nicknameErr}
             errMsg={'Nick Name Exists!'}
           />
         </div>

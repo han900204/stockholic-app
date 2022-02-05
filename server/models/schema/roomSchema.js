@@ -28,6 +28,8 @@ const childMessagesType = new GraphQLObjectType({
     _id: { type: GraphQLID },
     sender_id: { type: GraphQLInt },
     nick_name: { type: GraphQLString },
+    message: { type: GraphQLString },
+    date_created: { type: GraphQLString },
   }),
 });
 
@@ -51,7 +53,13 @@ room.query.getRooms = {
   async resolve(parent, args) {
     const rooms = await Room.find({
       owner_user_id: args.owner_user_id,
-    }).populate('messages', ['sender_id', 'nick_name']);
+    }).populate('messages', [
+      '_id',
+      'sender_id',
+      'nick_name',
+      'message',
+      'date_created',
+    ]);
     console.log(`${rooms.length} rooms retrieved`);
     return rooms;
   },

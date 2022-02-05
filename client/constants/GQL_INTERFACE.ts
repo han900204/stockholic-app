@@ -19,6 +19,12 @@ export interface QueryInterface {
   CREATE_COMMENT_QUERY: DocumentNode;
   UPDATE_COMMENT_QUERY: DocumentNode;
   DELETE_COMMENT_QUERY: DocumentNode;
+  GET_ROOMS_QUERY: DocumentNode;
+  CREATE_ROOM_QUERY: DocumentNode;
+  DELETE_ROOM_QUERY: DocumentNode;
+  GET_MESSAGES_QUERY: DocumentNode;
+  CREATE_MESSAGE_QUERY: DocumentNode;
+  DELETE_MESSAGE_QUERY: DocumentNode;
 }
 
 /**
@@ -145,4 +151,91 @@ export interface DeleteCommentResponse {
 
 export interface DeleteCommentPayload {
   id: number;
+}
+
+/**
+ * Room Interfaces
+ */
+
+export interface ChildMessages {
+  _id: string;
+  sender_id: number;
+  nick_name: string;
+  message: string;
+  date_created: string;
+}
+
+export interface RoomData {
+  _id: string;
+  owner_user_id: number;
+  nick_name: string;
+  name: string;
+  date_created: string;
+  messages?: ChildMessages[];
+}
+
+export interface GetRoomsResponse {
+  getRooms: RoomData[];
+}
+
+export interface GetRoomsPayload {
+  owner_user_id: number | null;
+}
+
+export interface CreateRoomResponse {
+  createRoom: RoomData;
+}
+
+export interface CreateRoomPayload {
+  owner_user_id: number;
+  nick_name: string;
+  name: string;
+}
+
+export interface DeleteRoomResponse {
+  deleteRoom: RoomData;
+}
+
+export interface DeleteRoomPayload {
+  _id: string;
+}
+
+/**
+ * Message Interfaces
+ */
+
+export interface MessageData {
+  _id: string;
+  _room: string;
+  sender_id: number;
+  nick_name: string;
+  message: string;
+  date_created: string;
+}
+
+export interface GetMessagesResponse {
+  getMessages: MessageData[];
+}
+
+export interface GetMessagesPayload {
+  _room: string;
+}
+
+export interface CreateMessageResponse {
+  createMessage: MessageData;
+}
+
+export interface CreateMessagePayload {
+  _room: string;
+  sender_id: number;
+  nick_name: string;
+  message: string;
+}
+
+export interface DeleteMessageResponse {
+  deleteMessage: MessageData;
+}
+
+export interface DeleteMessagePayload {
+  _id: string;
 }

@@ -3,7 +3,11 @@ import Btn from '../components/styleComponents/Btn';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setIsAuthenticated } from '../features/investorSlice';
+import {
+  setIsAuthenticated,
+  setInvestorId,
+  setNickName,
+} from '../features/investorSlice';
 import GQL_QUERY from '../constants/GQL_QUERY';
 
 const useLogout = () => {
@@ -15,7 +19,9 @@ const useLogout = () => {
   const logout = async () => {
     await deleteAuth({ variables: { token: token } });
     sessionStorage.clear();
-    dispatch(setIsAuthenticated(false));
+    await dispatch(setIsAuthenticated(false));
+    await dispatch(setInvestorId(null));
+    await dispatch(setNickName(null));
     navigate('/login');
   };
   return {
