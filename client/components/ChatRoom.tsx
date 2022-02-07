@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -31,13 +31,29 @@ const ChatRoom = ({
   nickName: string | null;
 }) => {
   const dispatch = useDispatch();
+
   const newMessage: string = useSelector(
     (state: RootState) => state.message.newMessage
   );
+
   const { loading, error, data } = useQuery<
     GetMessagesResponse,
     GetMessagesPayload
-  >(GQL_QUERY.GET_MESSAGES_QUERY, { variables: { _room: roomId } });
+  >(GQL_QUERY.GET_MESSAGES_QUERY, {
+    variables: { _room: roomId },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  /**
+   * Scroll to bottm when new message posted
+   */
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef?.current?.scrollIntoView({ behavior: 'auto' });
+  };
+
+  useEffect(scrollToBottom, [data]);
 
   const createMessagePayload: CreateMessagePayload = {
     _room: roomId,
@@ -117,6 +133,7 @@ const ChatRoom = ({
                   </ListItem>
                 );
               })}
+              <div ref={messagesEndRef} />
             </List>
           </Box>
           <Box
