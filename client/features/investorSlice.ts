@@ -6,6 +6,7 @@ const initialState: InvestorState = {
   isPending: false,
   investorId: null,
   nickName: null,
+  investors: [],
 };
 
 export const investorSlice = createSlice({
@@ -24,10 +25,18 @@ export const investorSlice = createSlice({
     setNickName: (state, action: PayloadAction<string | null>) => {
       state.nickName = action.payload;
     },
+    setInvestors: (state, action: PayloadAction<[]>) => {
+      state.investors = action.payload;
+    },
   },
 });
 
-export const { setIsAuthenticated, setIsPending, setInvestorId, setNickName } =
-  investorSlice.actions;
+export const {
+  setIsAuthenticated,
+  setIsPending,
+  setInvestorId,
+  setNickName,
+  setInvestors,
+} = investorSlice.actions;
 
 export default investorSlice.reducer;

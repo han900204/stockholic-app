@@ -59,7 +59,7 @@ const App = () => {
         <NavContainer />
         <div>
           <Routes>
-            <Route path='*' element={<Navigate to='/forum' />} />
+            {/* <Route path='*' element={<Navigate to='/forum' />} /> */}
             <Route path='/profile/:investorId' element={<ProfileContainer />} />
             <Route
               path='/portfolio/:investorId'
@@ -77,7 +77,7 @@ const App = () => {
       <Router>
         <div>
           <Routes>
-            <Route path='*' element={<Navigate to='/login' />} />
+            <Route path='/' element={<Navigate to='/login' />} />
             <Route path='/login' element={<LoginContainer />} />
             <Route path='/signup' element={<SignUpContainer />} />
           </Routes>

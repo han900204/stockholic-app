@@ -3,6 +3,7 @@ export interface InvestorState {
   isPending: boolean;
   investorId: number | null;
   nickName: string | null;
+  investors: number[];
 }
 
 export interface NewMessageState {
