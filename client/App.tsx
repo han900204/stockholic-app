@@ -12,10 +12,14 @@ import {
   setIsPending,
   setInvestorId,
   setNickName,
+  setInvestors,
 } from './features/investorSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
-import { GetAuthPayload } from './constants/GQL_INTERFACE';
+import {
+  GetAuthPayload,
+  GetInvestorsResponse,
+} from './constants/GQL_INTERFACE';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
@@ -37,14 +41,23 @@ const App = () => {
     token: sessionStorage.getItem('token'),
   };
 
+  const [getInvestors] = useLazyQuery<GetInvestorsResponse, null>(
+    GQL_QUERY.GET_INVESTORS_QUERY
+  );
+
   useEffect(() => {
     const asyncGetAuth = async () => {
       await dispatch(setIsPending(true));
       const res = await getAuthentication({ variables: authPayload });
+      const investors = await getInvestors();
+
       if (res.data.getAuthentication) {
         await dispatch(setIsAuthenticated(true));
         await dispatch(setInvestorId(res.data.getAuthentication.investor_id));
         await dispatch(setNickName(res.data.getAuthentication.nick_name));
+        if (investors?.data?.getInvestors) {
+          await dispatch(setInvestors(investors.data.getInvestors));
+        }
       }
       await dispatch(setIsPending(false));
     };

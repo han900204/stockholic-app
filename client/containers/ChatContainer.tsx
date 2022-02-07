@@ -3,11 +3,7 @@ import { RootState } from '../app/store';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
-import {
-  GetRoomsResponse,
-  GetRoomsPayload,
-  GetInvestorsResponse,
-} from '../constants/GQL_INTERFACE';
+import { GetRoomsResponse, GetRoomsPayload } from '../constants/GQL_INTERFACE';
 import Subheading from '../components/styleComponents/Subheading';
 import Box from '@mui/material/Box';
 import ChatRoomList from '../components/ChatRoomList';
@@ -29,10 +25,6 @@ const ChatContainer = () => {
   const { loading, error, data } = useQuery<GetRoomsResponse, GetRoomsPayload>(
     GQL_QUERY.GET_ROOMS_QUERY,
     { variables: { owner_user_id: investorId } }
-  );
-
-  const investors = useQuery<GetInvestorsResponse, null>(
-    GQL_QUERY.GET_INVESTORS_QUERY
   );
 
   if (loading) return <LoadingForm />;

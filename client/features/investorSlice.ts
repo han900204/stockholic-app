@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { InvestorState } from '../constants/STATE_INTERFACE';
+import { InvestorData } from '../constants/GQL_INTERFACE';
 
 const initialState: InvestorState = {
   isAuthenticated: false,
@@ -25,7 +26,7 @@ export const investorSlice = createSlice({
     setNickName: (state, action: PayloadAction<string | null>) => {
       state.nickName = action.payload;
     },
-    setInvestors: (state, action: PayloadAction<[]>) => {
+    setInvestors: (state, action: PayloadAction<InvestorData[]>) => {
       state.investors = action.payload;
     },
   },
