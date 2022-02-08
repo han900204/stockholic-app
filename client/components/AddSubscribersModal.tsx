@@ -31,6 +31,7 @@ export default function AddSubscribersModal({
 
     try {
       await addSubscribers({ variables: addSubscribersPayload });
+      dispatch(setNewSubscribers([]));
     } catch (e: any) {
       console.log('ERROR: ', e);
     }
@@ -65,8 +66,8 @@ export default function AddSubscribersModal({
       >
         <MultiSelect
           items={copyInvestors}
-          dispatch={(id) => {
-            dispatch(setNewSubscribers(id));
+          dispatch={(ids) => {
+            dispatch(setNewSubscribers(ids));
           }}
           state={newSubscribers}
         />

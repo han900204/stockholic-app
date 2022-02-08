@@ -111,7 +111,7 @@ room.mutation.addSubscribers = {
   async resolve(parent, args) {
     const room = await Room.findOneAndUpdate(
       { _id: mongoose.Types.ObjectId(args._id) },
-      { $push: { subscribers: { $each: args.subscribers } } },
+      { $addToSet: { subscribers: args.subscribers } },
       { new: true }
     );
     console.log('subscribers added to the room', room);

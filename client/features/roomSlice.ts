@@ -14,14 +14,11 @@ export const roomSlice = createSlice({
     setNewMessage: (state, action: PayloadAction<string>) => {
       state.newMessage = action.payload;
     },
-    setNewSubscribers: (state, action: PayloadAction<number>) => {
-      state.newSubscribers = [...state.newSubscribers, action.payload];
+    setNewSubscribers: (state, action: PayloadAction<number[]>) => {
+      state.newSubscribers = action.payload;
     },
     setCurrentRoom: (state, action: PayloadAction<string>) => {
       state.currentRoom = action.payload;
-    },
-    clearNewSubscribers: (state) => {
-      state.newSubscribers = [];
     },
   },
 });

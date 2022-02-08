@@ -8,11 +8,12 @@ const MultiSelect = ({
   state,
 }: {
   items: MultiSelectOption[];
-  dispatch: (id: number) => void;
+  dispatch: (ids: number[]) => void;
   state: number[];
 }) => {
-  const handleChange = (id) => {
-    dispatch(id);
+  const handleChange = (ids) => {
+    console.log(ids);
+    dispatch(ids);
   };
   return (
     <MultipleSelect
