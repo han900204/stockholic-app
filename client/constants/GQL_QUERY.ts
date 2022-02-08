@@ -242,13 +242,6 @@ const GQL_QUERY: QueryInterface = {
         name
         date_created
         subscribers
-        messages {
-          _id
-          sender_id
-          nick_name
-          message
-          date_created
-        }
       }
     }
   `,
@@ -272,13 +265,6 @@ const GQL_QUERY: QueryInterface = {
         name
         date_created
         subscribers
-        messages {
-          _id
-          sender_id
-          nick_name
-          message
-          date_created
-        }
       }
     }
   `,
@@ -292,13 +278,6 @@ const GQL_QUERY: QueryInterface = {
         name
         date_created
         subscribers
-        messages {
-          _id
-          sender_id
-          nick_name
-          message
-          date_created
-        }
       }
     }
   `,
@@ -312,13 +291,6 @@ const GQL_QUERY: QueryInterface = {
         name
         date_created
         subscribers
-        messages {
-          _id
-          nick_name
-          sender_id
-          message
-          date_created
-        }
       }
     }
   `,
@@ -332,13 +304,6 @@ const GQL_QUERY: QueryInterface = {
         name
         date_created
         subscribers
-        messages {
-          _id
-          nick_name
-          sender_id
-          message
-          date_created
-        }
       }
     }
   `,

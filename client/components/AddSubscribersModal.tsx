@@ -48,15 +48,15 @@ export default function AddSubscribersModal({
       >
         <div>Select User</div>
         <br />
-        <Btn text='Create' type='submit' />
+        <Btn text='Invite' type='submit' />
       </Box>
     </div>
   );
 
   return (
     <BasicModal
-      buttonName={'Create Forum'}
-      heading={'Create a New Forum'}
+      buttonName={'Invite'}
+      heading={'Invite Investors'}
       Component={ModalComponent}
     />
   );

@@ -174,15 +174,6 @@ export interface DeleteCommentPayload {
 /**
  * Room Interfaces
  */
-
-export interface ChildMessages {
-  _id: string;
-  sender_id: number;
-  nick_name: string;
-  message: string;
-  date_created: string;
-}
-
 export interface RoomData {
   _id: string;
   owner_user_id: number;
@@ -190,7 +181,6 @@ export interface RoomData {
   name: string;
   date_created: string;
   subscribers?: number[];
-  messages?: ChildMessages[];
 }
 
 export interface GetRoomsResponse {

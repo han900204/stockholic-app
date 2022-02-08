@@ -52,21 +52,11 @@ room.query.getRooms = {
     owner_user_id: { type: GraphQLInt },
   },
   async resolve(parent, args) {
-    let rooms = await Room.find().populate('messages', [
-      '_id',
-      'sender_id',
-      'nick_name',
-      'message',
-      'date_created',
-    ]);
-
-    rooms = rooms.filter((room) => {
-      if (
-        room.owner_user_id === args.owner_user_id ||
-        room.subscribers.includes(args.owner_user_id)
-      ) {
-        return room;
-      }
+    let rooms = await Room.find({
+      $or: [
+        { owner_user_id: args.owner_user_id },
+        { subscribers: args.owner_user_id },
+      ],
     });
 
     console.log(`${rooms.length} rooms retrieved`);
