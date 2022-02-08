@@ -8,6 +8,8 @@ export interface InvestorState {
   investors: InvestorData[];
 }
 
-export interface NewMessageState {
+export interface RoomState {
   newMessage: string;
+  newSubscribers: number[];
+  currentRoom: string | '';
 }

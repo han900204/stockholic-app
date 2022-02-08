@@ -13,14 +13,23 @@ import ChatRoom from '../components/ChatRoom';
 import CreateRoomModal from '../components/CreateRoomModal';
 
 const ChatContainer = () => {
-  const [currentRoom, setCurrentRoom] = useState('');
+  const {
+    investorId,
+    nickName,
+  }: {
+    investorId: number | null;
+    nickName: string | null;
+  } = useSelector((state: RootState) => state.investor);
 
-  const investorId: number | null = useSelector(
-    (state: RootState) => state.investor.investorId
-  );
-  const nickName: string | null = useSelector(
-    (state: RootState) => state.investor.nickName
-  );
+  const {
+    newMessage,
+    newSubscribers,
+    currentRoom,
+  }: {
+    newMessage: string;
+    newSubscribers: number[];
+    currentRoom: string | '';
+  } = useSelector((state: RootState) => state.room);
 
   const { loading, error, data } = useQuery<GetRoomsResponse, GetRoomsPayload>(
     GQL_QUERY.GET_ROOMS_QUERY,
@@ -40,16 +49,15 @@ const ChatContainer = () => {
       <CreateRoomModal investorId={investorId} nickName={nickName} />
       <Grid container spacing={2} sx={{ mb: 1 }}>
         <Grid item xs={4}>
-          <ChatRoomList
-            rooms={data?.getRooms}
-            setCurrentRoom={setCurrentRoom}
-          />
+          <ChatRoomList rooms={data?.getRooms} />
         </Grid>
         <Grid item xs={8}>
           <ChatRoom
             roomId={currentRoom}
             investorId={investorId}
             nickName={nickName}
+            newMessage={newMessage}
+            newSubscribers={newSubscribers}
           />
         </Grid>
       </Grid>

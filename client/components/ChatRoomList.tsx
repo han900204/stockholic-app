@@ -4,9 +4,9 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { useDispatch } from 'react-redux';
-import { setNewMessage } from '../features/messageSlice';
+import { setNewMessage, setCurrentRoom } from '../features/roomSlice';
 
-const ChatRoomList = ({ rooms, setCurrentRoom }) => {
+const ChatRoomList = ({ rooms }) => {
   const dispatch = useDispatch();
   return (
     <Box
@@ -21,7 +21,7 @@ const ChatRoomList = ({ rooms, setCurrentRoom }) => {
             button
             key={index}
             onClick={() => {
-              setCurrentRoom(room._id);
+              dispatch(setCurrentRoom(room._id));
               dispatch(setNewMessage(' '));
             }}
           >

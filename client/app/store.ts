@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import InvestorReducer from '../features/investorSlice';
-import MessageReducer from '../features/messageSlice';
+import RoomReducer from '../features/roomSlice';
 
 export const store = configureStore({
-  reducer: { investor: InvestorReducer, message: MessageReducer },
+  reducer: { investor: InvestorReducer, room: RoomReducer },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

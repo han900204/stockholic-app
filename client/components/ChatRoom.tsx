@@ -5,9 +5,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Subheading from './styleComponents/Subheading';
-import { RootState } from '../app/store';
-import { useSelector, useDispatch } from 'react-redux';
-import { setNewMessage } from '../features/messageSlice';
+import { useDispatch } from 'react-redux';
+import { setNewMessage } from '../features/roomSlice';
 import { useQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
@@ -27,18 +26,18 @@ const ChatRoom = ({
   roomId,
   investorId,
   nickName,
+  newMessage,
+  newSubscribers,
 }: {
   roomId: string | '';
   investorId: number | null;
   nickName: string | null;
+  newMessage: string;
+  newSubscribers: number[];
 }) => {
   const [subs, setSubs] = useState([]);
 
   const dispatch = useDispatch();
-
-  const newMessage: string = useSelector(
-    (state: RootState) => state.message.newMessage
-  );
 
   const { loading, error, data } = useQuery<
     GetMessagesResponse,
@@ -211,10 +210,10 @@ const ChatRoom = ({
               <Grid item xs={6}>
                 <Box display='flex' justifyContent='flex-end'>
                   <Btn
-                    text='Invite'
+                    text='Post'
                     type='button'
                     eHandler={(e) => {
-                      console.log('invite!');
+                      console.log('hi');
                     }}
                   />
                 </Box>
