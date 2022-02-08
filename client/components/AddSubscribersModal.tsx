@@ -7,12 +7,15 @@ import BasicModal from './styleComponents/BasicModal';
 import { useAddSubscribers } from '../hooks/useAddSubscribers';
 import { useDispatch } from 'react-redux';
 import { setNewSubscribers } from '../features/roomSlice';
+import MultiSelect from './styleComponents/MultiSelect';
 
 export default function AddSubscribersModal({
   roomId,
   newSubscribers,
   investors,
 }) {
+  const dispatch = useDispatch();
+
   /**
    * Add subscribers hook
    */
@@ -33,6 +36,20 @@ export default function AddSubscribersModal({
     }
   };
 
+  /**
+   *
+   * Convert keys for multi-select dropdown
+   */
+
+  const copyInvestors = JSON.parse(JSON.stringify(investors));
+
+  for (let investor of copyInvestors) {
+    investor['value'] = investor['id'];
+    investor['label'] = investor['nick_name'];
+    delete investor['id'];
+    delete investor['nick_name'];
+  }
+
   const ModalComponent = (handleClose) => (
     <div>
       <Box
@@ -46,7 +63,13 @@ export default function AddSubscribersModal({
         }}
         autoComplete='off'
       >
-        <div>Select User</div>
+        <MultiSelect
+          items={copyInvestors}
+          dispatch={(id) => {
+            dispatch(setNewSubscribers(id));
+          }}
+          state={newSubscribers}
+        />
         <br />
         <Btn text='Invite' type='submit' />
       </Box>

@@ -37,11 +37,11 @@ export interface QueryInterface {
 
 export interface InvestorData {
   id: number;
-  email: string;
-  date_created: string;
+  email?: string;
+  date_created?: string;
   nick_name: string;
-  first_name: string;
-  last_name: string;
+  first_name?: string;
+  last_name?: string;
 }
 
 export interface GetInvestorsResponse {

@@ -65,11 +65,7 @@ const GQL_QUERY: QueryInterface = {
     query GetInvestors {
       getInvestors {
         id
-        first_name
-        last_name
         nick_name
-        email
-        date_created
       }
     }
   `,
