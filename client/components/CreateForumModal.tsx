@@ -1,11 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
-import {
-  CreateForumPayload,
-  CreateForumResponse,
-} from '../constants/GQL_INTERFACE';
+import { CreateForumPayload } from '../constants/GQL_INTERFACE';
 import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';

@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { RootState } from '../app/store';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
-import { GetRoomsResponse, GetRoomsPayload } from '../constants/GQL_INTERFACE';
+import {
+  GetRoomsResponse,
+  GetRoomsPayload,
+  InvestorData,
+} from '../constants/GQL_INTERFACE';
 import Subheading from '../components/styleComponents/Subheading';
 import Box from '@mui/material/Box';
 import ChatRoomList from '../components/ChatRoomList';
@@ -16,9 +20,11 @@ const ChatContainer = () => {
   const {
     investorId,
     nickName,
+    investors,
   }: {
     investorId: number | null;
     nickName: string | null;
+    investors: InvestorData[];
   } = useSelector((state: RootState) => state.investor);
 
   const {
@@ -58,6 +64,7 @@ const ChatContainer = () => {
             nickName={nickName}
             newMessage={newMessage}
             newSubscribers={newSubscribers}
+            investors={investors}
           />
         </Grid>
       </Grid>

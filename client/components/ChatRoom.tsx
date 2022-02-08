@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Subheading from './styleComponents/Subheading';
+import Btn from './styleComponents/Btn';
+import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
 import { setNewMessage } from '../features/roomSlice';
 import { useQuery } from '@apollo/client';
@@ -14,13 +16,11 @@ import {
   GetMessagesPayload,
   CreateMessagePayload,
   SubscribeMessagePayload,
-  AddSubscribersPayload,
+  InvestorData,
 } from '../constants/GQL_INTERFACE';
 import { useCreateMessage } from '../hooks/useCreateMessage';
-import Btn from './styleComponents/Btn';
-import TextField from '@mui/material/TextField';
 import { useSubscribeMessage } from '../hooks/useSubscribeMessage';
-import { useAddSubscribers } from '../hooks/useAddSubscribers';
+import AddSubscribersModal from './AddSubscribersModal';
 
 const ChatRoom = ({
   roomId,
@@ -28,15 +28,15 @@ const ChatRoom = ({
   nickName,
   newMessage,
   newSubscribers,
+  investors,
 }: {
   roomId: string | '';
   investorId: number | null;
   nickName: string | null;
   newMessage: string;
   newSubscribers: number[];
+  investors: InvestorData[];
 }) => {
-  const [subs, setSubs] = useState([]);
-
   const dispatch = useDispatch();
 
   const { loading, error, data } = useQuery<
@@ -71,32 +71,11 @@ const ChatRoom = ({
 
   const { createMessage } = useCreateMessage();
 
-  const handleMsgClick = async (e: any) => {
+  const handleClick = async (e: any) => {
     e.preventDefault();
 
     try {
       await createMessage({ variables: createMessagePayload });
-      setSubs([]);
-    } catch (e: any) {
-      console.log('ERROR: ', e);
-    }
-  };
-
-  /**
-   * Add subscribers hook
-   */
-  const addSubscribersPayload: AddSubscribersPayload = {
-    _id: roomId,
-    subscribers: subs,
-  };
-
-  const { addSubscribers } = useAddSubscribers();
-
-  const handleSubsClick = async (e: any) => {
-    e.preventDefault();
-
-    try {
-      await addSubscribers({ variables: addSubscribersPayload });
     } catch (e: any) {
       console.log('ERROR: ', e);
     }
@@ -185,7 +164,7 @@ const ChatRoom = ({
               onKeyPress={(e: any) => {
                 if (!e.shiftKey && e.key === 'Enter') {
                   e.preventDefault();
-                  handleMsgClick(e);
+                  handleClick(e);
                   dispatch(setNewMessage(' '));
                 }
               }}
@@ -202,19 +181,17 @@ const ChatRoom = ({
                   text='Post'
                   type='button'
                   eHandler={(e) => {
-                    handleMsgClick(e);
+                    handleClick(e);
                     dispatch(setNewMessage(' '));
                   }}
                 />
               </Grid>
               <Grid item xs={6}>
                 <Box display='flex' justifyContent='flex-end'>
-                  <Btn
-                    text='Post'
-                    type='button'
-                    eHandler={(e) => {
-                      console.log('hi');
-                    }}
+                  <AddSubscribersModal
+                    roomId={roomId}
+                    newSubscribers={newSubscribers}
+                    investors={investors}
                   />
                 </Box>
               </Grid>
