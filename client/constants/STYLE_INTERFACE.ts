@@ -12,3 +12,8 @@ export interface ForumData {
   nick_name: string;
   date_created: string;
 }
+
+export interface MultiSelectOption {
+  value: string;
+  label: string;
+}

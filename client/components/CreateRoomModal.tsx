@@ -1,35 +1,30 @@
 import React from 'react';
 import { useState } from 'react';
-import GQL_QUERY from '../constants/GQL_QUERY';
-import { CreateForumPayload } from '../constants/GQL_INTERFACE';
+import { CreateRoomPayload } from '../constants/GQL_INTERFACE';
 import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
-import { useCreateForum } from '../hooks/useCreateForum';
-import { useNavigate } from 'react-router-dom';
+import { useCreateRoom } from '../hooks/useCreateRoom';
 
-export default function CreateForumModal({ investorId }) {
+export default function CreateRoomModal({ investorId, nickName }) {
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const navigate = useNavigate();
 
-  const forumPayload: CreateForumPayload = {
+  const createRoomPayload: CreateRoomPayload = {
     owner_user_id: investorId,
+    nick_name: nickName,
     name,
-    description,
   };
 
-  const { createForum } = useCreateForum();
+  const { createRoom } = useCreateRoom();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
-      const { data } = await createForum({
-        variables: forumPayload,
+      await createRoom({
+        variables: createRoomPayload,
       });
-      navigate(`/forum/${data?.createForum.id}`);
     } catch (e: any) {
       console.log('ERROR: ', e);
     }
@@ -42,7 +37,6 @@ export default function CreateForumModal({ investorId }) {
         onSubmit={(e) => {
           handleSubmit(e);
           setName('');
-          setDescription('');
           handleClose();
         }}
         sx={{
@@ -56,20 +50,9 @@ export default function CreateForumModal({ investorId }) {
               setName(e.target.value);
             }}
             type='text'
-            label='Topic'
+            label='Room Name'
             required={true}
-            rows={3}
-          />
-        </div>
-        <div>
-          <TextAreaField
-            eHandler={(e) => {
-              setDescription(e.target.value);
-            }}
-            type='text'
-            label='Description'
-            required={false}
-            rows={15}
+            rows={1}
           />
         </div>
         <br />
@@ -80,8 +63,8 @@ export default function CreateForumModal({ investorId }) {
 
   return (
     <BasicModal
-      buttonName={'Create Forum'}
-      heading={'Create a New Forum'}
+      buttonName={'Create Room'}
+      heading={'Create a New Room'}
       Component={ModalComponent}
     />
   );

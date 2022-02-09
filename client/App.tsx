@@ -11,10 +11,15 @@ import {
   setIsAuthenticated,
   setIsPending,
   setInvestorId,
+  setNickName,
+  setInvestors,
 } from './features/investorSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
-import { GetAuthPayload } from './constants/GQL_INTERFACE';
+import {
+  GetAuthPayload,
+  GetInvestorsResponse,
+} from './constants/GQL_INTERFACE';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
@@ -22,6 +27,7 @@ import ForumListContainer from './containers/ForumListContainer';
 import NavContainer from './containers/NavContainer';
 import LoadingForm from './components/LoadingForm';
 import ForumContainer from './containers/ForumContainer';
+import ChatContainer from './containers/ChatContainer';
 
 const App = () => {
   const { isAuthenticated, isPending } = useSelector(
@@ -35,13 +41,23 @@ const App = () => {
     token: sessionStorage.getItem('token'),
   };
 
+  const [getInvestors] = useLazyQuery<GetInvestorsResponse, null>(
+    GQL_QUERY.GET_INVESTORS_QUERY
+  );
+
   useEffect(() => {
     const asyncGetAuth = async () => {
       await dispatch(setIsPending(true));
       const res = await getAuthentication({ variables: authPayload });
+      const investors = await getInvestors();
+
       if (res.data.getAuthentication) {
         await dispatch(setIsAuthenticated(true));
         await dispatch(setInvestorId(res.data.getAuthentication.investor_id));
+        await dispatch(setNickName(res.data.getAuthentication.nick_name));
+        if (investors?.data?.getInvestors) {
+          await dispatch(setInvestors(investors.data.getInvestors));
+        }
       }
       await dispatch(setIsPending(false));
     };
@@ -56,13 +72,13 @@ const App = () => {
         <NavContainer />
         <div>
           <Routes>
-            <Route path='*' element={<Navigate to='/forum' />} />
+            {/* <Route path='*' element={<Navigate to='/forum' />} /> */}
             <Route path='/profile/:investorId' element={<ProfileContainer />} />
             <Route
               path='/portfolio/:investorId'
               element={<div>Portfolio</div>}
             />
-            <Route path='/chat/:investorId' element={<div>Chat</div>} />
+            <Route path='/chat/:investorId' element={<ChatContainer />} />
             <Route path='/forum' element={<ForumListContainer />} />
             <Route path='/forum/:id' element={<ForumContainer />} />
             <Route path='/dashboard' element={<div>Dashboard</div>} />
@@ -74,7 +90,7 @@ const App = () => {
       <Router>
         <div>
           <Routes>
-            <Route path='*' element={<Navigate to='/login' />} />
+            <Route path='/' element={<Navigate to='/login' />} />
             <Route path='/login' element={<LoginContainer />} />
             <Route path='/signup' element={<SignUpContainer />} />
           </Routes>

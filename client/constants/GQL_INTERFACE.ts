@@ -9,6 +9,7 @@ export interface QueryInterface {
   GET_AUTHENTICATION_QUERY: DocumentNode;
   VALIDATE_INVESTOR_QUERY: DocumentNode;
   GET_INVESTOR_QUERY: DocumentNode;
+  GET_INVESTORS_QUERY: DocumentNode;
   DELETE_AUTH_QUERY: DocumentNode;
   GET_FORUMS_QUERY: DocumentNode;
   CREATE_FORUM_QUERY: DocumentNode;
@@ -19,11 +20,34 @@ export interface QueryInterface {
   CREATE_COMMENT_QUERY: DocumentNode;
   UPDATE_COMMENT_QUERY: DocumentNode;
   DELETE_COMMENT_QUERY: DocumentNode;
+  GET_ROOMS_QUERY: DocumentNode;
+  CREATE_ROOM_QUERY: DocumentNode;
+  DELETE_ROOM_QUERY: DocumentNode;
+  GET_MESSAGES_QUERY: DocumentNode;
+  CREATE_MESSAGE_QUERY: DocumentNode;
+  DELETE_MESSAGE_QUERY: DocumentNode;
+  ADD_SUBSCRIBERS_QUERY: DocumentNode;
+  REMOVE_SUBSCRIBER_QUERY: DocumentNode;
+  SUBSCRIBE_MESSAGE: DocumentNode;
 }
 
 /**
  * Investor / Authentication Interfaces
  */
+
+export interface InvestorData {
+  id: number;
+  email?: string;
+  date_created?: string;
+  nick_name: string;
+  first_name?: string;
+  last_name?: string;
+}
+
+export interface GetInvestorsResponse {
+  getInvestors: InvestorData[];
+}
+
 export interface CreateInvestorPayload {
   first_name: string;
   last_name: string;
@@ -145,4 +169,110 @@ export interface DeleteCommentResponse {
 
 export interface DeleteCommentPayload {
   id: number;
+}
+
+/**
+ * Room Interfaces
+ */
+export interface RoomData {
+  _id: string;
+  owner_user_id: number;
+  nick_name: string;
+  name: string;
+  date_created: string;
+  subscribers?: number[];
+}
+
+export interface GetRoomsResponse {
+  getRooms: RoomData[];
+}
+
+export interface GetRoomsPayload {
+  owner_user_id: number | null;
+}
+
+export interface CreateRoomResponse {
+  createRoom: RoomData;
+}
+
+export interface CreateRoomPayload {
+  owner_user_id: number;
+  nick_name: string;
+  name: string;
+  subscribers?: number[];
+}
+
+export interface DeleteRoomResponse {
+  deleteRoom: RoomData;
+}
+
+export interface DeleteRoomPayload {
+  _id: string;
+}
+
+export interface AddSubscribersResponse {
+  addSubscribers: RoomData;
+}
+
+export interface AddSubscribersPayload {
+  _id: string;
+  subscribers: any[];
+}
+
+export interface RemoveSubscriberResponse {
+  removeSubscriber: RoomData;
+}
+
+export interface RemoveSubscriberPayload {
+  _id: string;
+  subscriber: number | null;
+}
+
+/**
+ * Message Interfaces
+ */
+
+export interface MessageData {
+  _id: string;
+  _room: string;
+  sender_id: number;
+  nick_name: string;
+  message: string;
+  date_created: string;
+}
+
+export interface GetMessagesResponse {
+  getMessages: MessageData[];
+}
+
+export interface GetMessagesPayload {
+  _room: string;
+}
+
+export interface CreateMessageResponse {
+  createMessage: MessageData;
+}
+
+export interface CreateMessagePayload {
+  _room: string;
+  sender_id: number | null;
+  nick_name: string | null;
+  message: string;
+}
+
+export interface DeleteMessageResponse {
+  deleteMessage: MessageData;
+}
+
+export interface DeleteMessagePayload {
+  _id: string;
+}
+
+export interface SubscribeMessageResponse {
+  subscribeMessage: MessageData;
+}
+
+export interface SubscribeMessagePayload {
+  _room: string;
+  sender_id: number | null;
 }

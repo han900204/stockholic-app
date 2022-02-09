@@ -6,6 +6,7 @@ import Btn from '../styleComponents/Btn';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Grid from '@mui/material/Grid';
+import MenuItem from '@mui/material/MenuItem';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,18 +24,32 @@ export default function BasicModal({
   buttonName,
   heading,
   Component,
+  isMenu,
 }: {
   buttonName: string;
   heading: string;
   Component: any;
+  isMenu?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  if (isMenu === undefined) isMenu = false;
+
   return (
     <div>
-      <Btn type='button' text={buttonName} eHandler={handleOpen} />
+      {!isMenu ? (
+        <Btn type='button' text={buttonName} eHandler={handleOpen} />
+      ) : (
+        <MenuItem
+          onClick={() => {
+            handleOpen();
+          }}
+        >
+          <Typography textAlign='center'>{buttonName}</Typography>
+        </MenuItem>
+      )}
       <Modal
         open={open}
         onClose={handleClose}

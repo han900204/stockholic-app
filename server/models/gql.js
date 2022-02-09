@@ -12,6 +12,8 @@ const investor = require('./schema/investorSchema');
 const authentication = require('./schema/authenticationSchema');
 const forum = require('./schema/forumSchema');
 const comment = require('./schema/commentSchema');
+const room = require('./schema/roomSchema');
+const message = require('./schema/messageSchema');
 
 /**
  * Load .env file
@@ -28,10 +30,13 @@ const RootQueryType = new GraphQLObjectType({
   name: 'RootQuery',
   fields: {
     getInvestor: investor.query.getInvestor,
+    getInvestors: investor.query.getInvestors,
     getAuthentication: authentication.query.getAuthentication,
     getForums: forum.query.getForums,
     getForum: forum.query.getForum,
     getComments: comment.query.getComments,
+    getRooms: room.query.getRooms,
+    getMessages: message.query.getMessages,
   },
 });
 
@@ -48,10 +53,24 @@ const RootMutationType = new GraphQLObjectType({
     createComment: comment.mutation.postComment,
     deleteComment: comment.mutation.deleteComment,
     updateComment: comment.mutation.updateComment,
+    createRoom: room.mutation.postRoom,
+    deleteRoom: room.mutation.deleteRoom,
+    createMessage: message.mutation.postMessage,
+    deleteMessage: message.mutation.deleteMessage,
+    addSubscribers: room.mutation.addSubscribers,
+    removeSubscriber: room.mutation.removeSubscriber,
+  },
+});
+
+const RootSubscriptionType = new GraphQLObjectType({
+  name: 'RootSubscription',
+  fields: {
+    subscribeMessage: message.subscription.subscribeMessage,
   },
 });
 
 module.exports = new GraphQLSchema({
   query: RootQueryType,
   mutation: RootMutationType,
+  subscription: RootSubscriptionType,
 });

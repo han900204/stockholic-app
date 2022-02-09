@@ -45,6 +45,15 @@ investor.query.getInvestor = {
   },
 };
 
+investor.query.getInvestors = {
+  type: GraphQLList(investor.type),
+  async resolve(parent, args) {
+    const sqlQuery = sql.getSelectQuery('investor', ['*']);
+    const res = await db.query(sqlQuery);
+    return res.rows;
+  },
+};
+
 investor.mutation.postInvestor = {
   type: investor.type,
   args: {

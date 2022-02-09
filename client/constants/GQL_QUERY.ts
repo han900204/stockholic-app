@@ -2,6 +2,9 @@ import { gql } from '@apollo/client';
 import { QueryInterface } from './GQL_INTERFACE';
 
 const GQL_QUERY: QueryInterface = {
+  /**
+   * User and auth query
+   */
   CREATE_INVESTOR_QUERY: gql`
     mutation CreateInvestor(
       $first_name: String!
@@ -18,6 +21,7 @@ const GQL_QUERY: QueryInterface = {
         password: $password
       ) {
         id
+        nick_name
       }
     }
   `,
@@ -33,6 +37,7 @@ const GQL_QUERY: QueryInterface = {
     query GetAuthentication($token: String) {
       getAuthentication(token: $token) {
         investor_id
+        nick_name
       }
     }
   `,
@@ -40,6 +45,7 @@ const GQL_QUERY: QueryInterface = {
     mutation ValidateInvestor($email: String!, $password: String!) {
       validateInvestor(email: $email, password: $password) {
         id
+        nick_name
       }
     }
   `,
@@ -55,6 +61,15 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+  GET_INVESTORS_QUERY: gql`
+    query GetInvestors {
+      getInvestors {
+        id
+        nick_name
+      }
+    }
+  `,
+
   DELETE_AUTH_QUERY: gql`
     mutation DeleteAuthentication($token: String) {
       deleteAuthentication(token: $token) {
@@ -62,6 +77,10 @@ const GQL_QUERY: QueryInterface = {
       }
     }
   `,
+
+  /**
+   * Forum query
+   */
 
   GET_FORUMS_QUERY: gql`
     query GetForums {
@@ -135,6 +154,10 @@ const GQL_QUERY: QueryInterface = {
     }
   `,
 
+  /**
+   * Comment query
+   */
+
   GET_COMMENTS_QUERY: gql`
     query GetComments($forum_id: Int!) {
       getComments(forum_id: $forum_id) {
@@ -199,6 +222,149 @@ const GQL_QUERY: QueryInterface = {
         likes
         dislikes
         nick_name
+      }
+    }
+  `,
+  /**
+   * Room query
+   */
+
+  GET_ROOMS_QUERY: gql`
+    query GetRooms($owner_user_id: Int!) {
+      getRooms(owner_user_id: $owner_user_id) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+      }
+    }
+  `,
+
+  CREATE_ROOM_QUERY: gql`
+    mutation CreateRoom(
+      $owner_user_id: Int!
+      $nick_name: String!
+      $name: String!
+      $subscribers: [Int!]
+    ) {
+      createRoom(
+        owner_user_id: $owner_user_id
+        nick_name: $nick_name
+        name: $name
+        subscribers: $subscribers
+      ) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+      }
+    }
+  `,
+
+  DELETE_ROOM_QUERY: gql`
+    mutation DeleteRoom($_id: String!) {
+      deleteRoom(_id: $_id) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+      }
+    }
+  `,
+
+  ADD_SUBSCRIBERS_QUERY: gql`
+    mutation AddSubscribers($_id: String!, $subscribers: [Int!]) {
+      addSubscribers(_id: $_id, subscribers: $subscribers) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+      }
+    }
+  `,
+
+  REMOVE_SUBSCRIBER_QUERY: gql`
+    mutation RemoveSubscriber($_id: String!, $subscriber: Int!) {
+      removeSubscriber(_id: $_id, subscriber: $subscriber) {
+        _id
+        owner_user_id
+        nick_name
+        name
+        date_created
+        subscribers
+      }
+    }
+  `,
+
+  /**
+   * Message query
+   */
+
+  GET_MESSAGES_QUERY: gql`
+    query GetMessages($_room: String!) {
+      getMessages(_room: $_room) {
+        _id
+        _room
+        sender_id
+        nick_name
+        message
+        date_created
+      }
+    }
+  `,
+
+  CREATE_MESSAGE_QUERY: gql`
+    mutation CreateMessage(
+      $_room: String!
+      $sender_id: Int!
+      $nick_name: String!
+      $message: String!
+    ) {
+      createMessage(
+        _room: $_room
+        sender_id: $sender_id
+        nick_name: $nick_name
+        message: $message
+      ) {
+        _id
+        _room
+        sender_id
+        nick_name
+        message
+        date_created
+      }
+    }
+  `,
+
+  DELETE_MESSAGE_QUERY: gql`
+    mutation DeleteMessage($_id: String!) {
+      deleteMessage(_id: $_id) {
+        _id
+        _room
+        sender_id
+        nick_name
+        message
+        date_created
+      }
+    }
+  `,
+  SUBSCRIBE_MESSAGE: gql`
+    subscription SubscribeMessage($_room: String!, $sender_id: Int!) {
+      subscribeMessage(_room: $_room, sender_id: $sender_id) {
+        _id
+        _room
+        sender_id
+        nick_name
+        message
+        date_created
       }
     }
   `,
