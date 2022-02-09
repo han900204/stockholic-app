@@ -97,6 +97,7 @@ room.mutation.deleteRoom = {
     const room = await Room.findOneAndDelete({
       _id: mongoose.Types.ObjectId(args._id),
     });
+
     console.log('room deleted', room);
     return room;
   },

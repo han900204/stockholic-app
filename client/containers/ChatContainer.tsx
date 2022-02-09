@@ -31,10 +31,12 @@ const ChatContainer = () => {
     newMessage,
     newSubscribers,
     currentRoom,
+    currentRoomOwnerId,
   }: {
     newMessage: string;
     newSubscribers: number[];
     currentRoom: string | '';
+    currentRoomOwnerId: number | null;
   } = useSelector((state: RootState) => state.room);
 
   const { loading, error, data } = useQuery<GetRoomsResponse, GetRoomsPayload>(
@@ -65,6 +67,7 @@ const ChatContainer = () => {
             newMessage={newMessage}
             newSubscribers={newSubscribers}
             investors={investors}
+            currentRoomOwnerId={currentRoomOwnerId}
           />
         </Grid>
       </Grid>

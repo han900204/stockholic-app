@@ -1,6 +1,5 @@
 import React from 'react';
 import { AddSubscribersPayload } from '../constants/GQL_INTERFACE';
-import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
@@ -82,6 +81,7 @@ export default function AddSubscribersModal({
       buttonName={'Invite'}
       heading={'Invite Investors'}
       Component={ModalComponent}
+      isMenu={true}
     />
   );
 }

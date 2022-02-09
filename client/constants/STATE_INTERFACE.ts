@@ -12,4 +12,5 @@ export interface RoomState {
   newMessage: string;
   newSubscribers: number[];
   currentRoom: string | '';
+  currentRoomOwnerId: number | null;
 }

@@ -5,6 +5,7 @@ const initialState: RoomState = {
   newMessage: '',
   newSubscribers: [],
   currentRoom: '',
+  currentRoomOwnerId: null,
 };
 
 export const roomSlice = createSlice({
@@ -20,10 +21,17 @@ export const roomSlice = createSlice({
     setCurrentRoom: (state, action: PayloadAction<string>) => {
       state.currentRoom = action.payload;
     },
+    setCurrentRoomOwnerId: (state, action: PayloadAction<number | null>) => {
+      state.currentRoomOwnerId = action.payload;
+    },
   },
 });
 
-export const { setNewMessage, setNewSubscribers, setCurrentRoom } =
-  roomSlice.actions;
+export const {
+  setNewMessage,
+  setNewSubscribers,
+  setCurrentRoom,
+  setCurrentRoomOwnerId,
+} = roomSlice.actions;
 
 export default roomSlice.reducer;

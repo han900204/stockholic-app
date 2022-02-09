@@ -7,8 +7,16 @@ import ListItemText from '@mui/material/ListItemText';
 import Subheading from './styleComponents/Subheading';
 import Btn from './styleComponents/Btn';
 import TextField from '@mui/material/TextField';
+import AddSubscribersModal from './AddSubscribersModal';
+import OptionMenu from './styleComponents/OptionMenu';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
-import { setNewMessage } from '../features/roomSlice';
+import {
+  setNewMessage,
+  setCurrentRoom,
+  setCurrentRoomOwnerId,
+} from '../features/roomSlice';
 import { useQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
@@ -17,10 +25,11 @@ import {
   CreateMessagePayload,
   SubscribeMessagePayload,
   InvestorData,
+  DeleteRoomPayload,
 } from '../constants/GQL_INTERFACE';
 import { useCreateMessage } from '../hooks/useCreateMessage';
 import { useSubscribeMessage } from '../hooks/useSubscribeMessage';
-import AddSubscribersModal from './AddSubscribersModal';
+import { useDeleteRoom } from '../hooks/useDeleteRoom';
 
 const ChatRoom = ({
   roomId,
@@ -29,6 +38,7 @@ const ChatRoom = ({
   newMessage,
   newSubscribers,
   investors,
+  currentRoomOwnerId,
 }: {
   roomId: string | '';
   investorId: number | null;
@@ -36,6 +46,7 @@ const ChatRoom = ({
   newMessage: string;
   newSubscribers: number[];
   investors: InvestorData[];
+  currentRoomOwnerId: number | null;
 }) => {
   const dispatch = useDispatch();
 
@@ -71,7 +82,7 @@ const ChatRoom = ({
 
   const { createMessage } = useCreateMessage();
 
-  const handleClick = async (e: any) => {
+  const handlePost = async (e: any) => {
     e.preventDefault();
 
     try {
@@ -80,6 +91,15 @@ const ChatRoom = ({
       console.log('ERROR: ', e);
     }
   };
+
+  /**
+   * Delete room hook
+   */
+  const deleteRoomPayload: DeleteRoomPayload = {
+    _id: roomId,
+  };
+
+  const { deleteRoom } = useDeleteRoom();
 
   /**
    * Subscribe message for real time updates
@@ -164,7 +184,7 @@ const ChatRoom = ({
               onKeyPress={(e: any) => {
                 if (!e.shiftKey && e.key === 'Enter') {
                   e.preventDefault();
-                  handleClick(e);
+                  handlePost(e);
                   dispatch(setNewMessage(' '));
                 }
               }}
@@ -181,17 +201,40 @@ const ChatRoom = ({
                   text='Post'
                   type='button'
                   eHandler={(e) => {
-                    handleClick(e);
+                    handlePost(e);
                     dispatch(setNewMessage(' '));
                   }}
                 />
               </Grid>
               <Grid item xs={6}>
                 <Box display='flex' justifyContent='flex-end'>
-                  <AddSubscribersModal
-                    roomId={roomId}
-                    newSubscribers={newSubscribers}
-                    investors={investors}
+                  <OptionMenu
+                    ItemsComponent={
+                      <>
+                        <AddSubscribersModal
+                          roomId={roomId}
+                          newSubscribers={newSubscribers}
+                          investors={investors}
+                        />
+                        {investorId === currentRoomOwnerId ? (
+                          <MenuItem
+                            onClick={async () => {
+                              await deleteRoom({
+                                variables: deleteRoomPayload,
+                              });
+                              dispatch(setCurrentRoom(''));
+                              dispatch(setCurrentRoomOwnerId(null));
+                            }}
+                          >
+                            <Typography textAlign='center'>Delete</Typography>
+                          </MenuItem>
+                        ) : (
+                          <MenuItem>
+                            <Typography textAlign='center'>Leave</Typography>
+                          </MenuItem>
+                        )}
+                      </>
+                    }
                   />
                 </Box>
               </Grid>

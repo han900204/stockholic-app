@@ -4,7 +4,11 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { useDispatch } from 'react-redux';
-import { setNewMessage, setCurrentRoom } from '../features/roomSlice';
+import {
+  setNewMessage,
+  setCurrentRoom,
+  setCurrentRoomOwnerId,
+} from '../features/roomSlice';
 
 const ChatRoomList = ({ rooms }) => {
   const dispatch = useDispatch();
@@ -22,6 +26,7 @@ const ChatRoomList = ({ rooms }) => {
             key={index}
             onClick={() => {
               dispatch(setCurrentRoom(room._id));
+              dispatch(setCurrentRoomOwnerId(room.owner_user_id));
               dispatch(setNewMessage(' '));
             }}
           >
