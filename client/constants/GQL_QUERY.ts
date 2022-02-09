@@ -293,7 +293,7 @@ const GQL_QUERY: QueryInterface = {
 
   REMOVE_SUBSCRIBER_QUERY: gql`
     mutation RemoveSubscriber($_id: String!, $subscriber: Int!) {
-      removeSubscriber(_id: $_id, subscribers: $subscriber) {
+      removeSubscriber(_id: $_id, subscriber: $subscriber) {
         _id
         owner_user_id
         nick_name

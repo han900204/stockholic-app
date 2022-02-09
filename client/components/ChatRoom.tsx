@@ -26,10 +26,12 @@ import {
   SubscribeMessagePayload,
   InvestorData,
   DeleteRoomPayload,
+  RemoveSubscriberPayload,
 } from '../constants/GQL_INTERFACE';
 import { useCreateMessage } from '../hooks/useCreateMessage';
 import { useSubscribeMessage } from '../hooks/useSubscribeMessage';
 import { useDeleteRoom } from '../hooks/useDeleteRoom';
+import { useRemoveSubscriber } from '../hooks/useRemoveSubscriber';
 
 const ChatRoom = ({
   roomId,
@@ -100,6 +102,16 @@ const ChatRoom = ({
   };
 
   const { deleteRoom } = useDeleteRoom();
+
+  /**
+   * Remove subscriber hook
+   */
+  const removeSubscriberPayload: RemoveSubscriberPayload = {
+    _id: roomId,
+    subscriber: investorId,
+  };
+
+  const { removeSubscriber } = useRemoveSubscriber();
 
   /**
    * Subscribe message for real time updates
@@ -210,7 +222,7 @@ const ChatRoom = ({
                 <Box display='flex' justifyContent='flex-end'>
                   <OptionMenu
                     ItemsComponent={
-                      <>
+                      <div>
                         <AddSubscribersModal
                           roomId={roomId}
                           newSubscribers={newSubscribers}
@@ -229,11 +241,19 @@ const ChatRoom = ({
                             <Typography textAlign='center'>Delete</Typography>
                           </MenuItem>
                         ) : (
-                          <MenuItem>
+                          <MenuItem
+                            onClick={async () => {
+                              await removeSubscriber({
+                                variables: removeSubscriberPayload,
+                              });
+                              dispatch(setCurrentRoom(''));
+                              dispatch(setCurrentRoomOwnerId(null));
+                            }}
+                          >
                             <Typography textAlign='center'>Leave</Typography>
                           </MenuItem>
                         )}
-                      </>
+                      </div>
                     }
                   />
                 </Box>

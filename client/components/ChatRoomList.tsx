@@ -8,6 +8,7 @@ import {
   setNewMessage,
   setCurrentRoom,
   setCurrentRoomOwnerId,
+  setNewSubscribers,
 } from '../features/roomSlice';
 
 const ChatRoomList = ({ rooms }) => {
@@ -27,6 +28,7 @@ const ChatRoomList = ({ rooms }) => {
             onClick={() => {
               dispatch(setCurrentRoom(room._id));
               dispatch(setCurrentRoomOwnerId(room.owner_user_id));
+              dispatch(setNewSubscribers([]));
               dispatch(setNewMessage(' '));
             }}
           >

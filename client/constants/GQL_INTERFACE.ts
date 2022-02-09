@@ -225,7 +225,7 @@ export interface RemoveSubscriberResponse {
 
 export interface RemoveSubscriberPayload {
   _id: string;
-  subscriber: number;
+  subscriber: number | null;
 }
 
 /**
