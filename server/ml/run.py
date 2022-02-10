@@ -1,9 +1,5 @@
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(sys.path[0], os.pardir, 'Classes')))
-sys.path.append(os.path.abspath(os.path.join(sys.path[0], os.pardir, 'db')))
 from Symbol import Symbol
-from connection import conn
+from dbCon import conn
 
 # Get Stock Symbols
 symbols = Symbol().getSymbols(True)

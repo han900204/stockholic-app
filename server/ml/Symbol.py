@@ -1,10 +1,7 @@
 import random
 import requests
 import bs4 as bs
-import sys
-import os
-sys.path.append(os.path.join(sys.path[0], 'constants'))
-from constants import USER_AGENT
+from USER_AGENT import user_agent_list
 
 class Symbol:
 
@@ -15,7 +12,7 @@ class Symbol:
             return ['AAPL', 'TSLA', 'AMZN', 'MSFT']
 
         # Rotate User Agents To Avoid of Access Block
-        user_agent = random.choice(USER_AGENT.user_agent_list)
+        user_agent = random.choice(user_agent_list)
         header = {'User-Agent': user_agent}
 
         # Send a GET request to Wikipedia
@@ -32,3 +29,4 @@ class Symbol:
             tickers.append(ticker)
 
         return tickers
+
