@@ -1,98 +1,63 @@
 from Stock import Stock
-import psycopg2.extras
 from dbCon import conn
-import time
-start_time = time.time()
+from feedSymbol import feedSymbol
+from registerTickers import registerTickers
+from feedSummary import feedSummary
+import datetime
 
+cur = conn.cursor()
+
+# Instantiate Stock class
 stock = Stock()
 
-# FEED SYMBOLS DATA
+# # FEED SYMBOLS DATA
 
-# Get stock symbols
-symbols = stock.getSymbols(True)
+# feedSymbol(stock, conn)
 
-# To store data for db upload
-rows = ()
+# REGISTER UPDATED SYMBOLS
+'''
+NOTE: Symbol needs to be registered in instance of Stock class
+before running getSummary and getPrice methods
+''' 
+symbolDict = registerTickers(stock, conn)
 
-# Get symbols from db
-cur = conn.cursor()
-cur.execute("""SELECT * FROM symbol""")
-dbRecords = cur.fetchall()
-dbRecords = [data[1] for data in dbRecords]
+# # FEED SUMMARY DATA
 
-# Exclude existing symbols in db from upload
-symbols = [s for s in symbols if s not in dbRecords]
+# feedSummary(stock, conn, symbolDict)
 
-# Add symbols to db
-if len(symbols) > 0:
-  for s in symbols:
-    rows += ((s,),)
+# FEED PRICE DATA
 
-  args_str = ','.join(cur.mogrify("(%s)", x).decode("utf-8") for x in rows)
+# Get price
+price = stock.getPrice()
 
-  try:
-    cur.execute("INSERT INTO symbol (name) VALUES " + args_str)
-    conn.commit()
-    print("Query to add symbols successful for ", symbols)
-  except Exception as e:
-    print(e)
-    print("Query to add symbols failed for ", symbols)
-else:
-  print("There is no new symbols to update DB")
+# Get price from db
+today = datetime.date.today()
+delta = datetime.timedelta(days = 6)
+targetDate = today - delta
 
-# FEED SUMMARY DATA
-
-# Get updated symbols from db
-cur.execute("""SELECT * FROM symbol""")
-symbolDbRecords = cur.fetchall()
-
-# Dict for existing symbol name / id pair
-symbolDict = {}
-for data in symbolDbRecords:
-  symbolDict[data[1]] = data[0]
-
-# Register updated symbols in stock object
-stock.registerTickers(symbolDict.keys())
-
-# Get stock summary
-summary = stock.getSummary()
-
-# Get summary from db
-cur.execute("""SELECT * FROM stock_summary""")
-summaryDbRecords = cur.fetchall()
+cur.execute("""SELECT * FROM stock_price WHERE date >= %s""", (targetDate,))
+priceDbRecords = cur.fetchall()
 
 # Dict for existing summary symbol_id / id pair
-summaryDict = {}
-for data in summaryDbRecords:
-  summaryDict[data[1]] = data[0]
+priceDict = {}
+for data in priceDbRecords:
+  priceDict[str(data[1]) + '#' + data[3].strftime('%Y-%m-%d')] = None
 
 # To store multiple record data for db upload
-updateRows = ()
-insertRows = ()
+rows = ()
+countOfDup = 0
+countOfUnique = 0
 
-# Check if summary record already exists in db
-for record in summary:
-  # If summary exists, update in db
+for record in price:
   symbolId = symbolDict[record['symbol']]
-  if symbolId in summaryDict:
-    record['symbol_id'] = symbolId
-    record['id'] = summaryDict[symbolId]
-    del record['symbol']
+  record['symbol_id'] = symbolId
+  del record['symbol']
 
-    # To store a record data for db upload
-    row = ()
-    for item in record.items():
-      if item[1] == 'None':
-        row += (None,)
-      else:
-        row += (item[1],)
-
-    updateRows += (row,)
-  # If summary not exists, insert to db
+  dupCheckKey = str(record['symbol_id']) + '#' + record['date'].strftime('%Y-%m-%d')
+  
+  if dupCheckKey in priceDict:
+    countOfDup += 1
   else:
-    record['symbol_id'] = symbolDict[record['symbol']]
-    del record['symbol']
-
     # To store a record data for db upload
     row = ()
     for item in record.items():
@@ -101,74 +66,27 @@ for record in summary:
       else:
         row += (item[1],)
 
-    insertRows += (row,)
+    rows += (row,)
+    countOfUnique += 1
 
-# Insert summary records in db 
-if len(insertRows) > 0:
+print('Price record validation: Unique records = ', countOfUnique, 'Duplicate records = ', countOfDup)
+ 
 
-  args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in insertRows)
+# # Insert summary records in db 
+# if len(rows) > 0:
 
-  try:
-    cur.execute('INSERT INTO stock_summary (sector, long_business_summary, \
-      current_price, recommendation_key, target_mean_price,\
-        earnings_growth, current_ratio, debt_to_equity, \
-          return_on_equity, short_name, fifty_two_week_change, \
-            price_to_book, forward_pe, dividend_yield, symbol_id) VALUES ' + args_str)
-    conn.commit()
-    print("Query to add summary successful")
-  except Exception as e:
-    print(e)
-    print("Query to add symbols failed")
-else:
-  print("There is no new summary to insert")
+#   args_str = ','.join(cur.mogrify("(%s, %s, %s)", x).decode("utf-8") for x in rows)
 
-# Update summary records in db  
-if len(updateRows) > 0:
+#   try:
+#     cur.execute('INSERT INTO stock_price (price, date, symbol_id) VALUES ' + args_str)
+#     conn.commit()
+#     print("Query to add price successful")
+#   except Exception as e:
+#     print(e)
+#     print("Query to add price failed")
+# else:
+#   print("There is no new price to insert")
 
-  try:
-    update_query = """UPDATE stock_summary AS s
-                    SET sector = data.sector,
-                    long_business_summary = data.long_business_summary,
-                    current_price = data.current_price,
-                    recommendation_key = data.recommendation_key,
-                    target_mean_price = data.target_mean_price,
-                    earnings_growth = data.earnings_growth,
-                    current_ratio = data.current_ratio,
-                    debt_to_equity = data.debt_to_equity,
-                    return_on_equity = data.return_on_equity,
-                    short_name = data.short_name,
-                    fifty_two_week_change = data.fifty_two_week_change,
-                    price_to_book = data.price_to_book,
-                    forward_pe = data.forward_pe,
-                    dividend_yield = data.dividend_yield,
-                    symbol_id = data.symbol_id
-                    FROM (VALUES %s) AS data(sector,
-                    long_business_summary,
-                    current_price,
-                    recommendation_key,
-                    target_mean_price,
-                    earnings_growth,
-                    current_ratio,
-                    debt_to_equity,
-                    return_on_equity,
-                    short_name,
-                    fifty_two_week_change,
-                    price_to_book,
-                    forward_pe,
-                    dividend_yield,
-                    symbol_id,
-                    id) 
-                    WHERE s.id = data.id"""
 
-    psycopg2.extras.execute_values(cur, update_query, updateRows, template=None, page_size=100)
-    conn.commit()
-    print("Query to update summary successful")
-  except Exception as e:
-    print(e)
-    print("Query to update symbols failed")
-else:
-  print("There are no summary to update")
 
 conn.close()
-
-print("--- %s seconds ---" % (time.time() - start_time))
