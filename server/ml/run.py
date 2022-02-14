@@ -85,14 +85,25 @@ for record in summary:
     insertRows += (row,)
 
 # Insert summary records in db  
+# args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in updateRows)
+
+# try:
+#   cur.execute('INSERT INTO stock_summary (sector, long_business_summary, \
+#     current_price, recommendation_key, target_mean_price,\
+#        earnings_growth, current_ratio, debt_to_equity, \
+#          return_on_equity, short_name, "52_week_change", \
+#            price_to_book, forward_pe, dividend_yield, symbol_id) VALUES ' + args_str)
+#   conn.commit()
+#   print("Query to add summary successful")
+# except Exception as e:
+#   print(e)
+#   print("Query to add symbols failed")
+
+# Update summary records in db  
 args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in updateRows)
 
 try:
-  cur.execute('INSERT INTO stock_summary (sector, long_business_summary, \
-    current_price, recommendation_key, target_mean_price,\
-       earnings_growth, current_ratio, debt_to_equity, \
-         return_on_equity, short_name, "52_week_change", \
-           price_to_book, forward_pe, dividend_yield, symbol_id) VALUES ' + args_str)
+  cur.execute( + args_str)
   conn.commit()
   print("Query to add summary successful")
 except Exception as e:
@@ -100,6 +111,15 @@ except Exception as e:
   print("Query to add symbols failed")
   
 
+# c = db.cursor()
+# update_query = """UPDATE my_table AS t 
+#                   SET name = e.name 
+#                   FROM (VALUES %s) AS e(name, id) 
+#                   WHERE e.id = t.id;"""
+
+# psycopg2.extras.execute_values (
+#     c, update_query, new_values, template=None, page_size=100
+# )
 
 
 
