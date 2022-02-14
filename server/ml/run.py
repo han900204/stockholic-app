@@ -10,22 +10,19 @@ from feedPrice import feedPrice
 stock = Stock()
 
 # FEED SYMBOLS DATA
-
 feedSymbol(stock, conn)
 
-# REGISTER UPDATED SYMBOLS
 '''
 NOTE: Symbol needs to be registered in instance of Stock class
 before running getSummary and getPrice methods
 ''' 
+# REGISTER UPDATED SYMBOLS
 symbolDict = registerTickers(stock, conn)
 
 # FEED SUMMARY DATA
-
 feedSummary(stock, conn, symbolDict)
 
 # FEED PRICE DATA
-
 feedPrice(stock, conn, symbolDict)
 
 conn.close()
