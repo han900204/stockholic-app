@@ -3,7 +3,7 @@ import yfinance as yf
 msft = yf.Ticker("MSFT")
 
 # get stock info
-print(msft.info.keys())
+# print(msft.info.keys())
 # print(msft.financials)
 # print(msft.balance_sheet)
 
@@ -12,8 +12,8 @@ print(msft.info.keys())
 # for ticker in tickers.tickers:
 #   print(ticker, tickers.tickers[ticker].history(period='1mo'))
 
-# hist = msft.history(period="1mo")
-# print(hist)
+hist = msft.history(period="1mo")
+print(hist)
 
 # data = yf.download(  # or pdr.get_data_yahoo(...
 #         # tickers list or string as well

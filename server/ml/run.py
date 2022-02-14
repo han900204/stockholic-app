@@ -6,7 +6,7 @@ start_time = time.time()
 
 stock = Stock()
 
-# UPDATE SYMBOLS
+# FEED SYMBOLS DATA
 
 # Get stock symbols
 symbols = stock.getSymbols(True)
@@ -23,6 +23,7 @@ dbRecords = [data[1] for data in dbRecords]
 # Exclude existing symbols in db from upload
 symbols = [s for s in symbols if s not in dbRecords]
 
+# Add symbols to db
 if len(symbols) > 0:
   for s in symbols:
     rows += ((s,),)
@@ -39,7 +40,7 @@ if len(symbols) > 0:
 else:
   print("There is no new symbols to update DB")
 
-# UPDATE SUMMARY
+# FEED SUMMARY DATA
 
 # Get updated symbols from db
 cur.execute("""SELECT * FROM symbol""")
@@ -50,8 +51,11 @@ symbolDict = {}
 for data in symbolDbRecords:
   symbolDict[data[1]] = data[0]
 
+# Register updated symbols in stock object
+stock.registerTickers(symbolDict.keys())
+
 # Get stock summary
-summary = stock.getSummary(symbolDict.keys())
+summary = stock.getSummary()
 
 # Get summary from db
 cur.execute("""SELECT * FROM stock_summary""")
@@ -99,64 +103,71 @@ for record in summary:
 
     insertRows += (row,)
 
-# Insert summary records in db  
-args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in insertRows)
+# Insert summary records in db 
+if len(insertRows) > 0:
 
-try:
-  cur.execute('INSERT INTO stock_summary (sector, long_business_summary, \
-    current_price, recommendation_key, target_mean_price,\
-       earnings_growth, current_ratio, debt_to_equity, \
-         return_on_equity, short_name, fifty_two_week_change, \
-           price_to_book, forward_pe, dividend_yield, symbol_id) VALUES ' + args_str)
-  conn.commit()
-  print("Query to add summary successful")
-except Exception as e:
-  print(e)
-  print("Query to add symbols failed")
+  args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in insertRows)
+
+  try:
+    cur.execute('INSERT INTO stock_summary (sector, long_business_summary, \
+      current_price, recommendation_key, target_mean_price,\
+        earnings_growth, current_ratio, debt_to_equity, \
+          return_on_equity, short_name, fifty_two_week_change, \
+            price_to_book, forward_pe, dividend_yield, symbol_id) VALUES ' + args_str)
+    conn.commit()
+    print("Query to add summary successful")
+  except Exception as e:
+    print(e)
+    print("Query to add symbols failed")
+else:
+  print("There is no new summary to insert")
 
 # Update summary records in db  
-try:
-  print('updateRows', updateRows, '\n\n')
-  update_query = """UPDATE stock_summary AS s
-                  SET sector = data.sector,
-                  long_business_summary = data.long_business_summary,
-                  current_price = data.current_price,
-                  recommendation_key = data.recommendation_key,
-                  target_mean_price = data.target_mean_price,
-                  earnings_growth = data.earnings_growth,
-                  current_ratio = data.current_ratio,
-                  debt_to_equity = data.debt_to_equity,
-                  return_on_equity = data.return_on_equity,
-                  short_name = data.short_name,
-                  fifty_two_week_change = data.fifty_two_week_change,
-                  price_to_book = data.price_to_book,
-                  forward_pe = data.forward_pe,
-                  dividend_yield = data.dividend_yield,
-                  symbol_id = data.symbol_id
-                  FROM (VALUES %s) AS data(sector,
-                  long_business_summary,
-                  current_price,
-                  recommendation_key,
-                  target_mean_price,
-                  earnings_growth,
-                  current_ratio,
-                  debt_to_equity,
-                  return_on_equity,
-                  short_name,
-                  fifty_two_week_change,
-                  price_to_book,
-                  forward_pe,
-                  dividend_yield,
-                  symbol_id,
-                  id) 
-                  WHERE s.id = data.id"""
+if len(updateRows) > 0:
 
-  psycopg2.extras.execute_values(cur, update_query, updateRows, template=None, page_size=100)
-  conn.commit()
-  print("Query to update summary successful")
-except Exception as e:
-  print(e)
-  print("Query to update symbols failed")
+  try:
+    update_query = """UPDATE stock_summary AS s
+                    SET sector = data.sector,
+                    long_business_summary = data.long_business_summary,
+                    current_price = data.current_price,
+                    recommendation_key = data.recommendation_key,
+                    target_mean_price = data.target_mean_price,
+                    earnings_growth = data.earnings_growth,
+                    current_ratio = data.current_ratio,
+                    debt_to_equity = data.debt_to_equity,
+                    return_on_equity = data.return_on_equity,
+                    short_name = data.short_name,
+                    fifty_two_week_change = data.fifty_two_week_change,
+                    price_to_book = data.price_to_book,
+                    forward_pe = data.forward_pe,
+                    dividend_yield = data.dividend_yield,
+                    symbol_id = data.symbol_id
+                    FROM (VALUES %s) AS data(sector,
+                    long_business_summary,
+                    current_price,
+                    recommendation_key,
+                    target_mean_price,
+                    earnings_growth,
+                    current_ratio,
+                    debt_to_equity,
+                    return_on_equity,
+                    short_name,
+                    fifty_two_week_change,
+                    price_to_book,
+                    forward_pe,
+                    dividend_yield,
+                    symbol_id,
+                    id) 
+                    WHERE s.id = data.id"""
+
+    psycopg2.extras.execute_values(cur, update_query, updateRows, template=None, page_size=100)
+    conn.commit()
+    print("Query to update summary successful")
+  except Exception as e:
+    print(e)
+    print("Query to update symbols failed")
+else:
+  print("There are no summary to update")
 
 conn.close()
 

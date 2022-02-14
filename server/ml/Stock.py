@@ -11,6 +11,7 @@ from dbCon import conn
 class Stock:
 
     def __init__(self):
+        self.yfTickers = None
         self.summaryFieldMap = {
             "symbol": "symbol",
             "sector": "sector",
@@ -28,8 +29,13 @@ class Stock:
             "forwardPE": "forward_pe",
             "dividendYield": "dividend_yield",
         }
+        self.priceFieldMap = {
+            "symbol": "symbol",
+            "Close": "price",
+            "Date": "date"
+        }
 
-    # This function will retrieve the current S&P500 Stock Tickers from Wikipedia
+    # This method will retrieve the current S&P500 Stock Tickers from Wikipedia
     def getSymbols(self, sampling=False):
         # Sampling for Testing Purpose
         if sampling:
@@ -54,24 +60,61 @@ class Stock:
 
         return tickers
 
-    # This function will retrieve the stock summary data from yfinance
-    def getSummary(self, symbols):
+    # This method will register yfinance tickers
+    def registerTickers(self, symbols):
         '''
         symbols: list of stock symbols
         '''
-        symbols = " ".join(symbols)
+        try:
+            symbols = " ".join(symbols)
         
-        yfTickers = yf.Tickers(symbols)
+            self.yfTickers = yf.Tickers(symbols)
 
+            print("Tickers registered successfully")
+        except Exception as e:
+            print("Ticker registration failed: \n\n", e)
+
+
+    # This method will retrieve the stock summary data from yfinance
+    def getSummary(self):
+        
         summary = []
 
-        for yfTicker in yfTickers.tickers:
-            summaryData = yfTickers.tickers[yfTicker].info
+        for yfTicker in self.yfTickers.tickers:
+            summaryData = self.yfTickers.tickers[yfTicker].info
 
             filteredSummary = {}
 
+            # Rename columns to match db schema
             for item in self.summaryFieldMap.items():
                 filteredSummary[item[1]] = summaryData[item[0]]
 
             summary.append(filteredSummary)
+
         return summary
+
+    # This method will retrieve the stock price data from yfinance
+    def getPrice(self):
+        '''
+        symbols: list of stock symbols
+        '''
+        
+        price = []
+
+        for yfTicker in self.yfTickers.tickers:
+            # Get 5 days stock data
+            priceData = self.yfTickers.tickers[yfTicker].history(period='5d')
+            # Convert Data index to column
+            priceData.reset_index(level=['Date'], inplace=True)
+            # Add symbol column
+            priceData['symbol'] = yfTicker
+            # Filter by required coloumns and rename columns to match db schema
+            priceData = priceData.filter(items=self.priceFieldMap.keys(), axis=1)
+            priceData.rename(mapper=self.priceFieldMap, axis=1, inplace=True)
+            # Convert dataframe to dict
+            priceData = priceData.to_dict(orient='index')
+            
+            for data in priceData.values():
+                price.append(data)
+        
+        return price
