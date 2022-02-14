@@ -23,7 +23,7 @@ class Stock:
             "debtToEquity": "debt_to_equity",
             "returnOnEquity": "return_on_equity",
             "shortName": "short_name",
-            "52WeekChange": "52_week_change",
+            "52WeekChange": "fifty_two_week_change",
             "priceToBook": "price_to_book",
             "forwardPE": "forward_pe",
             "dividendYield": "dividend_yield",
@@ -33,7 +33,7 @@ class Stock:
     def getSymbols(self, sampling=False):
         # Sampling for Testing Purpose
         if sampling:
-            return ['AAPL', 'TSLA', 'AMZN', 'MSFT']
+            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL']
 
         # Rotate User Agents To Avoid of Access Block
         user_agent = random.choice(user_agent_list)
@@ -67,6 +67,7 @@ class Stock:
 
         for yfTicker in yfTickers.tickers:
             summaryData = yfTickers.tickers[yfTicker].info
+
             filteredSummary = {}
 
             for item in self.summaryFieldMap.items():
@@ -74,5 +75,3 @@ class Stock:
 
             summary.append(filteredSummary)
         return summary
-
-
