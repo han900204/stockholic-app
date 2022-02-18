@@ -39,7 +39,7 @@ class Stock:
     def getSymbols(self, sampling=False):
         # Sampling for Testing Purpose
         if sampling:
-            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL']
+            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL', 'BAC', 'CNQ', 'AMD']
 
         # Rotate User Agents To Avoid of Access Block
         user_agent = random.choice(user_agent_list)
@@ -103,7 +103,7 @@ class Stock:
 
         for yfTicker in self.yfTickers.tickers:
             # Get 5 days stock data
-            priceData = self.yfTickers.tickers[yfTicker].history(period='5d')
+            priceData = self.yfTickers.tickers[yfTicker].history(period='5d') # Default to be 5d
             # Convert Data index to column
             priceData.reset_index(level=['Date'], inplace=True)
             # Add symbol column

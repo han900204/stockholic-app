@@ -16,7 +16,7 @@ def feedPrice(stock, conn, symbolDict):
 
   # Get price from db
   today = datetime.date.today()
-  delta = datetime.timedelta(days = 6)
+  delta = datetime.timedelta(days = 6) # Default to be 6
   targetDate = today - delta
 
   cur.execute("""SELECT * FROM stock_price WHERE date >= %s""", (targetDate,))
