@@ -20,7 +20,7 @@ const runPy = () => {
 
 module.exports = () => {
 	console.log('Running python scripts...');
-	cron.schedule('* * * * *', () => {
+	cron.schedule('0 0 * * *', () => {
 		runPy();
 	});
 };
