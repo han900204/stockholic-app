@@ -24,7 +24,6 @@ class Stock:
             "debtToEquity": "debt_to_equity",
             "returnOnEquity": "return_on_equity",
             "shortName": "short_name",
-            "52WeekChange": "fifty_two_week_change",
             "priceToBook": "price_to_book",
             "forwardPE": "forward_pe",
             "dividendYield": "dividend_yield",
