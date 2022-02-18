@@ -6,11 +6,11 @@ const runPy = () => {
   let options = {
     mode: 'text',
     pythonOptions: ['-u'], // get print results in real-time
-    scriptPath: path.resolve(__dirname, '../ml/dataCollection/'),
+    scriptPath: path.resolve(__dirname, '../ml/'),
     args: [], //An argument which can be accessed in the script using sys.argv[1]
   };
 
-  PythonShell.run('updateSymbol.py', options, function (err, result) {
+  PythonShell.run('run.py', options, function (err, result) {
     if (err) throw err;
     // result is an array consisting of messages collected
     // during execution of script.
