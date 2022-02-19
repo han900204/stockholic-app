@@ -23,8 +23,20 @@ summary.type = new GraphQLObjectType({
 	name: 'summary',
 	fields: () => ({
 		id: { type: GraphQLInt },
-		symbol: {},
-		sector: {},
+		symbol_id: { type: GraphQLInt },
+		sector: { type: GraphQLString },
+		long_business_summary: { type: GraphQLString },
+		current_price: { type: GraphQLFloat },
+		recommendation_key: { type: GraphQLString },
+		target_mean_price: { type: GraphQLFloat },
+		earnings_growth: { type: GraphQLFloat },
+		current_ratio: { type: GraphQLFloat },
+		debt_to_equity: { type: GraphQLFloat },
+		return_on_equity: { type: GraphQLFloat },
+		short_name: { type: GraphQLString },
+		price_to_book: { type: GraphQLFloat },
+		forward_pe: { type: GraphQLFloat },
+		dividend_yield: { type: GraphQLFloat },
 	}),
 });
 
