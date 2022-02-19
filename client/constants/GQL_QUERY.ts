@@ -385,6 +385,7 @@ const GQL_QUERY: QueryInterface = {
 			getSummaries {
 				id
 				symbol_id
+				symbol: name
 				sector
 				long_business_summary
 				current_price
@@ -393,7 +394,8 @@ const GQL_QUERY: QueryInterface = {
 				earnings_growth
 				current_ratio
 				debt_to_equity
-				return_on_equity: short_name
+				return_on_equity
+				short_name
 				price_to_book
 				forward_pe
 				dividend_yield

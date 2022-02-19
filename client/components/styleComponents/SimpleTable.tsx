@@ -9,86 +9,86 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Link } from 'react-router-dom';
 
-export default function SimpleTable({ columns, rows, link }) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+export default function SimpleTable({ columns, rows, linkCol, linkUrl }) {
+	const [page, setPage] = React.useState(0);
+	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+	const handleChangePage = (event: unknown, newPage: number) => {
+		setPage(newPage);
+	};
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement>
+	) => {
+		setRowsPerPage(+event.target.value);
+		setPage(0);
+	};
 
-  return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return link && column.id === link ? (
-                        <TableCell
-                          key={String(column.id) + '-' + String(row.id)}
-                          align={column.align}
-                        >
-                          <Link
-                            to={`/forum/${row.id}`}
-                            style={{ textDecoration: 'none' }}
-                          >
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </Link>
-                        </TableCell>
-                      ) : (
-                        <TableCell
-                          key={String(column.id) + '-' + String(row.id)}
-                          align={column.align}
-                        >
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component='div'
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
-  );
+	return (
+		<Paper sx={{ width: '100%', overflow: 'hidden' }}>
+			<TableContainer sx={{ maxHeight: 440 }}>
+				<Table stickyHeader aria-label='sticky table'>
+					<TableHead>
+						<TableRow>
+							{columns.map((column) => (
+								<TableCell
+									key={column.id}
+									align={column.align}
+									style={{ minWidth: column.minWidth }}
+								>
+									{column.label}
+								</TableCell>
+							))}
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{rows
+							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+							.map((row) => {
+								return (
+									<TableRow hover role='checkbox' tabIndex={-1} key={row.id}>
+										{columns.map((column) => {
+											const value = row[column.id];
+											return linkCol && column.id === linkCol ? (
+												<TableCell
+													key={String(column.id) + '-' + String(row.id)}
+													align={column.align}
+												>
+													<Link
+														to={`${linkUrl}/${row.id}`}
+														style={{ textDecoration: 'none' }}
+													>
+														{column.format && typeof value === 'number'
+															? column.format(value)
+															: value}
+													</Link>
+												</TableCell>
+											) : (
+												<TableCell
+													key={String(column.id) + '-' + String(row.id)}
+													align={column.align}
+												>
+													{column.format && typeof value === 'number'
+														? column.format(value)
+														: value}
+												</TableCell>
+											);
+										})}
+									</TableRow>
+								);
+							})}
+					</TableBody>
+				</Table>
+			</TableContainer>
+			<TablePagination
+				rowsPerPageOptions={[10, 25, 100]}
+				component='div'
+				count={rows.length}
+				rowsPerPage={rowsPerPage}
+				page={page}
+				onPageChange={handleChangePage}
+				onRowsPerPageChange={handleChangeRowsPerPage}
+			/>
+		</Paper>
+	);
 }

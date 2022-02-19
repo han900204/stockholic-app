@@ -24,6 +24,7 @@ summary.type = new GraphQLObjectType({
 	fields: () => ({
 		id: { type: GraphQLInt },
 		symbol_id: { type: GraphQLInt },
+		name: { type: GraphQLString },
 		sector: { type: GraphQLString },
 		long_business_summary: { type: GraphQLString },
 		current_price: { type: GraphQLFloat },
@@ -49,7 +50,7 @@ summary.query.getSummaries = {
 					stock_summary: ['*'],
 				},
 				{
-					symbol: [],
+					symbol: ['name'],
 				},
 			],
 			[{ stock_summary: 'symbol_id', symbol: 'id' }],
@@ -60,6 +61,7 @@ summary.query.getSummaries = {
 			}
 		);
 		const res = await db.query(sqlQuery);
+		console.log(res.rows);
 		console.log(`${res.rows.length} summaries retrieved`);
 		return res.rows;
 	},

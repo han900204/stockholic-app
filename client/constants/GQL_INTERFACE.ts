@@ -300,6 +300,7 @@ export interface GetSymbolsResponse {
 export interface SummaryData {
 	id: number;
 	symbol_id: number;
+	symbol: string;
 	sector: string | null;
 	long_business_summary: string | null;
 	current_price: number | null;
