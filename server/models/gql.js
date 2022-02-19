@@ -15,6 +15,7 @@ const comment = require('./schema/commentSchema');
 const room = require('./schema/roomSchema');
 const message = require('./schema/messageSchema');
 const symbol = require('./schema/symbolSchema');
+const summary = require('./schema/summarySchema');
 
 /**
  * Load .env file
@@ -39,6 +40,7 @@ const RootQueryType = new GraphQLObjectType({
 		getRooms: room.query.getRooms,
 		getMessages: message.query.getMessages,
 		getSymbols: symbol.query.getSymbols,
+		getSummaries: summary.query.getSummaries,
 	},
 });
 
