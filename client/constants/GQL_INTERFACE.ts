@@ -30,6 +30,7 @@ export interface QueryInterface {
 	REMOVE_SUBSCRIBER_QUERY: DocumentNode;
 	SUBSCRIBE_MESSAGE: DocumentNode;
 	GET_SYMBOLS_QUERY: DocumentNode;
+	GET_SUMMARY_QUERY: DocumentNode;
 	GET_SUMMARIES_QUERY: DocumentNode;
 	GET_PRICES_QUERY: DocumentNode;
 }
@@ -318,6 +319,14 @@ export interface SummaryData {
 
 export interface GetSummariesResponse {
 	getSummaries: SummaryData[];
+}
+
+export interface GetSummaryPayload {
+	id: number;
+}
+
+export interface GetSummaryResponse {
+	getSummary: SummaryData;
 }
 
 /**

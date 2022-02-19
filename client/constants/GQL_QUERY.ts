@@ -403,6 +403,29 @@ const GQL_QUERY: QueryInterface = {
 		}
 	`,
 
+	GET_SUMMARY_QUERY: gql`
+		query GetSummary($id: Int!) {
+			getSummary(id: $id) {
+				id
+				symbol_id
+				symbol: name
+				sector
+				long_business_summary
+				current_price
+				recommendation_key
+				target_mean_price
+				earnings_growth
+				current_ratio
+				debt_to_equity
+				return_on_equity
+				short_name
+				price_to_book
+				forward_pe
+				dividend_yield
+			}
+		}
+	`,
+
 	GET_PRICES_QUERY: gql`
 		query GetPrices($symbol_id: Int!) {
 			getPrices(symbol_id: $symbol_id) {

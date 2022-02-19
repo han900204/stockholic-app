@@ -42,6 +42,7 @@ const RootQueryType = new GraphQLObjectType({
 		getMessages: message.query.getMessages,
 		getSymbols: symbol.query.getSymbols,
 		getSummaries: summary.query.getSummaries,
+		getSummary: summary.query.getSummary,
 		getPrices: price.query.getPrices,
 	},
 });

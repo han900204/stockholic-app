@@ -163,11 +163,11 @@ sql.getSelectJoinQuery = (schema, join, whereClause = [], orderBy = {}) => {
 			.reduce((str, table) => {
 				const tableName = Object.keys(table)[0];
 				table[tableName].forEach((field) => {
-					str += `${alias[tableName]}.${field}, `;
+					str += `${alias[tableName]}.${field} AND `;
 				});
 				return str;
 			}, 'WHERE ')
-			.replace(/(,\s$)/g, '');
+			.replace(/(AND\s$)/g, '');
 
 		query = `${query} ${whereClauseVal}`;
 	}

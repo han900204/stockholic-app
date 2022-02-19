@@ -61,9 +61,33 @@ summary.query.getSummaries = {
 			}
 		);
 		const res = await db.query(sqlQuery);
-		console.log(res.rows);
 		console.log(`${res.rows.length} summaries retrieved`);
 		return res.rows;
+	},
+};
+
+summary.query.getSummary = {
+	type: summary.type,
+	args: {
+		id: { type: GraphQLInt },
+	},
+	async resolve(parent, args) {
+		const sqlQuery = sql.getSelectJoinQuery(
+			[
+				{
+					stock_summary: ['*'],
+				},
+				{
+					symbol: ['name'],
+				},
+			],
+			[{ stock_summary: 'symbol_id', symbol: 'id' }],
+			[{ symbol: ['is_active = True'] }, { stock_summary: [`id = ${args.id}`] }]
+		);
+
+		const res = await db.query(sqlQuery);
+		console.log('Summary retrieved', res.rows[0]);
+		return res.rows[0];
 	},
 };
 
