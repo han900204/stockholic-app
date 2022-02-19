@@ -29,6 +29,7 @@ import LoadingForm from './components/LoadingForm';
 import ForumContainer from './containers/ForumContainer';
 import ChatContainer from './containers/ChatContainer';
 import StockListContainer from './containers/StockListContainer';
+import StockContainer from './containers/StockContainer';
 
 const App = () => {
 	const { isAuthenticated, isPending } = useSelector(
@@ -73,7 +74,6 @@ const App = () => {
 				<NavContainer />
 				<div>
 					<Routes>
-						{/* <Route path='*' element={<Navigate to='/forum' />} /> */}
 						<Route path='/profile/:investorId' element={<ProfileContainer />} />
 						<Route
 							path='/portfolio/:investorId'
@@ -84,6 +84,7 @@ const App = () => {
 						<Route path='/forum/:id' element={<ForumContainer />} />
 						<Route path='/dashboard' element={<div>Dashboard</div>} />
 						<Route path='/stocks' element={<StockListContainer />} />
+						<Route path='/stocks/:symbolId' element={<StockContainer />} />
 					</Routes>
 				</div>
 			</Router>

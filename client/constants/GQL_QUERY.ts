@@ -383,8 +383,7 @@ const GQL_QUERY: QueryInterface = {
 	GET_SUMMARIES_QUERY: gql`
 		query GetSummaries {
 			getSummaries {
-				id
-				symbol_id
+				id: symbol_id
 				symbol: name
 				sector
 				long_business_summary
@@ -404,10 +403,9 @@ const GQL_QUERY: QueryInterface = {
 	`,
 
 	GET_SUMMARY_QUERY: gql`
-		query GetSummary($id: Int!) {
-			getSummary(id: $id) {
-				id
-				symbol_id
+		query GetSummary($symbol_id: Int!) {
+			getSummary(symbol_id: $symbol_id) {
+				id: symbol_id
 				symbol: name
 				sector
 				long_business_summary

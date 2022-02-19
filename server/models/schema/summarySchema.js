@@ -69,7 +69,7 @@ summary.query.getSummaries = {
 summary.query.getSummary = {
 	type: summary.type,
 	args: {
-		id: { type: GraphQLInt },
+		symbol_id: { type: GraphQLInt },
 	},
 	async resolve(parent, args) {
 		const sqlQuery = sql.getSelectJoinQuery(
@@ -82,7 +82,10 @@ summary.query.getSummary = {
 				},
 			],
 			[{ stock_summary: 'symbol_id', symbol: 'id' }],
-			[{ symbol: ['is_active = True'] }, { stock_summary: [`id = ${args.id}`] }]
+			[
+				{ symbol: ['is_active = True'] },
+				{ stock_summary: [`symbol_id = ${args.symbol_id}`] },
+			]
 		);
 
 		const res = await db.query(sqlQuery);
