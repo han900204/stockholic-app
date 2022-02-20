@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -20,6 +21,7 @@ import {
 	GetAuthPayload,
 	GetInvestorsResponse,
 } from './constants/GQL_INTERFACE';
+import useTheme from './hooks/useTheme';
 import LoginContainer from './containers/LoginContainer';
 import SignUpContainer from './containers/SignUpContainer';
 import ProfileContainer from './containers/ProfileContainer';
@@ -32,6 +34,7 @@ import StockListContainer from './containers/StockListContainer';
 import StockContainer from './containers/StockContainer';
 
 const App = () => {
+	const { theme } = useTheme();
 	const { isAuthenticated, isPending } = useSelector(
 		(state: RootState) => state.investor
 	);
@@ -70,24 +73,29 @@ const App = () => {
 		return <LoadingForm />;
 	} else {
 		return isAuthenticated ? (
-			<Router>
-				<NavContainer />
-				<div>
-					<Routes>
-						<Route path='/profile/:investorId' element={<ProfileContainer />} />
-						<Route
-							path='/portfolio/:investorId'
-							element={<div>Portfolio</div>}
-						/>
-						<Route path='/chat/:investorId' element={<ChatContainer />} />
-						<Route path='/forum' element={<ForumListContainer />} />
-						<Route path='/forum/:id' element={<ForumContainer />} />
-						<Route path='/dashboard' element={<div>Dashboard</div>} />
-						<Route path='/stocks' element={<StockListContainer />} />
-						<Route path='/stocks/:symbolId' element={<StockContainer />} />
-					</Routes>
-				</div>
-			</Router>
+			<ThemeProvider theme={theme}>
+				<Router>
+					<NavContainer />
+					<div>
+						<Routes>
+							<Route
+								path='/profile/:investorId'
+								element={<ProfileContainer />}
+							/>
+							<Route
+								path='/portfolio/:investorId'
+								element={<div>Portfolio</div>}
+							/>
+							<Route path='/chat/:investorId' element={<ChatContainer />} />
+							<Route path='/forum' element={<ForumListContainer />} />
+							<Route path='/forum/:id' element={<ForumContainer />} />
+							<Route path='/dashboard' element={<div>Dashboard</div>} />
+							<Route path='/stocks' element={<StockListContainer />} />
+							<Route path='/stocks/:symbolId' element={<StockContainer />} />
+						</Routes>
+					</div>
+				</Router>
+			</ThemeProvider>
 		) : (
 			<Router>
 				<div>

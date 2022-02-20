@@ -15,6 +15,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import ThemeToggle from '../components/styleComponents/ThemeToggle';
 
 const NavContainer = () => {
 	const investorId = useSelector(
@@ -33,6 +34,7 @@ const NavContainer = () => {
 	const settings: any[] = [
 		{ name: 'Profile', url: `/profile/${investorId}` },
 		{ name: 'Account', url: '' },
+		{ name: 'Theme' },
 		{ name: 'Logout' },
 	];
 
@@ -156,29 +158,41 @@ const NavContainer = () => {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{settings.map((setting, idx) =>
-								setting.name !== 'Logout' ? (
-									<Link
-										key={idx}
-										to={setting.url}
-										style={{ textDecoration: 'none' }}
-									>
-										<MenuItem onClick={handleCloseUserMenu}>
+							{settings.map((setting, idx) => {
+								if (setting.name === 'Theme') {
+									return (
+										<MenuItem key={idx}>
+											<ThemeToggle />
+										</MenuItem>
+									);
+								} else if (setting.name === 'Logout') {
+									return (
+										<MenuItem
+											key={idx}
+											onClick={() => {
+												handleCloseUserMenu();
+												logout();
+											}}
+										>
 											<Typography textAlign='center'>{setting.name}</Typography>
 										</MenuItem>
-									</Link>
-								) : (
-									<MenuItem
-										key={idx}
-										onClick={() => {
-											handleCloseUserMenu();
-											logout();
-										}}
-									>
-										<Typography textAlign='center'>{setting.name}</Typography>
-									</MenuItem>
-								)
-							)}
+									);
+								} else {
+									return (
+										<Link
+											key={idx}
+											to={setting.url}
+											style={{ textDecoration: 'none' }}
+										>
+											<MenuItem onClick={handleCloseUserMenu}>
+												<Typography textAlign='center'>
+													{setting.name}
+												</Typography>
+											</MenuItem>
+										</Link>
+									);
+								}
+							})}
 						</Menu>
 					</Box>
 				</Toolbar>
