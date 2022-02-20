@@ -7,8 +7,8 @@ const StockForm = ({ summaryData, priceData }) => {
 	return (
 		<>
 			<Subheading title={summaryData?.short_name} />
-			<div>Add Summary Info Here</div>
 			<PriceChart />
+			<div>Add Summary Info Here</div>
 		</>
 	);
 };
