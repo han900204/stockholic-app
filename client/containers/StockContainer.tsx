@@ -32,8 +32,6 @@ const StockContainer = () => {
 
 	if (summary.loading || price.loading) return <LoadingForm />;
 
-	console.log(summary.data, price.data);
-
 	return (
 		<>
 			<StockForm

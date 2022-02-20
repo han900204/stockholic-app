@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Subheading from './styleComponents/Subheading';
 import PriceChart from './PriceChart';
+import SummaryForm from './SummaryForm';
 import {} from '../constants/GQL_INTERFACE';
 
 const StockForm = ({ summaryData, priceData }) => {
@@ -8,7 +9,7 @@ const StockForm = ({ summaryData, priceData }) => {
 		<>
 			<Subheading title={summaryData?.short_name} />
 			<PriceChart />
-			<div>Add Summary Info Here</div>
+			<SummaryForm summaryData={summaryData} />
 		</>
 	);
 };
