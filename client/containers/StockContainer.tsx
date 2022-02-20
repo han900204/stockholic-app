@@ -11,9 +11,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import LoadingForm from '../components/LoadingForm';
 import { useParams } from 'react-router-dom';
+import StockForm from '../components/StockForm';
 
 const StockContainer = () => {
 	const params = useParams();
+
+	const investorId = useSelector(
+		(state: RootState) => state.investor.investorId
+	);
 
 	const summary = useQuery<GetSummaryResponse, GetSummaryPayload>(
 		GQL_QUERY.GET_SUMMARY_QUERY,
@@ -31,7 +36,10 @@ const StockContainer = () => {
 
 	return (
 		<>
-			<h1>Sup!</h1>
+			<StockForm
+				summaryData={summary.data?.getSummary}
+				priceData={price.data?.getPrices}
+			/>
 		</>
 	);
 };
