@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { useDispatch } from 'react-redux';
 import { setMode } from '../../features/themeSlice';
+import Typography from '@mui/material/Typography';
 
 export default function ThemeToggle() {
 	const dispatch = useDispatch();
@@ -16,24 +17,29 @@ export default function ThemeToggle() {
 	);
 
 	return (
-		<>
-			{theme.palette.mode} mode
-			<IconButton
-				onClick={() => {
-					if (mode === 'light') {
-						dispatch(setMode('dark'));
-					} else {
-						dispatch(setMode('light'));
-					}
-				}}
-				color='inherit'
-			>
-				{theme.palette.mode === 'dark' ? (
-					<Brightness7Icon />
-				) : (
-					<Brightness4Icon />
-				)}
-			</IconButton>
-		</>
+		<IconButton
+			onClick={() => {
+				if (mode === 'light') {
+					dispatch(setMode('dark'));
+				} else {
+					dispatch(setMode('light'));
+				}
+			}}
+			color='inherit'
+			disableFocusRipple={true}
+			disableRipple={true}
+			sx={{
+				p: 0,
+			}}
+		>
+			<Typography textAlign='center'>
+				{mode.replace(mode[0], mode[0].toUpperCase())} mode &nbsp;
+			</Typography>
+			{theme.palette.mode === 'dark' ? (
+				<Brightness7Icon />
+			) : (
+				<Brightness4Icon />
+			)}
+		</IconButton>
 	);
 }
