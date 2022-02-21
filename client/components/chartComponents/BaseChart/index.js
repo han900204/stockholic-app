@@ -18,7 +18,7 @@ const BaseChart = (drawChart, extraProps) => {
 			scaleBandPadding,
 			...restProps
 		} = props;
-		const { useScaleBands, findHoverData } = extraProps;
+		const { useScaleBands, findHoverData, isTimeseries } = extraProps;
 
 		const { margin, width, height, svgContainerClass } = svgProps;
 
@@ -32,6 +32,10 @@ const BaseChart = (drawChart, extraProps) => {
 			.scaleLinear()
 			.domain([xMinValue, xMaxValue])
 			.range([0, width]);
+
+		if (isTimeseries) {
+			xScale = d3.scaleTime().domain([xMinValue, xMaxValue]).range([0, width]);
+		}
 
 		if (useScaleBands.x) {
 			xScale = d3
