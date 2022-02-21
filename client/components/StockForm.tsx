@@ -5,11 +5,10 @@ import SummaryForm from './SummaryForm';
 import {} from '../constants/GQL_INTERFACE';
 
 const StockForm = ({ summaryData, priceData }) => {
-	console.log('Price Data', priceData);
 	return (
 		<>
 			<Subheading title={summaryData?.short_name} />
-			<PriceChart />
+			<PriceChart priceData={priceData} />
 			<SummaryForm summaryData={summaryData} />
 		</>
 	);
