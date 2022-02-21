@@ -38,7 +38,7 @@ class Stock:
     def getSymbols(self, sampling=False):
         # Sampling for Testing Purpose
         if sampling:
-            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL', 'BAC', 'CNQ', 'AMD']
+            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL', 'BAC', 'CNQ', 'AMD', 'FB', 'PYPL', 'VZ']
 
         # Rotate User Agents To Avoid of Access Block
         user_agent = random.choice(user_agent_list)
