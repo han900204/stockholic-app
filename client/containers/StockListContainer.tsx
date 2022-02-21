@@ -1,28 +1,42 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
-import GQL_QUERY from '../constants/GQL_QUERY';
-import { GetSummariesResponse } from '../constants/GQL_INTERFACE';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import LoadingForm from '../components/LoadingForm';
 import Subheading from '../components/styleComponents/Subheading';
-import StockTable from '../components/StockTable';
+import StockListSubContainer from './StockListSubContainer';
+import SearchBar from '../components/styleComponents/SearchBar';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import { useDispatch } from 'react-redux';
+import { setStockSearch } from '../features/searchSlice';
 
 const StockListContainer = () => {
 	const investorId = useSelector(
 		(state: RootState) => state.investor.investorId
 	);
-
-	const { loading, error, data } = useQuery<GetSummariesResponse>(
-		GQL_QUERY.GET_SUMMARIES_QUERY
+	const searchValue = useSelector(
+		(state: RootState) => state.search.stockSearch
 	);
 
-	if (loading) return <LoadingForm />;
+	// Handler to store a search value in searchSlice
+	const dispatch = useDispatch();
+	const searchHandler = (e) => {
+		e.preventDefault();
+		dispatch(setStockSearch(e.target.value));
+	};
 
 	return (
 		<>
-			<Subheading title='Stock List' />
-			<StockTable data={data} />
+			<Grid container spacing={2} sx={{ m: 0, p: 0 }}>
+				<Grid item xs={8}>
+					<Subheading title='Stock List' />
+				</Grid>
+				<Grid item xs={4}>
+					<Box display='flex' justifyContent='flex-end' sx={{ my: 3 }}>
+						<SearchBar value={searchValue} eHandler={searchHandler} />
+					</Box>
+				</Grid>
+			</Grid>
+			<StockListSubContainer searchValue={searchValue} />
 		</>
 	);
 };

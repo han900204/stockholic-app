@@ -43,6 +43,7 @@ summary.type = new GraphQLObjectType({
 
 summary.query.getSummaries = {
 	type: GraphQLList(summary.type),
+	args: { searchVal: { type: GraphQLString } },
 	async resolve(parent, args) {
 		const sqlQuery = sql.getSelectJoinQuery(
 			[
@@ -60,7 +61,13 @@ summary.query.getSummaries = {
 				option: 'ASC',
 			}
 		);
-		const res = await db.query(sqlQuery);
+		let res = await db.query(sqlQuery);
+		res.rows = res.rows.filter((row) => {
+			return (
+				row.name.toLowerCase().includes(args.searchVal.toLowerCase()) ||
+				row.short_name.toLowerCase().includes(args.searchVal.toLowerCase())
+			);
+		});
 		console.log(`${res.rows.length} summaries retrieved`);
 		return res.rows;
 	},

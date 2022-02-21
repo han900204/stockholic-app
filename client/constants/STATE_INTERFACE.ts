@@ -18,3 +18,7 @@ export interface RoomState {
 export interface ThemeState {
 	mode: 'light' | 'dark';
 }
+
+export interface SearchState {
+	stockSearch: string;
+}

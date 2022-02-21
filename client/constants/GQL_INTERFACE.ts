@@ -316,6 +316,10 @@ export interface SummaryData {
 	dividend_yield: number | null;
 }
 
+export interface GetSummariesPayload {
+	searchVal: string | undefined;
+}
+
 export interface GetSummariesResponse {
 	getSummaries: SummaryData[];
 }

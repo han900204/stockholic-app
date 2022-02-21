@@ -381,8 +381,8 @@ const GQL_QUERY: QueryInterface = {
 	`,
 
 	GET_SUMMARIES_QUERY: gql`
-		query GetSummaries {
-			getSummaries {
+		query GetSummaries($searchVal: String!) {
+			getSummaries(searchVal: $searchVal) {
 				id: symbol_id
 				symbol: name
 				sector
