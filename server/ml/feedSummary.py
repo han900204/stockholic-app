@@ -63,13 +63,13 @@ def feedSummary(stock, conn, symbolDict):
   # Insert summary records in db 
   if len(insertRows) > 0:
 
-    args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in insertRows)
+    args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", x).decode("utf-8") for x in insertRows)
 
     try:
       cur.execute('INSERT INTO stock_summary (sector, long_business_summary, \
         current_price, recommendation_key, target_mean_price,\
           earnings_growth, current_ratio, debt_to_equity, \
-            return_on_equity, short_name, fifty_two_week_change, \
+            return_on_equity, short_name, \
               price_to_book, forward_pe, dividend_yield, symbol_id) VALUES ' + args_str)
       conn.commit()
       print("Query to add summary successful")
@@ -94,7 +94,6 @@ def feedSummary(stock, conn, symbolDict):
                       debt_to_equity = data.debt_to_equity,
                       return_on_equity = data.return_on_equity,
                       short_name = data.short_name,
-                      fifty_two_week_change = data.fifty_two_week_change,
                       price_to_book = data.price_to_book,
                       forward_pe = data.forward_pe,
                       dividend_yield = data.dividend_yield,
@@ -109,7 +108,6 @@ def feedSummary(stock, conn, symbolDict):
                       debt_to_equity,
                       return_on_equity,
                       short_name,
-                      fifty_two_week_change,
                       price_to_book,
                       forward_pe,
                       dividend_yield,

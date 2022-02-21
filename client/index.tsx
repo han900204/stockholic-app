@@ -9,38 +9,38 @@ import { split, HttpLink } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:3000/subscriptions',
-  options: {
-    reconnect: true,
-  },
+	uri: 'ws://localhost:3000/subscriptions',
+	options: {
+		reconnect: true,
+	},
 });
 
 const httpLink = new HttpLink({
-  uri: '/graphql',
+	uri: '/graphql',
 });
 
 const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    );
-  },
-  wsLink,
-  httpLink
+	({ query }) => {
+		const definition = getMainDefinition(query);
+		return (
+			definition.kind === 'OperationDefinition' &&
+			definition.operation === 'subscription'
+		);
+	},
+	wsLink,
+	httpLink
 );
 
 const client = new ApolloClient({
-  link: splitLink,
-  cache: new InMemoryCache(),
+	link: splitLink,
+	cache: new InMemoryCache(),
 });
 
 render(
-  <ApolloProvider client={client}>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </ApolloProvider>,
-  document.getElementById('root')
+	<ApolloProvider client={client}>
+		<Provider store={store}>
+			<App />
+		</Provider>
+	</ApolloProvider>,
+	document.getElementById('root')
 );

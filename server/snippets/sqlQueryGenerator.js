@@ -9,18 +9,18 @@ const sql = {};
  * @returns SQL query
  */
 sql.getUpdateQuery = (table, payload, whereClause, returnFields) => {
-  const values = Object.keys(payload)
-    .reduce((value, field) => {
-      if (field === 'id') {
-        return value;
-      }
-      const fieldVal = payload[field].replace(/'/g, "''");
-      value += field + ' = ' + "'" + fieldVal + "', ";
-      return value;
-    }, '')
-    .replace(/(,\s$)/g, '');
+	const values = Object.keys(payload)
+		.reduce((value, field) => {
+			if (field === 'id') {
+				return value;
+			}
+			const fieldVal = payload[field].replace(/'/g, "''");
+			value += field + ' = ' + "'" + fieldVal + "', ";
+			return value;
+		}, '')
+		.replace(/(,\s$)/g, '');
 
-  return `
+	return `
   UPDATE ${table}
   SET ${values}
   WHERE ${whereClause.join(', ')}
@@ -37,26 +37,26 @@ sql.getUpdateQuery = (table, payload, whereClause, returnFields) => {
  * @returns SQL query
  */
 sql.getInsertQuery = (table, schema, payload, returnFields) => {
-  const fields = [];
-  const params = [];
-  const values = [];
+	const fields = [];
+	const params = [];
+	const values = [];
 
-  for (let i = 0; i < schema.length; i++) {
-    if (schema[i] in payload) {
-      fields.push(schema[i]);
-      params.push(`$${i + 1}`);
-      values.push(payload[schema[i]]);
-    }
-  }
+	for (let i = 0; i < schema.length; i++) {
+		if (schema[i] in payload) {
+			fields.push(schema[i]);
+			params.push(`$${i + 1}`);
+			values.push(payload[schema[i]]);
+		}
+	}
 
-  return [
-    `
+	return [
+		`
   INSERT INTO ${table} (${fields.join(', ')})
   VALUES (${params.join(', ')})
   RETURNING ${returnFields.join(', ')}
   `,
-    values,
-  ];
+		values,
+	];
 };
 
 /**
@@ -68,33 +68,33 @@ sql.getInsertQuery = (table, schema, payload, returnFields) => {
  * @returns SQL query
  */
 sql.getSelectQuery = (
-  table,
-  schema,
-  whereClause = [],
-  orderBy = { fields: [], option: 'ASC' }
+	table,
+	schema,
+	whereClause = [],
+	orderBy = { fields: [], option: 'ASC' }
 ) => {
-  let query = '';
+	let query = '';
 
-  query = `
+	query = `
     SELECT ${schema.join(', ')}
     FROM ${table}
     `;
 
-  if (whereClause.length !== 0) {
-    query = `
+	if (whereClause.length !== 0) {
+		query = `
     ${query}
     WHERE ${whereClause.join(', ')}
     `;
-  }
+	}
 
-  if (orderBy.fields.length !== 0) {
-    query = `
+	if (orderBy.fields.length !== 0) {
+		query = `
     ${query}
     ORDER BY ${orderBy.fields.join(', ')} ${option}
     `;
-  }
+	}
 
-  return query;
+	return query;
 };
 
 /**
@@ -124,69 +124,69 @@ sql.getSelectQuery = (
 // };
 
 sql.getSelectJoinQuery = (schema, join, whereClause = [], orderBy = {}) => {
-  let query = '';
+	let query = '';
 
-  const alias = {};
+	const alias = {};
 
-  const selectVal = schema
-    .reduce((str, table, idx) => {
-      const tableName = Object.keys(table)[0];
-      alias[tableName] = `alias${idx}`;
-      table[tableName].forEach((field, idx) => {
-        str += `${alias[tableName]}.${field}, `;
-      });
-      return str;
-    }, '')
-    .replace(/(,\s$)/g, '');
+	const selectVal = schema
+		.reduce((str, table, idx) => {
+			const tableName = Object.keys(table)[0];
+			alias[tableName] = `alias${idx}`;
+			table[tableName].forEach((field, idx) => {
+				str += `${alias[tableName]}.${field}, `;
+			});
+			return str;
+		}, '')
+		.replace(/(,\s$)/g, '');
 
-  query += `SELECT ${selectVal} FROM ${Object.keys(schema[0])[0]} ${
-    alias[Object.keys(schema[0])[0]]
-  }`;
+	query += `SELECT ${selectVal} FROM ${Object.keys(schema[0])[0]} ${
+		alias[Object.keys(schema[0])[0]]
+	}`;
 
-  const joinVal = join.reduce((str, j) => {
-    str += 'LEFT JOIN ';
-    const tables = Object.keys(j);
-    for (let i = tables.length - 1; i >= 0; i--) {
-      if (i === tables.length - 1)
-        str += `${tables[i]} ${alias[Object.keys(j)[i]]} ON ${
-          alias[tables[i]]
-        }.${j[tables[i]]} = `;
-      else str += `${alias[tables[i]]}.${j[tables[i]]} `;
-    }
-    return str;
-  }, '');
+	const joinVal = join.reduce((str, j) => {
+		str += 'LEFT JOIN ';
+		const tables = Object.keys(j);
+		for (let i = tables.length - 1; i >= 0; i--) {
+			if (i === tables.length - 1)
+				str += `${tables[i]} ${alias[Object.keys(j)[i]]} ON ${
+					alias[tables[i]]
+				}.${j[tables[i]]} = `;
+			else str += `${alias[tables[i]]}.${j[tables[i]]} `;
+		}
+		return str;
+	}, '');
 
-  query = `${query} ${joinVal}`;
+	query = `${query} ${joinVal}`;
 
-  if (whereClause.length > 0) {
-    const whereClauseVal = whereClause
-      .reduce((str, table) => {
-        const tableName = Object.keys(table)[0];
-        table[tableName].forEach((field) => {
-          str += `${alias[tableName]}.${field}, `;
-        });
-        return str;
-      }, 'WHERE ')
-      .replace(/(,\s$)/g, '');
+	if (whereClause.length > 0) {
+		const whereClauseVal = whereClause
+			.reduce((str, table) => {
+				const tableName = Object.keys(table)[0];
+				table[tableName].forEach((field) => {
+					str += `${alias[tableName]}.${field} AND `;
+				});
+				return str;
+			}, 'WHERE ')
+			.replace(/(AND\s$)/g, '');
 
-    query = `${query} ${whereClauseVal}`;
-  }
+		query = `${query} ${whereClauseVal}`;
+	}
 
-  if ('option' in orderBy) {
-    let orderVal = Object.keys(orderBy)
-      .reduce((str, key) => {
-        if (key !== 'option') {
-          str += alias[key] + ', ';
-        }
-        return str;
-      }, 'ORDER BY ')
-      .replace(/(,\s$)/g, '');
-    orderVal += ' ' + orderBy['option'];
+	if ('option' in orderBy) {
+		let orderVal = Object.keys(orderBy)
+			.reduce((str, key) => {
+				if (key !== 'option') {
+					str += `${alias[key]}.${orderBy[key]}, `;
+				}
+				return str;
+			}, 'ORDER BY ')
+			.replace(/(,\s$)/g, '');
+		orderVal += ' ' + orderBy['option'];
 
-    query = `${query} ${orderVal}`;
-  }
+		query = `${query} ${orderVal}`;
+	}
 
-  return query;
+	return query;
 };
 
 // console.log(sql.getSelectJoinQuery(schema, join, whereClause, orderBy));
@@ -199,14 +199,14 @@ sql.getSelectJoinQuery = (schema, join, whereClause = [], orderBy = {}) => {
  * @returns SQL query
  */
 sql.getDeleteQuery = (table, whereClause = [], returnFields = []) => {
-  let query = '';
+	let query = '';
 
-  query = `
+	query = `
   DELETE FROM ${table}
   WHERE ${whereClause.join(', ')}
   RETURNING ${returnFields.join(', ')}
   `;
-  return query;
+	return query;
 };
 
 module.exports = sql;

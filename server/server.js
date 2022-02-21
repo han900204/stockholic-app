@@ -39,38 +39,38 @@ tokenClear();
  * GraphQL Router
  */
 app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema,
-    graphiql: { subscriptionEndpoint: `ws://localhost:${PORT}/subscriptions` },
-  })
+	'/graphql',
+	graphqlHTTP({
+		schema,
+		graphiql: { subscriptionEndpoint: `ws://localhost:${PORT}/subscriptions` },
+	})
 );
 
 /**
  * Production Build Mode
  */
 if (process.env.NODE_ENV === 'production') {
-  // Statically serve everything in the build folder on the route '/build'
-  app.use('/build', express.static(path.join(__dirname, '../build')));
+	// Statically serve everything in the build folder on the route '/build'
+	app.use('/build', express.static(path.join(__dirname, '../build')));
 
-  // Serve index.html on the route '/'
-  app.use('/', (req, res) => {
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-  });
+	// Serve index.html on the route '/'
+	app.use('/', (req, res) => {
+		return res.status(200).sendFile(path.join(__dirname, '../index.html'));
+	});
 }
 
 /**
  * Global error handler
  */
 app.use((err, req, res, next) => {
-  const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
-    status: 500,
-    message: { err: 'An error occurred' },
-  };
-  const errorObj = Object.assign({}, defaultErr, err);
-  console.log(errorObj.log);
-  return res.status(errorObj.status).json(errorObj.message);
+	const defaultErr = {
+		log: 'Express error handler caught unknown middleware error',
+		status: 500,
+		message: { err: 'An error occurred' },
+	};
+	const errorObj = Object.assign({}, defaultErr, err);
+	console.log(errorObj.log);
+	return res.status(errorObj.status).json(errorObj.message);
 });
 
 /**
@@ -79,23 +79,23 @@ app.use((err, req, res, next) => {
 const ws = createServer(app);
 
 ws.listen(PORT, () => {
-  console.log(`Server is running on the server ${PORT}`);
-  // Set up the WebSocket for handling GraphQL subscriptions.
-  new SubscriptionServer(
-    {
-      execute,
-      subscribe,
-      schema,
-      onConnect: (connectionParams, webSocket, context) => {
-        console.log('websocket connected');
-      },
-      onDisconnect: (webSocket, context) => {
-        console.log('websocket disconnected');
-      },
-    },
-    {
-      server: ws,
-      path: '/subscriptions',
-    }
-  );
+	console.log(`Server is running on the server ${PORT}`);
+	// Set up the WebSocket for handling GraphQL subscriptions.
+	new SubscriptionServer(
+		{
+			execute,
+			subscribe,
+			schema,
+			onConnect: (connectionParams, webSocket, context) => {
+				console.log('websocket connected');
+			},
+			onDisconnect: (webSocket, context) => {
+				console.log('websocket disconnected');
+			},
+		},
+		{
+			server: ws,
+			path: '/subscriptions',
+		}
+	);
 });

@@ -24,7 +24,6 @@ class Stock:
             "debtToEquity": "debt_to_equity",
             "returnOnEquity": "return_on_equity",
             "shortName": "short_name",
-            "52WeekChange": "fifty_two_week_change",
             "priceToBook": "price_to_book",
             "forwardPE": "forward_pe",
             "dividendYield": "dividend_yield",
@@ -39,7 +38,7 @@ class Stock:
     def getSymbols(self, sampling=False):
         # Sampling for Testing Purpose
         if sampling:
-            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL', 'BAC', 'CNQ', 'AMD']
+            return ['AAPL', 'TSLA', 'AMZN', 'MSFT', 'GOOGL', 'BAC', 'CNQ', 'AMD', 'FB', 'PYPL', 'VZ']
 
         # Rotate User Agents To Avoid of Access Block
         user_agent = random.choice(user_agent_list)
