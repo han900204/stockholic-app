@@ -1,8 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useQuery } from '@apollo/client';
+import GQL_QUERY from '../constants/GQL_QUERY';
+import { GetSummariesResponse } from '../constants/GQL_INTERFACE';
+import LoadingForm from '../components/LoadingForm';
 import { RootState } from '../app/store';
 import Subheading from '../components/styleComponents/Subheading';
-import StockListSubContainer from './StockListSubContainer';
+import StockTable from '../components/StockTable';
 import SearchBar from '../components/styleComponents/SearchBar';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -24,6 +28,13 @@ const StockListContainer = () => {
 		dispatch(setStockSearch(e.target.value));
 	};
 
+	// Get stock data from GraphQL
+	const { loading, error, data } = useQuery<GetSummariesResponse>(
+		GQL_QUERY.GET_SUMMARIES_QUERY
+	);
+
+	if (loading) return <LoadingForm />;
+
 	return (
 		<>
 			<Grid container spacing={2} sx={{ m: 0, p: 0 }}>
@@ -36,7 +47,7 @@ const StockListContainer = () => {
 					</Box>
 				</Grid>
 			</Grid>
-			<StockListSubContainer searchValue={searchValue} />
+			<StockTable data={data?.getSummaries} searchValue={searchValue} />
 		</>
 	);
 };

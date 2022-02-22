@@ -2,7 +2,15 @@ import React from 'react';
 import SimpleTable from '../components/styleComponents/SimpleTable';
 import { SummaryColumn, SummaryData } from '../constants/STYLE_INTERFACE';
 
-const StockTable = ({ data }) => {
+const StockTable = ({ data, searchValue }) => {
+	// Filter data based on searchValue
+	const tableData = data.filter((d) => {
+		return (
+			d.symbol.toLowerCase().includes(searchValue.toLowerCase()) ||
+			d.short_name.toLowerCase().includes(searchValue.toLowerCase())
+		);
+	});
+
 	const columns: readonly SummaryColumn[] = [
 		{ id: 'id', label: 'id', minWidth: 20 },
 		{ id: 'symbol', label: 'Symbol', minWidth: 20 },
@@ -110,7 +118,7 @@ const StockTable = ({ data }) => {
 		};
 	}
 
-	const rows = data.getSummaries.reduce((row, stock) => {
+	const rows = tableData.reduce((row, stock) => {
 		row.push(
 			createData(
 				stock.id,
