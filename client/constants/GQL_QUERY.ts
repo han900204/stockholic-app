@@ -434,6 +434,130 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
+	/**
+	 * Portfolio query
+	 */
+
+	GET_PORTFOLIOS_QUERY: gql`
+		query GetPortfolios($investor_id: Int!) {
+			getPortfolios(investor_id: $investor_id) {
+				id
+				investor_id
+				name
+				date_created
+			}
+		}
+	`,
+
+	CREATE_PORTFOLIO_QUERY: gql`
+		mutation CreatePortfolio($investor_id: Int!, $name: String!) {
+			createPortfolio(investor_id: $investor_id, name: $name) {
+				id
+				investor_id
+				name
+				date_created
+			}
+		}
+	`,
+
+	UPDATE_PORTFOLIO_QUERY: gql`
+		mutation UpdatePortfolio($id: Int!, $name: String) {
+			updatePortfolio(id: $id, name: $name) {
+				id
+				investor_id
+				name
+				date_created
+			}
+		}
+	`,
+	DELETE_PORTFOLIO_QUERY: gql`
+		mutation DeletePortfolio($id: Int!) {
+			deletePortfolio(id: $id) {
+				id
+				investor_id
+				name
+				date_created
+			}
+		}
+	`,
+
+	/**
+	 * Portfolio item query
+	 */
+
+	GET_PORTFOLIO_ITEMS_QUERY: gql`
+		query GetPortfolioItems($portfolio_id: Int!) {
+			getPortfolioItems(portfolio_id: $portfolio_id) {
+				id
+				portfolio_id
+				symbol_id
+				date_created
+				quantity
+				average_cost
+				current_price
+			}
+		}
+	`,
+
+	CREATE_PORTFOLIO_ITEM_QUERY: gql`
+		mutation CreatePortfolioItem(
+			$portfolio_id: Int!
+			$symbol_id: Int!
+			$quantity: Int!
+			$average_cost: Float!
+		) {
+			createPortfolioItem(
+				portfolio_id: $portfolio_id
+				symbol_id: $symbol_id
+				quantity: $quantity
+				average_cost: $average_cost
+			) {
+				id
+				portfolio_id
+				symbol_id
+				date_created
+				quantity
+				average_cost
+				current_price
+			}
+		}
+	`,
+
+	UPDATE_PORTFOLIO_ITEM_QUERY: gql`
+		mutation UpdatePortfolioItem(
+			$id: Int!
+			$quantity: Int!
+			$average_cost: Float!
+		) {
+			updatePortfolioItem(
+				id: $id
+				quantity: $quantity
+				average_cost: $average_cost
+			) {
+				id
+				portfolio_id
+				symbol_id
+				date_created
+				quantity
+				average_cost
+				current_price
+			}
+		}
+	`,
+	DELETE_PORTFOLIO_ITEM_QUERY: gql`
+		mutation DeletePortfolioItem($id: Int!) {
+			deletePortfolioItem(id: $id) {
+				id
+				portfolio_id
+				symbol_id
+				date_created
+				quantity
+				average_cost
+				current_price
+			}
+		}
+	`,
 };
 
 export default GQL_QUERY;

@@ -33,6 +33,14 @@ export interface QueryInterface {
 	GET_SUMMARY_QUERY: DocumentNode;
 	GET_SUMMARIES_QUERY: DocumentNode;
 	GET_PRICES_QUERY: DocumentNode;
+	GET_PORTFOLIOS_QUERY: DocumentNode;
+	GET_PORTFOLIO_ITEMS_QUERY: DocumentNode;
+	CREATE_PORTFOLIO_QUERY: DocumentNode;
+	DELETE_PORTFOLIO_QUERY: DocumentNode;
+	UPDATE_PORTFOLIO_QUERY: DocumentNode;
+	CREATE_PORTFOLIO_ITEM_QUERY: DocumentNode;
+	DELETE_PORTFOLIO_ITEM_QUERY: DocumentNode;
+	UPDATE_PORTFOLIO_ITEM_QUERY: DocumentNode;
 }
 
 /**
@@ -344,4 +352,98 @@ export interface GetPricesPayload {
 
 export interface GetPricesResponse {
 	getPrices: PriceData[];
+}
+
+/**
+ * Portfolio Interfaces
+ */
+export interface PortfolioData {
+	id: number;
+	investor_id: number;
+	name: string;
+	date_created: string;
+}
+
+export interface GetPortfoliosPayload {
+	investor_id: number;
+}
+
+export interface GetPortfoliosResponse {
+	getPortfolios: PortfolioData[];
+}
+
+export interface CreatePortfolioPayload {
+	investor_id: number;
+	name: string;
+}
+
+export interface CreatePortfolioResponse {
+	createPortfolio: PortfolioData;
+}
+
+export interface DeletePortfolioPayload {
+	id: number;
+}
+
+export interface DeletePortfolioResponse {
+	deletePortfolio: PortfolioData;
+}
+
+export interface UpdatePortfolioPayload {
+	id: number;
+	name: string;
+}
+
+export interface UpdatePortfolioResponse {
+	updatePortfolio: PortfolioData;
+}
+
+/**
+ * Portfolio Item Interfaces
+ */
+export interface PortfolioItemData {
+	id: number;
+	portfolio_id: number;
+	symbol_id: number;
+	date_created: string;
+	quantity: number;
+	average_cost: number;
+	current_price: number;
+}
+
+export interface GetPortfolioItemsPayload {
+	portfolio_id: number;
+}
+
+export interface GetPortfolioItemsResponse {
+	getPortfolioItems: PortfolioItemData[];
+}
+
+export interface CreatePortfolioItemPayload {
+	portfolio_id: number;
+	symbol_id: number;
+	quantity: number;
+	average_cost: number;
+}
+
+export interface CreatePortfolioItemResponse {
+	createPortfolioItem: PortfolioItemData;
+}
+
+export interface DeletePortfolioItemPayload {
+	id: number;
+}
+
+export interface DeletePortfolioItemResponse {
+	deletePortfolioItem: PortfolioItemData;
+}
+
+export interface UpdatePortfolioItemPayload {
+	id: number;
+	quantity: number;
+	average_cost: number;
+}
+
+export interface UpdatePortfolioItemResponse {
+	updatePortfolio: PortfolioData;
 }

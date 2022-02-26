@@ -27,8 +27,9 @@ portfolioItem.type = new GraphQLObjectType({
 		portfolio_id: { type: GraphQLInt },
 		symbol_id: { type: GraphQLInt },
 		date_created: { type: DateTime },
-		date_purchased: { type: DateTime },
 		quantity: { type: GraphQLInt },
+		average_cost: { type: GraphQLFloat },
+		current_price: { type: GraphQLFloat },
 	}),
 });
 
@@ -43,17 +44,17 @@ portfolioItem.query.getPortfolioItems = {
 				{
 					portfolio_item: ['*'],
 				},
-				{ investor: ['nick_name'] },
+				{ stock_summary: ['current_price'] },
 			],
-			[{ forum: 'owner_user_id', investor: 'id' }],
+			[{ portfolio_item: 'symbol_id', stock_summary: 'symbol_id' }],
 			[],
 			{
-				forum: 'id',
-				option: 'DESC',
+				portfolio_item: 'date_created',
+				option: 'ASC',
 			}
 		);
 		const res = await db.query(sqlQuery);
-		console.log(`${res.rows.length} portfolios retrieved`);
+		console.log(`${res.rows.length} portfolio items retrieved`);
 		return res.rows;
 	},
 };
@@ -61,24 +62,46 @@ portfolioItem.query.getPortfolioItems = {
 portfolioItem.mutation.postPortfolioItem = {
 	type: portfolioItem.type,
 	args: {
-		investor_id: { type: GraphQLInt },
-		name: { type: GraphQLString },
+		portfolio_id: { type: GraphQLInt },
+		symbol_id: { type: GraphQLInt },
+		quantity: { type: GraphQLInt },
+		average_cost: { type: GraphQLFloat },
 	},
 	async resolve(parent, args) {
 		const sqlQuery = sql.getInsertQuery(
-			'portfolio',
-			['investor_id', 'name'],
+			'portfolio_item',
+			['portfolio_id', 'symbol_id', 'quantity', 'average_cost'],
 			{
 				investor_id: args.investor_id,
 				name: args.name,
 			},
-			['id', 'investor_id', 'name', 'date_created']
+			[
+				'id',
+				'portfolio_id',
+				'symbol_id',
+				'quantity',
+				'average_cost',
+				'date_created',
+			]
 		);
 
-		// Create a portfolio
+		// Create a portfolio item
 		const res = await db.query(sqlQuery[0], sqlQuery[1]);
 
-		console.log('portfolio created', res.rows[0]);
+		// Get a current price
+		const sqlInvestorQuery = sql.getSelectQuery(
+			'stock_summary',
+			['current_price'],
+			[`symbol_id = ${res.rows[0]['symbol_id']}`]
+		);
+
+		const currentPrice = await db
+			.query(sqlInvestorQuery)
+			.then((data) => data.rows[0]['current_price']);
+
+		res.rows[0]['current_price'] = currentPrice;
+
+		console.log('portfolio item created', res.rows[0]);
 		return res.rows[0];
 	},
 };
@@ -90,15 +113,35 @@ portfolioItem.mutation.deletePortfolioItem = {
 	},
 	async resolve(parent, args) {
 		const sqlQuery = sql.getDeleteQuery(
-			'portfolio',
+			'portfolio_item',
 			[`id = '${args.id}'`],
-			['id', 'investor_id', 'name', 'date_created']
+			[
+				'id',
+				'portfolio_id',
+				'symbol_id',
+				'quantity',
+				'average_cost',
+				'date_created',
+			]
 		);
 
-		// Delete portfolio
+		// Delete portfolio item
 		const res = await db.query(sqlQuery);
 
-		console.log('portfolio deleted', res.rows[0]);
+		// Get a current price
+		const sqlInvestorQuery = sql.getSelectQuery(
+			'stock_summary',
+			['current_price'],
+			[`symbol_id = ${res.rows[0]['symbol_id']}`]
+		);
+
+		const currentPrice = await db
+			.query(sqlInvestorQuery)
+			.then((data) => data.rows[0]['current_price']);
+
+		res.rows[0]['current_price'] = currentPrice;
+
+		console.log('portfolio item deleted', res.rows[0]);
 		return res.rows[0];
 	},
 };
@@ -107,20 +150,41 @@ portfolioItem.mutation.updatePortfolioItem = {
 	type: portfolioItem.type,
 	args: {
 		id: { type: GraphQLInt },
-		name: { type: GraphQLString },
+		quantity: { type: GraphQLString },
+		average_cost: { type: GraphQLFloat },
 	},
 	async resolve(parent, args) {
 		const sqlQuery = sql.getUpdateQuery(
-			'portfolio',
+			'portfolio_item',
 			args,
 			[`id = ${args.id}`],
-			['id', 'investor_id', 'name', 'date_created']
+			[
+				'id',
+				'portfolio_id',
+				'symbol_id',
+				'quantity',
+				'average_cost',
+				'date_created',
+			]
 		);
 
-		// Update portfolio
+		// Update portfolio item
 		const res = await db.query(sqlQuery);
 
-		console.log('portfolio updated', res.rows[0]);
+		// Get a current price
+		const sqlInvestorQuery = sql.getSelectQuery(
+			'stock_summary',
+			['current_price'],
+			[`symbol_id = ${res.rows[0]['symbol_id']}`]
+		);
+
+		const currentPrice = await db
+			.query(sqlInvestorQuery)
+			.then((data) => data.rows[0]['current_price']);
+
+		res.rows[0]['current_price'] = currentPrice;
+
+		console.log('portfolio item updated', res.rows[0]);
 		return res.rows[0];
 	},
 };
