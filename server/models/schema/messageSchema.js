@@ -1,7 +1,7 @@
 const { Room } = require('../mongoModels/roomModel');
 const { Message } = require('../mongoModels/messageModel');
 const mongoose = require('mongoose');
-const pubsub = require('./pubsub');
+const pubsub = require('../../utils/pubsub');
 const { withFilter } = require('graphql-subscriptions');
 
 const {
