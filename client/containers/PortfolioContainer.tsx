@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import LoadingForm from '../components/LoadingForm';
 import PortfolioTable from '../components/PortfolioTable';
+import Subheading from '../components/styleComponents/Subheading';
+import CreatePortfolioModal from '../components/CreatePortfolioModal';
 
 const PortfolioContainer = () => {
 	const investorId: number | null = useSelector(
@@ -24,7 +26,8 @@ const PortfolioContainer = () => {
 
 	return (
 		<>
-			<h1>Hello Portfolio</h1>
+			<Subheading title='Investor Portfolio' />
+			<CreatePortfolioModal investorId={investorId} />
 			<PortfolioTable data={data?.getPortfolios} />
 		</>
 	);
