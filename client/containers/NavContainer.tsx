@@ -27,7 +27,7 @@ const NavContainer = () => {
 	const pages: any[] = [
 		{ name: 'Dashboard', url: '/dashboard' },
 		{ name: 'Stocks', url: '/stocks' },
-		{ name: 'Portfolio', url: `/portfolio/${investorId}` },
+		{ name: 'Portfolio', url: `/portfolio` },
 		{ name: 'Forums', url: '/forum' },
 		{ name: 'Chat', url: `/chat/${investorId}` },
 	];

@@ -42,6 +42,7 @@ portfolio.query.getPortfolios = {
 			[`investor_id = ${args.investor_id}`],
 			{ fields: ['date_created'], option: 'DESC' }
 		);
+
 		const res = await db.query(sqlQuery);
 		console.log(`${res.rows.length} portfolios retrieved`);
 		return res.rows;

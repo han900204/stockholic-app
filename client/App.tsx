@@ -32,6 +32,7 @@ import ForumContainer from './containers/ForumContainer';
 import ChatContainer from './containers/ChatContainer';
 import StockListContainer from './containers/StockListContainer';
 import StockContainer from './containers/StockContainer';
+import PortfolioContainer from './containers/PortfolioContainer';
 
 const App = () => {
 	const { theme } = useTheme();
@@ -82,10 +83,7 @@ const App = () => {
 								path='/profile/:investorId'
 								element={<ProfileContainer />}
 							/>
-							<Route
-								path='/portfolio/:investorId'
-								element={<div>Portfolio</div>}
-							/>
+							<Route path='/portfolio' element={<PortfolioContainer />} />
 							<Route path='/chat/:investorId' element={<ChatContainer />} />
 							<Route path='/forum' element={<ForumListContainer />} />
 							<Route path='/forum/:id' element={<ForumContainer />} />

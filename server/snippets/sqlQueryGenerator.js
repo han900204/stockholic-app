@@ -90,7 +90,7 @@ sql.getSelectQuery = (
 	if (orderBy.fields.length !== 0) {
 		query = `
     ${query}
-    ORDER BY ${orderBy.fields.join(', ')} ${option}
+    ORDER BY ${orderBy.fields.join(', ')} ${orderBy.option}
     `;
 	}
 

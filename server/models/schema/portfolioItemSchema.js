@@ -30,6 +30,7 @@ portfolioItem.type = new GraphQLObjectType({
 		quantity: { type: GraphQLInt },
 		average_cost: { type: GraphQLFloat },
 		current_price: { type: GraphQLFloat },
+		short_name: { type: GraphQLString },
 	}),
 });
 
@@ -44,10 +45,10 @@ portfolioItem.query.getPortfolioItems = {
 				{
 					portfolio_item: ['*'],
 				},
-				{ stock_summary: ['current_price'] },
+				{ stock_summary: ['current_price', 'short_name'] },
 			],
 			[{ portfolio_item: 'symbol_id', stock_summary: 'symbol_id' }],
-			[],
+			[{ portfolio_item: [`portfolio_id = ${args.portfolio_id}`] }],
 			{
 				portfolio_item: 'date_created',
 				option: 'ASC',
@@ -88,18 +89,19 @@ portfolioItem.mutation.postPortfolioItem = {
 		// Create a portfolio item
 		const res = await db.query(sqlQuery[0], sqlQuery[1]);
 
-		// Get a current price
+		// Get additional data
 		const sqlInvestorQuery = sql.getSelectQuery(
 			'stock_summary',
-			['current_price'],
+			['current_price', 'short_name'],
 			[`symbol_id = ${res.rows[0]['symbol_id']}`]
 		);
 
-		const currentPrice = await db
+		const addData = await db
 			.query(sqlInvestorQuery)
-			.then((data) => data.rows[0]['current_price']);
+			.then((data) => data.rows[0]);
 
-		res.rows[0]['current_price'] = currentPrice;
+		res.rows[0]['current_price'] = addData['current_price'];
+		res.rows[0]['short_name'] = addData['short_name'];
 
 		console.log('portfolio item created', res.rows[0]);
 		return res.rows[0];
@@ -128,18 +130,19 @@ portfolioItem.mutation.deletePortfolioItem = {
 		// Delete portfolio item
 		const res = await db.query(sqlQuery);
 
-		// Get a current price
+		// Get additional data
 		const sqlInvestorQuery = sql.getSelectQuery(
 			'stock_summary',
-			['current_price'],
+			['current_price', 'short_name'],
 			[`symbol_id = ${res.rows[0]['symbol_id']}`]
 		);
 
-		const currentPrice = await db
+		const addData = await db
 			.query(sqlInvestorQuery)
-			.then((data) => data.rows[0]['current_price']);
+			.then((data) => data.rows[0]);
 
-		res.rows[0]['current_price'] = currentPrice;
+		res.rows[0]['current_price'] = addData['current_price'];
+		res.rows[0]['short_name'] = addData['short_name'];
 
 		console.log('portfolio item deleted', res.rows[0]);
 		return res.rows[0];
@@ -171,18 +174,19 @@ portfolioItem.mutation.updatePortfolioItem = {
 		// Update portfolio item
 		const res = await db.query(sqlQuery);
 
-		// Get a current price
+		// Get additional data
 		const sqlInvestorQuery = sql.getSelectQuery(
 			'stock_summary',
-			['current_price'],
+			['current_price', 'short_name'],
 			[`symbol_id = ${res.rows[0]['symbol_id']}`]
 		);
 
-		const currentPrice = await db
+		const addData = await db
 			.query(sqlInvestorQuery)
-			.then((data) => data.rows[0]['current_price']);
+			.then((data) => data.rows[0]);
 
-		res.rows[0]['current_price'] = currentPrice;
+		res.rows[0]['current_price'] = addData['current_price'];
+		res.rows[0]['short_name'] = addData['short_name'];
 
 		console.log('portfolio item updated', res.rows[0]);
 		return res.rows[0];

@@ -365,7 +365,7 @@ export interface PortfolioData {
 }
 
 export interface GetPortfoliosPayload {
-	investor_id: number;
+	investor_id: number | null;
 }
 
 export interface GetPortfoliosResponse {
@@ -409,6 +409,7 @@ export interface PortfolioItemData {
 	quantity: number;
 	average_cost: number;
 	current_price: number;
+	short_name: string;
 }
 
 export interface GetPortfolioItemsPayload {

@@ -496,6 +496,7 @@ const GQL_QUERY: QueryInterface = {
 				quantity
 				average_cost
 				current_price
+				short_name
 			}
 		}
 	`,
@@ -520,6 +521,7 @@ const GQL_QUERY: QueryInterface = {
 				quantity
 				average_cost
 				current_price
+				short_name
 			}
 		}
 	`,
@@ -542,6 +544,7 @@ const GQL_QUERY: QueryInterface = {
 				quantity
 				average_cost
 				current_price
+				short_name
 			}
 		}
 	`,
@@ -555,6 +558,7 @@ const GQL_QUERY: QueryInterface = {
 				quantity
 				average_cost
 				current_price
+				short_name
 			}
 		}
 	`,
