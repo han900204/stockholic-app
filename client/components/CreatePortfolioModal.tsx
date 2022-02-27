@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState } from 'react';
-import GQL_QUERY from '../constants/GQL_QUERY';
 import { CreatePortfolioPayload } from '../constants/GQL_INTERFACE';
 import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';

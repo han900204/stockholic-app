@@ -27,7 +27,7 @@ export function useCreatePortfolio() {
 						investor_id: newPort?.investor_id,
 					},
 					data: {
-						getPortfolios: [newPort, ...existingPorts?.getPortfolios],
+						getPortfolios: [...existingPorts?.getPortfolios, newPort],
 					},
 				});
 			}

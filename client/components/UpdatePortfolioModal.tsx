@@ -1,34 +1,29 @@
 import React from 'react';
 import { useState } from 'react';
-import { CreateForumPayload } from '../constants/GQL_INTERFACE';
+import { UpdatePortfolioPayload } from '../constants/GQL_INTERFACE';
 import TextAreaField from './styleComponents/TextAreaField';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
-import { useCreateForum } from '../hooks/useCreateForum';
-import { useNavigate } from 'react-router-dom';
+import { useUpdatePortfolio } from '../hooks/useUpdatePortfolio';
 
-export default function CreateForumModal({ investorId }) {
+export default function CreatePortfolioModal({ id }) {
 	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	const navigate = useNavigate();
 
-	const forumPayload: CreateForumPayload = {
-		owner_user_id: investorId,
+	const updatePortfolioPayload: UpdatePortfolioPayload = {
+		id,
 		name,
-		description,
 	};
 
-	const { createForum } = useCreateForum();
+	const { createPortfolio } = useUpdatePortfolio();
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 
 		try {
-			const { data } = await createForum({
-				variables: forumPayload,
+			const { data } = await createPortfolio({
+				variables: createPortfolioPayload,
 			});
-			navigate(`/forum/${data?.createForum.id}`);
 		} catch (e: any) {
 			console.log('ERROR: ', e);
 		}
@@ -41,7 +36,6 @@ export default function CreateForumModal({ investorId }) {
 				onSubmit={(e) => {
 					handleSubmit(e);
 					setName('');
-					setDescription('');
 					handleClose();
 				}}
 				sx={{
@@ -55,20 +49,9 @@ export default function CreateForumModal({ investorId }) {
 							setName(e.target.value);
 						}}
 						type='text'
-						label='Topic'
+						label='Portfolio Name'
 						required={true}
-						rows={3}
-					/>
-				</div>
-				<div>
-					<TextAreaField
-						eHandler={(e) => {
-							setDescription(e.target.value);
-						}}
-						type='text'
-						label='Description'
-						required={false}
-						rows={15}
+						rows={1}
 					/>
 				</div>
 				<br />
@@ -79,8 +62,8 @@ export default function CreateForumModal({ investorId }) {
 
 	return (
 		<BasicModal
-			buttonName={'Create Forum'}
-			heading={'Create a New Forum'}
+			buttonName={'Create Portfolio'}
+			heading={'Create a New Portfolio'}
 			Component={ModalComponent}
 		/>
 	);
