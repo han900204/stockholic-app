@@ -15,11 +15,13 @@ import {
 	setNickName,
 	setInvestors,
 } from './features/investorSlice';
+import { setSymbols } from './features/stockSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
 import {
 	GetAuthPayload,
 	GetInvestorsResponse,
+	GetSymbolsResponse,
 } from './constants/GQL_INTERFACE';
 import useTheme from './hooks/useTheme';
 import LoginContainer from './containers/LoginContainer';
@@ -51,11 +53,16 @@ const App = () => {
 		GQL_QUERY.GET_INVESTORS_QUERY
 	);
 
+	const [getSymbols] = useLazyQuery<GetSymbolsResponse, null>(
+		GQL_QUERY.GET_SYMBOLS_QUERY
+	);
+
 	useEffect(() => {
 		const asyncGetAuth = async () => {
 			await dispatch(setIsPending(true));
 			const res = await getAuthentication({ variables: authPayload });
 			const investors = await getInvestors();
+			const symbols = await getSymbols();
 
 			if (res.data.getAuthentication) {
 				await dispatch(setIsAuthenticated(true));
@@ -63,6 +70,9 @@ const App = () => {
 				await dispatch(setNickName(res.data.getAuthentication.nick_name));
 				if (investors?.data?.getInvestors) {
 					await dispatch(setInvestors(investors.data.getInvestors));
+				}
+				if (symbols?.data?.getSymbols) {
+					await dispatch(setSymbols(symbols.data.getSymbols));
 				}
 			}
 			await dispatch(setIsPending(false));

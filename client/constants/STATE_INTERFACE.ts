@@ -1,4 +1,5 @@
 import { InvestorData } from './GQL_INTERFACE';
+import { SymbolData } from './GQL_INTERFACE';
 
 export interface InvestorState {
 	isAuthenticated: boolean;
@@ -21,4 +22,8 @@ export interface ThemeState {
 
 export interface SearchState {
 	stockSearch: string;
+}
+
+export interface StockState {
+	symbols: SymbolData[];
 }

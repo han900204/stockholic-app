@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import Field from './styleComponents/Field';
@@ -8,6 +8,8 @@ import GQL_QUERY from '../constants/GQL_QUERY';
 import {
 	ValidateInvestorPayload,
 	CreateAuthPayload,
+	GetInvestorsResponse,
+	GetSymbolsResponse,
 } from '../constants/GQL_INTERFACE';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -15,7 +17,9 @@ import {
 	setIsAuthenticated,
 	setInvestorId,
 	setNickName,
+	setInvestors,
 } from '../features/investorSlice';
+import { setSymbols } from '../features/stockSlice';
 
 const LoginForm = () => {
 	const [email, setEmail] = useState('');
@@ -38,10 +42,21 @@ const LoginForm = () => {
 
 	const [validateInvestor] = useMutation(GQL_QUERY.VALIDATE_INVESTOR_QUERY);
 
+	const [getInvestors] = useLazyQuery<GetInvestorsResponse, null>(
+		GQL_QUERY.GET_INVESTORS_QUERY
+	);
+
+	const [getSymbols] = useLazyQuery<GetSymbolsResponse, null>(
+		GQL_QUERY.GET_SYMBOLS_QUERY
+	);
+
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 		try {
 			const res = await validateInvestor({ variables: validatePayload });
+			const investors = await getInvestors();
+			const symbols = await getSymbols();
+
 			if (res.data.validateInvestor.id) {
 				authPayload.investor_id = res.data.validateInvestor.id;
 				const token = await createAuth({ variables: authPayload }).then(
@@ -52,6 +67,12 @@ const LoginForm = () => {
 					await dispatch(setIsAuthenticated(true));
 					await dispatch(setInvestorId(res.data.validateInvestor.id));
 					await dispatch(setNickName(res.data.validateInvestor.nick_name));
+					if (investors?.data?.getInvestors) {
+						await dispatch(setInvestors(investors.data.getInvestors));
+					}
+					if (symbols?.data?.getSymbols) {
+						await dispatch(setSymbols(symbols.data.getSymbols));
+					}
 					navigate('/forum');
 				}
 			}

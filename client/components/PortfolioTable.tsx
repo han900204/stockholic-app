@@ -23,7 +23,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import TextAreaField from './styleComponents/TextAreaField';
 import Grid from '@mui/material/Grid';
 
-const PortfolioTable = ({ data }) => {
+const PortfolioTable = ({ data, symbols }) => {
 	function createData(name: string, date_created: string, id: number) {
 		return {
 			name,

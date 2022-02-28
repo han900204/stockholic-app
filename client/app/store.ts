@@ -3,6 +3,7 @@ import InvestorReducer from '../features/investorSlice';
 import RoomReducer from '../features/roomSlice';
 import ThemeReducer from '../features/themeSlice';
 import SearchReducer from '../features/searchSlice';
+import StockReducer from '../features/stockSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
 		room: RoomReducer,
 		theme: ThemeReducer,
 		search: SearchReducer,
+		stock: StockReducer,
 	},
 });
 
