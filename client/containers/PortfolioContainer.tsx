@@ -12,6 +12,8 @@ import PortfolioTable from '../components/PortfolioTable';
 import Subheading from '../components/styleComponents/Subheading';
 import CreatePortfolioModal from '../components/CreatePortfolioModal';
 import { SymbolData } from '../constants/GQL_INTERFACE';
+import AddStockToPortfolioModal from '../components/AddStockToPortfolioModal';
+import Stack from '@mui/material/Stack';
 
 const PortfolioContainer = () => {
 	const investorId: number | null = useSelector(
@@ -31,8 +33,20 @@ const PortfolioContainer = () => {
 	return (
 		<>
 			<Subheading title='Investor Portfolio' />
-			<CreatePortfolioModal investorId={investorId} />
-			<PortfolioTable data={data?.getPortfolios} symbols={symbols} />
+			<Stack
+				direction='row'
+				spacing={2}
+				justifyContent='left'
+				alignItems='left'
+			>
+				<CreatePortfolioModal investorId={investorId} />
+				<AddStockToPortfolioModal
+					portfolios={data?.getPortfolios}
+					symbols={symbols}
+				/>
+			</Stack>
+
+			<PortfolioTable data={data?.getPortfolios} />
 		</>
 	);
 };

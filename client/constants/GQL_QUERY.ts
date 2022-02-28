@@ -505,8 +505,8 @@ const GQL_QUERY: QueryInterface = {
 		mutation CreatePortfolioItem(
 			$portfolio_id: Int!
 			$symbol_id: Int!
-			$quantity: Int!
-			$average_cost: Float!
+			$quantity: Int
+			$average_cost: Float
 		) {
 			createPortfolioItem(
 				portfolio_id: $portfolio_id

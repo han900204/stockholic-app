@@ -423,8 +423,8 @@ export interface GetPortfolioItemsResponse {
 export interface CreatePortfolioItemPayload {
 	portfolio_id: number;
 	symbol_id: number;
-	quantity: number;
-	average_cost: number;
+	quantity?: number;
+	average_cost?: number;
 }
 
 export interface CreatePortfolioItemResponse {

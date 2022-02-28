@@ -61,50 +61,63 @@ portfolioItem.query.getPortfolioItems = {
 };
 
 portfolioItem.mutation.postPortfolioItem = {
-	type: portfolioItem.type,
+	type: GraphQLList(portfolioItem.type),
 	args: {
 		portfolio_id: { type: GraphQLInt },
-		symbol_id: { type: GraphQLInt },
-		quantity: { type: GraphQLInt },
-		average_cost: { type: GraphQLFloat },
+		symbol_ids: { type: new GraphQLList(GraphQLInt) },
 	},
 	async resolve(parent, args) {
-		const sqlQuery = sql.getInsertQuery(
-			'portfolio_item',
-			['portfolio_id', 'symbol_id', 'quantity', 'average_cost'],
-			{
-				investor_id: args.investor_id,
-				name: args.name,
-			},
-			[
-				'id',
-				'portfolio_id',
-				'symbol_id',
-				'quantity',
-				'average_cost',
-				'date_created',
-			]
-		);
+		const result = [];
 
-		// Create a portfolio item
-		const res = await db.query(sqlQuery[0], sqlQuery[1]);
+		for await (const symbol_id of args.symbol_ids) {
+			// Validate if item already exists
+			const checkQuery = sql.getSelectQuery(
+				'portfolio_item',
+				['id'],
+				[`portfolio_id = ${args.portfolio_id} AND symbol_id = ${symbol_id}`]
+			);
+			const checkRes = await db.query(checkQuery);
 
-		// Get additional data
-		const sqlInvestorQuery = sql.getSelectQuery(
-			'stock_summary',
-			['current_price', 'short_name'],
-			[`symbol_id = ${res.rows[0]['symbol_id']}`]
-		);
+			if (checkRes.rowCount === 0) {
+				const sqlQuery = sql.getInsertQuery(
+					'portfolio_item',
+					['portfolio_id', 'symbol_id', 'quantity', 'average_cost'],
+					{
+						portfolio_id: args.portfolio_id,
+						symbol_id,
+					},
+					[
+						'id',
+						'portfolio_id',
+						'symbol_id',
+						'quantity',
+						'average_cost',
+						'date_created',
+					]
+				);
 
-		const addData = await db
-			.query(sqlInvestorQuery)
-			.then((data) => data.rows[0]);
+				// Create a portfolio item
+				const res = await db.query(sqlQuery[0], sqlQuery[1]);
 
-		res.rows[0]['current_price'] = addData['current_price'];
-		res.rows[0]['short_name'] = addData['short_name'];
+				// Get additional data
+				const sqlInvestorQuery = sql.getSelectQuery(
+					'stock_summary',
+					['current_price', 'short_name'],
+					[`symbol_id = ${res.rows[0]['symbol_id']}`]
+				);
 
-		console.log('portfolio item created', res.rows[0]);
-		return res.rows[0];
+				const addData = await db
+					.query(sqlInvestorQuery)
+					.then((data) => data.rows[0]);
+
+				res.rows[0]['current_price'] = addData['current_price'];
+				res.rows[0]['short_name'] = addData['short_name'];
+
+				console.log('portfolio item created', res.rows[0]);
+				result.push(res.rows[0]);
+			}
+		}
+		return result;
 	},
 };
 
