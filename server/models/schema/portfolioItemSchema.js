@@ -60,7 +60,7 @@ portfolioItem.query.getPortfolioItems = {
 	},
 };
 
-portfolioItem.mutation.postPortfolioItem = {
+portfolioItem.mutation.postPortfolioItems = {
 	type: GraphQLList(portfolioItem.type),
 	args: {
 		portfolio_id: { type: GraphQLInt },

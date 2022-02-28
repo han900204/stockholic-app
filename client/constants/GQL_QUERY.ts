@@ -501,18 +501,11 @@ const GQL_QUERY: QueryInterface = {
 		}
 	`,
 
-	CREATE_PORTFOLIO_ITEM_QUERY: gql`
-		mutation CreatePortfolioItem(
-			$portfolio_id: Int!
-			$symbol_id: Int!
-			$quantity: Int
-			$average_cost: Float
-		) {
-			createPortfolioItem(
+	CREATE_PORTFOLIO_ITEMS_QUERY: gql`
+		mutation CreatePortfolioItems($portfolio_id: Int!, $symbol_ids: [Int!]) {
+			createPortfolioItems(
 				portfolio_id: $portfolio_id
-				symbol_id: $symbol_id
-				quantity: $quantity
-				average_cost: $average_cost
+				symbol_ids: $symbol_ids
 			) {
 				id
 				portfolio_id

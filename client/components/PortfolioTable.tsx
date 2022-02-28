@@ -10,12 +10,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { useGetPortfolioItems } from '../hooks/useGetPortfolioItems';
 import { useDeletePortfolio } from '../hooks/useDeletePortfolio';
 import {
-	PortfolioItemData,
 	UpdatePortfolioPayload,
+	GetPortfolioItemsPayload,
+	GetPortfolioItemsResponse,
 } from '../constants/GQL_INTERFACE';
+import { useQuery } from '@apollo/client';
+import GQL_QUERY from '../constants/GQL_QUERY';
 import { useUpdatePortfolio } from '../hooks/useUpdatePortfolio';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -44,15 +46,23 @@ const PortfolioTable = ({ data }) => {
 		const [open, setOpen] = useState(false);
 		const [isEdit, setIsEdit] = useState(false);
 		const [name, setName] = useState('');
-		const [items, setItems] = useState<PortfolioItemData[] | undefined>();
-		const { getPortfolioItems } = useGetPortfolioItems();
 		const { updatePortfolio } = useUpdatePortfolio();
 		const { deletePortfolio } = useDeletePortfolio();
+
+		// Fetch portfolio items
+		const { loading, error, data } = useQuery<
+			GetPortfolioItemsResponse,
+			GetPortfolioItemsPayload
+		>(GQL_QUERY.GET_PORTFOLIO_ITEMS_QUERY, {
+			variables: { portfolio_id: row.id },
+			fetchPolicy: 'cache-and-network',
+		});
 
 		useEffect(() => {
 			setName(row.name);
 		}, []);
 
+		// Handle Portfolio Update
 		const updatePortfolioPayload: UpdatePortfolioPayload = {
 			id: row.id,
 			name,
@@ -77,15 +87,7 @@ const PortfolioTable = ({ data }) => {
 						<IconButton
 							aria-label='expand row'
 							size='small'
-							onClick={async () => {
-								setOpen(!open);
-								if (!open) {
-									const res = await getPortfolioItems({
-										variables: { portfolio_id: row.id },
-									});
-									setItems(res.data?.getPortfolioItems);
-								}
-							}}
+							onClick={async () => setOpen(!open)}
 						>
 							{open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 						</IconButton>
@@ -146,7 +148,7 @@ const PortfolioTable = ({ data }) => {
 						/>
 					</TableCell>
 				</TableRow>
-				{items ? (
+				{data?.getPortfolioItems ? (
 					<PortfolioItemTable
 						cols={[
 							'Stock',
@@ -155,7 +157,7 @@ const PortfolioTable = ({ data }) => {
 							'Current Price',
 							'Profit',
 						]}
-						rows={items}
+						rows={data?.getPortfolioItems}
 						isOpen={open}
 					/>
 				) : (

@@ -2,36 +2,42 @@ import React from 'react';
 import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
-	CreatePortfolioItemPayload,
-	CreatePortfolioItemResponse,
+	CreatePortfolioItemsPayload,
+	CreatePortfolioItemsResponse,
 	GetPortfolioItemsResponse,
 } from '../constants/GQL_INTERFACE';
 
-export function useCreatePortfolioItem() {
-	const [createPortfolioItem, { data, error }] = useMutation<
-		CreatePortfolioItemResponse,
-		CreatePortfolioItemPayload
-	>(GQL_QUERY.CREATE_PORTFOLIO_ITEM_QUERY, {
+export function useCreatePortfolioItems() {
+	const [createPortfolioItems, { data, error }] = useMutation<
+		CreatePortfolioItemsResponse,
+		CreatePortfolioItemsPayload
+	>(GQL_QUERY.CREATE_PORTFOLIO_ITEMS_QUERY, {
 		update(cache, { data }) {
-			const newItem = data?.createPortfolioItem;
-			const existingItems = cache.readQuery<GetPortfolioItemsResponse>({
-				query: GQL_QUERY.GET_PORTFOLIO_ITEMS_QUERY,
-				variables: {
-					portfolio_id: newItem?.portfolio_id,
-				},
-			});
-			if (existingItems && newItem) {
-				cache.writeQuery({
+			const newItems = data?.createPortfolioItems;
+			if (newItems && newItems.length > 0) {
+				const existingItems = cache.readQuery<GetPortfolioItemsResponse>({
 					query: GQL_QUERY.GET_PORTFOLIO_ITEMS_QUERY,
 					variables: {
-						portfolio_id: newItem?.portfolio_id,
-					},
-					data: {
-						getPortfolioItems: [...existingItems?.getPortfolioItems, newItem],
+						portfolio_id: newItems[0].portfolio_id,
 					},
 				});
+				if (existingItems) {
+					cache.writeQuery({
+						query: GQL_QUERY.GET_PORTFOLIO_ITEMS_QUERY,
+						variables: {
+							portfolio_id: newItems[0].portfolio_id,
+						},
+						data: {
+							getPortfolioItems: [
+								...existingItems?.getPortfolioItems,
+								...newItems,
+							],
+						},
+					});
+				}
 			}
+			console.log('hey', cache);
 		},
 	});
-	return { createPortfolioItem, data, error };
+	return { createPortfolioItems, data, error };
 }

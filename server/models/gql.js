@@ -73,7 +73,7 @@ const RootMutationType = new GraphQLObjectType({
 		createPortfolio: portfolio.mutation.postPortfolio,
 		deletePortfolio: portfolio.mutation.deletePortfolio,
 		updatePortfolio: portfolio.mutation.updatePortfolio,
-		createPortfolioItem: portfolioItem.mutation.postPortfolioItem,
+		createPortfolioItems: portfolioItem.mutation.postPortfolioItems,
 		deletePortfolioItem: portfolioItem.mutation.deletePortfolioItem,
 		updatePortfolioItem: portfolioItem.mutation.updatePortfolioItem,
 	},

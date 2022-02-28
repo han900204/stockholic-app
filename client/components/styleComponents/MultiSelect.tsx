@@ -12,12 +12,11 @@ const MultiSelect = ({
 	state: number[];
 }) => {
 	const handleChange = (ids) => {
-		console.log(ids);
 		dispatch(ids);
 	};
 	return (
 		<MultipleSelect
-			label='Choose some cities'
+			label='Choose some options'
 			values={state}
 			options={items}
 			onChange={handleChange}

@@ -38,7 +38,7 @@ export interface QueryInterface {
 	CREATE_PORTFOLIO_QUERY: DocumentNode;
 	DELETE_PORTFOLIO_QUERY: DocumentNode;
 	UPDATE_PORTFOLIO_QUERY: DocumentNode;
-	CREATE_PORTFOLIO_ITEM_QUERY: DocumentNode;
+	CREATE_PORTFOLIO_ITEMS_QUERY: DocumentNode;
 	DELETE_PORTFOLIO_ITEM_QUERY: DocumentNode;
 	UPDATE_PORTFOLIO_ITEM_QUERY: DocumentNode;
 }
@@ -420,15 +420,13 @@ export interface GetPortfolioItemsResponse {
 	getPortfolioItems: PortfolioItemData[];
 }
 
-export interface CreatePortfolioItemPayload {
+export interface CreatePortfolioItemsPayload {
 	portfolio_id: number;
-	symbol_id: number;
-	quantity?: number;
-	average_cost?: number;
+	symbol_ids: number[];
 }
 
-export interface CreatePortfolioItemResponse {
-	createPortfolioItem: PortfolioItemData;
+export interface CreatePortfolioItemsResponse {
+	createPortfolioItems: PortfolioItemData[];
 }
 
 export interface DeletePortfolioItemPayload {

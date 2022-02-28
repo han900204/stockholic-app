@@ -1,28 +1,29 @@
 import React, { useState } from 'react';
-import { CreatePortfolioItemPayload } from '../constants/GQL_INTERFACE';
+import { CreatePortfolioItemsPayload } from '../constants/GQL_INTERFACE';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import BasicModal from './styleComponents/BasicModal';
-import { useCreatePortfolioItem } from '../hooks/useCreatePortfolioItem';
-import TextAreaField from './styleComponents/TextAreaField';
+import { useCreatePortfolioItems } from '../hooks/useCreatePortfolioItem';
+import SingleSelect from './styleComponents/SingleSelect';
+import MultiSelect from './styleComponents/MultiSelect';
 
 export default function AddStockToPortfolioModal({ portfolios, symbols }) {
-	const [portId, setPortId] = useState<number | null>();
-	const [symbolId, setSymbolId] = useState<number | null>();
+	const [portId, setPortId] = useState<number>(0);
+	const [symbolIds, setSymbolIds] = useState<number[]>([]);
 
-	const { createPortfolioItem } = useCreatePortfolioItem();
+	const { createPortfolioItems } = useCreatePortfolioItems();
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 
-		if (portId && symbolId) {
-			const createPortfolioItemPayload: CreatePortfolioItemPayload = {
+		if (portId && symbolIds.length > 0) {
+			const createPortfolioItemsPayload: CreatePortfolioItemsPayload = {
 				portfolio_id: portId,
-				symbol_id: symbolId,
+				symbol_ids: symbolIds,
 			};
 			try {
-				await createPortfolioItem({
-					variables: createPortfolioItemPayload,
+				await createPortfolioItems({
+					variables: createPortfolioItemsPayload,
 				});
 			} catch (e: any) {
 				console.log('ERROR: ', e);
@@ -30,14 +31,42 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 		}
 	};
 
+	/**
+	 *
+	 * Convert portfolios data for single-select dropdown
+	 */
+
+	const copyPortfolios = JSON.parse(JSON.stringify(portfolios));
+
+	for (let portfolio of copyPortfolios) {
+		portfolio['value'] = portfolio['id'];
+		portfolio['label'] = portfolio['name'];
+		delete portfolio['date_created'];
+		delete portfolio['investor_id'];
+	}
+
+	/**
+	 *
+	 * Convert symbols data for multi-select dropdown
+	 */
+
+	const copySymbols = JSON.parse(JSON.stringify(symbols));
+
+	for (let symbol of copySymbols) {
+		symbol['value'] = symbol['id'];
+		symbol['label'] = symbol['name'];
+		delete symbol['date_created'];
+		delete symbol['is_active'];
+	}
+
 	const ModalComponent = (handleClose) => (
 		<div>
 			<Box
 				component='form'
 				onSubmit={(e) => {
 					handleSubmit(e);
-					setPortId(null);
-					setSymbolId(null);
+					setPortId(0);
+					setSymbolIds([]);
 					handleClose();
 				}}
 				sx={{
@@ -45,7 +74,21 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 				}}
 				autoComplete='off'
 			>
-				<div></div>
+				<div>
+					<SingleSelect
+						fieldName='Portfolio'
+						state={portId}
+						setState={setPortId}
+						options={copyPortfolios}
+					/>
+					<MultiSelect
+						items={copySymbols}
+						dispatch={(ids) => {
+							setSymbolIds(ids);
+						}}
+						state={symbolIds}
+					/>
+				</div>
 				<br />
 				<Btn text='Add' type='submit' />
 			</Box>
