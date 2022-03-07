@@ -4,7 +4,7 @@ import { useUpdatePortfolioItem } from '../hooks/useUpdatePortfolioItem';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import Field from './styleComponents/Field';
-import IconModal from './styleComponents/iconModal';
+import IconModal from './styleComponents/IconModal';
 import HeightIcon from '@mui/icons-material/Height';
 
 export default function AdjQtyToStockModal({
