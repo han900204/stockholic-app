@@ -17,6 +17,8 @@ const message = require('./schema/messageSchema');
 const symbol = require('./schema/symbolSchema');
 const summary = require('./schema/summarySchema');
 const price = require('./schema/priceSchema');
+const portfolio = require('./schema/portfolioSchema');
+const portfolioItem = require('./schema/portfolioItemSchema');
 
 /**
  * Load .env file
@@ -44,6 +46,8 @@ const RootQueryType = new GraphQLObjectType({
 		getSummaries: summary.query.getSummaries,
 		getSummary: summary.query.getSummary,
 		getPrices: price.query.getPrices,
+		getPortfolios: portfolio.query.getPortfolios,
+		getPortfolioItems: portfolioItem.query.getPortfolioItems,
 	},
 });
 
@@ -66,6 +70,12 @@ const RootMutationType = new GraphQLObjectType({
 		deleteMessage: message.mutation.deleteMessage,
 		addSubscribers: room.mutation.addSubscribers,
 		removeSubscriber: room.mutation.removeSubscriber,
+		createPortfolio: portfolio.mutation.postPortfolio,
+		deletePortfolio: portfolio.mutation.deletePortfolio,
+		updatePortfolio: portfolio.mutation.updatePortfolio,
+		createPortfolioItems: portfolioItem.mutation.postPortfolioItems,
+		deletePortfolioItem: portfolioItem.mutation.deletePortfolioItem,
+		updatePortfolioItem: portfolioItem.mutation.updatePortfolioItem,
 	},
 });
 

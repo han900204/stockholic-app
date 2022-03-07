@@ -3,33 +3,31 @@ import { MultipleSelect } from 'react-select-material-ui';
 import { MultiSelectOption } from '../../constants/STYLE_INTERFACE';
 
 const MultiSelect = ({
-  items,
-  dispatch,
-  state,
+	items,
+	dispatch,
+	state,
 }: {
-  items: MultiSelectOption[];
-  dispatch: (ids: number[]) => void;
-  state: number[];
+	items: MultiSelectOption[];
+	dispatch: (ids: number[]) => void;
+	state: number[];
 }) => {
-  const handleChange = (ids) => {
-    console.log(ids);
-    dispatch(ids);
-  };
-  return (
-    <MultipleSelect
-      label='Choose some cities'
-      values={state}
-      options={items}
-      helperText='You can add a new city by writing its name and pressing enter'
-      onChange={handleChange}
-      SelectProps={{
-        isCreatable: false,
-        isClearable: true,
-        msgNoOptionsAvailable: 'All users are selected',
-        msgNoOptionsMatchFilter: 'No user name matches the filter',
-      }}
-    />
-  );
+	const handleChange = (ids) => {
+		dispatch(ids);
+	};
+	return (
+		<MultipleSelect
+			label='Choose some options'
+			values={state}
+			options={items}
+			onChange={handleChange}
+			SelectProps={{
+				isCreatable: false,
+				isClearable: true,
+				msgNoOptionsAvailable: 'All options are selected',
+				msgNoOptionsMatchFilter: 'No options matches the filter',
+			}}
+		/>
+	);
 };
 
 export default MultiSelect;

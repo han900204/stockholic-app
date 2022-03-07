@@ -14,7 +14,12 @@ sql.getUpdateQuery = (table, payload, whereClause, returnFields) => {
 			if (field === 'id') {
 				return value;
 			}
-			const fieldVal = payload[field].replace(/'/g, "''");
+
+			let fieldVal = payload[field];
+
+			if (typeof fieldVal === 'string') {
+				fieldVal = fieldVal.replace(/'/g, "''");
+			}
 			value += field + ' = ' + "'" + fieldVal + "', ";
 			return value;
 		}, '')
@@ -90,7 +95,7 @@ sql.getSelectQuery = (
 	if (orderBy.fields.length !== 0) {
 		query = `
     ${query}
-    ORDER BY ${orderBy.fields.join(', ')} ${option}
+    ORDER BY ${orderBy.fields.join(', ')} ${orderBy.option}
     `;
 	}
 
@@ -105,23 +110,6 @@ sql.getSelectQuery = (
  * @param {array} orderBy - object with table / field pair and sort option
  * @returns SQL query
  */
-
-// const schema = [
-//   { table1: ['f1', 'f2', 'f4'] },
-//   { table2: ['f1', 'f3'] },
-//   { table3: ['f1', 'f5'] },
-// ];
-// const join = [
-//   { table1: 'f1', table2: 'f1' },
-//   { table2: 'f1', table3: 'f1' },
-// ];
-
-// const whereClause = [{ table1: [`f2 = 2`, `f4 = 4`] }, { table2: [`f3 = 3`] }];
-
-// const orderBy = {
-//   table1: 'f1',
-//   option: 'DESC',
-// };
 
 sql.getSelectJoinQuery = (schema, join, whereClause = [], orderBy = {}) => {
 	let query = '';
@@ -188,8 +176,6 @@ sql.getSelectJoinQuery = (schema, join, whereClause = [], orderBy = {}) => {
 
 	return query;
 };
-
-// console.log(sql.getSelectJoinQuery(schema, join, whereClause, orderBy));
 
 /**
  *

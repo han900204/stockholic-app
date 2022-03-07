@@ -15,11 +15,13 @@ import {
 	setNickName,
 	setInvestors,
 } from './features/investorSlice';
+import { setSymbols } from './features/stockSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
 import { useLazyQuery } from '@apollo/client';
 import {
 	GetAuthPayload,
 	GetInvestorsResponse,
+	GetSymbolsResponse,
 } from './constants/GQL_INTERFACE';
 import useTheme from './hooks/useTheme';
 import LoginContainer from './containers/LoginContainer';
@@ -32,6 +34,7 @@ import ForumContainer from './containers/ForumContainer';
 import ChatContainer from './containers/ChatContainer';
 import StockListContainer from './containers/StockListContainer';
 import StockContainer from './containers/StockContainer';
+import PortfolioContainer from './containers/PortfolioContainer';
 
 const App = () => {
 	const { theme } = useTheme();
@@ -50,11 +53,16 @@ const App = () => {
 		GQL_QUERY.GET_INVESTORS_QUERY
 	);
 
+	const [getSymbols] = useLazyQuery<GetSymbolsResponse, null>(
+		GQL_QUERY.GET_SYMBOLS_QUERY
+	);
+
 	useEffect(() => {
 		const asyncGetAuth = async () => {
 			await dispatch(setIsPending(true));
 			const res = await getAuthentication({ variables: authPayload });
 			const investors = await getInvestors();
+			const symbols = await getSymbols();
 
 			if (res.data.getAuthentication) {
 				await dispatch(setIsAuthenticated(true));
@@ -62,6 +70,9 @@ const App = () => {
 				await dispatch(setNickName(res.data.getAuthentication.nick_name));
 				if (investors?.data?.getInvestors) {
 					await dispatch(setInvestors(investors.data.getInvestors));
+				}
+				if (symbols?.data?.getSymbols) {
+					await dispatch(setSymbols(symbols.data.getSymbols));
 				}
 			}
 			await dispatch(setIsPending(false));
@@ -82,10 +93,7 @@ const App = () => {
 								path='/profile/:investorId'
 								element={<ProfileContainer />}
 							/>
-							<Route
-								path='/portfolio/:investorId'
-								element={<div>Portfolio</div>}
-							/>
+							<Route path='/portfolio' element={<PortfolioContainer />} />
 							<Route path='/chat/:investorId' element={<ChatContainer />} />
 							<Route path='/forum' element={<ForumListContainer />} />
 							<Route path='/forum/:id' element={<ForumContainer />} />

@@ -2,11 +2,9 @@ import React, { FC } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import Btn from '../styleComponents/Btn';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
 
 const style = {
 	position: 'absolute' as 'absolute',
@@ -20,36 +18,27 @@ const style = {
 	p: 4,
 };
 
-export default function BasicModal({
-	buttonName,
+export default function IconModal({
+	Icon,
+	color,
 	heading,
 	Component,
-	isMenu,
 }: {
-	buttonName: string;
+	Icon: React.ComponentType<{
+		onClick: () => void;
+		color: 'success' | 'warning';
+	}>;
+	color: 'success' | 'warning';
 	heading: string;
-	Component: any;
-	isMenu?: boolean;
+	Component: (handleClose: () => void) => JSX.Element;
 }) {
 	const [open, setOpen] = React.useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 
-	if (isMenu === undefined) isMenu = false;
-
 	return (
 		<div>
-			{!isMenu ? (
-				<Btn type='button' text={buttonName} eHandler={handleOpen} />
-			) : (
-				<MenuItem
-					onClick={() => {
-						handleOpen();
-					}}
-				>
-					<Typography textAlign='center'>{buttonName}</Typography>
-				</MenuItem>
-			)}
+			{<Icon onClick={handleOpen} color={color} />}
 			<Modal
 				open={open}
 				onClose={handleClose}
