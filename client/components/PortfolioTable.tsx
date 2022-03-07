@@ -156,6 +156,7 @@ const PortfolioTable = ({ data }) => {
 							'Average Cost',
 							'Current Price',
 							'Profit',
+							'Delete',
 						]}
 						rows={data?.getPortfolioItems}
 						isOpen={open}

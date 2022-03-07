@@ -9,8 +9,16 @@ import TableRow from '@mui/material/TableRow';
 import currencyFormatter from '../utils/currencyFormatter';
 import Grid from '@mui/material/Grid';
 import AdjQtyToStockModal from './AdjQtyToStockModal';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { DeletePortfolioItemPayload } from '../constants/GQL_INTERFACE';
+import { useDeletePortfolioItem } from '../hooks/useDeletePortfolioItem';
 
 function Row({ row }) {
+	const deletePortfolioItemPayload: DeletePortfolioItemPayload = {
+		id: row.id,
+	};
+	const { deletePortfolioItem } = useDeletePortfolioItem();
+
 	return (
 		<React.Fragment>
 			<TableRow>
@@ -51,6 +59,15 @@ function Row({ row }) {
 					{currencyFormatter.format(
 						row.quantity * row.current_price - row.quantity * row.average_cost
 					)}
+				</TableCell>
+				<TableCell align='left'>
+					<DeleteForeverIcon
+						onClick={async () => {
+							await deletePortfolioItem({
+								variables: deletePortfolioItemPayload,
+							});
+						}}
+					/>
 				</TableCell>
 			</TableRow>
 		</React.Fragment>
