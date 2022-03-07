@@ -7,20 +7,49 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import currencyFormatter from '../utils/currencyFormatter';
+import Grid from '@mui/material/Grid';
+import AdjQtyToStockModal from './AdjQtyToStockModal';
 
-function Row({ cols, row, isOpen }) {
+function Row({ row }) {
 	return (
 		<React.Fragment>
 			<TableRow>
 				<TableCell component='th' scope='row' align='left'>
 					{row.short_name}
 				</TableCell>
-				<TableCell align='left'>{row.quantity}</TableCell>
-				<TableCell align='left'>{row.average_cost}</TableCell>
-				<TableCell align='left'>{row.current_price}</TableCell>
+				<TableCell align='left'>
+					<Grid
+						container
+						spacing={2}
+						direction='row'
+						justifyContent='center'
+						alignItems='center'
+					>
+						<>
+							<Grid item xs={3}>
+								{row.quantity}
+							</Grid>
+							<Grid item xs={9}>
+								<>
+									<AdjQtyToStockModal
+										qty={row.quantity}
+										avgCost={row.average_cost}
+										id={row.id}
+									/>
+								</>
+							</Grid>
+						</>
+					</Grid>
+				</TableCell>
+				<TableCell align='left'>
+					{currencyFormatter.format(row.average_cost)}
+				</TableCell>
+				<TableCell align='left'>
+					{currencyFormatter.format(row.current_price)}
+				</TableCell>
 				<TableCell align='left'>
 					{currencyFormatter.format(
-						row.quantity * row.average_cost - row.quantity * row.current_price
+						row.quantity * row.current_price - row.quantity * row.average_cost
 					)}
 				</TableCell>
 			</TableRow>
@@ -47,7 +76,7 @@ export default function PortfolioItemTable({ cols, rows, isOpen }) {
 								</TableHead>
 								<TableBody>
 									{rows.map((row, idx) => (
-										<Row key={idx} cols={cols} row={row} isOpen={isOpen} />
+										<Row key={idx} row={row} />
 									))}
 								</TableBody>
 							</Table>

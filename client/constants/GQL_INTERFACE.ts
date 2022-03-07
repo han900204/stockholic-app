@@ -444,5 +444,5 @@ export interface UpdatePortfolioItemPayload {
 }
 
 export interface UpdatePortfolioItemResponse {
-	updatePortfolio: PortfolioData;
+	updatePortfolioItem: PortfolioItemData;
 }

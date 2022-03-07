@@ -166,7 +166,7 @@ portfolioItem.mutation.updatePortfolioItem = {
 	type: portfolioItem.type,
 	args: {
 		id: { type: GraphQLInt },
-		quantity: { type: GraphQLString },
+		quantity: { type: GraphQLInt },
 		average_cost: { type: GraphQLFloat },
 	},
 	async resolve(parent, args) {

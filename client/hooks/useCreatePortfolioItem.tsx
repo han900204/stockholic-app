@@ -36,7 +36,6 @@ export function useCreatePortfolioItems() {
 					});
 				}
 			}
-			console.log('hey', cache);
 		},
 	});
 	return { createPortfolioItems, data, error };
