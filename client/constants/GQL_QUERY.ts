@@ -197,8 +197,18 @@ const GQL_QUERY: QueryInterface = {
 	`,
 
 	UPDATE_COMMENT_QUERY: gql`
-		mutation UpdateComment($id: Int!, $description: String!) {
-			updateComment(id: $id, description: $description) {
+		mutation UpdateComment(
+			$id: Int!
+			$description: String
+			$likes: Int
+			$dislikes: Int
+		) {
+			updateComment(
+				id: $id
+				description: $description
+				likes: $likes
+				dislikes: $dislikes
+			) {
 				id
 				owner_user_id
 				forum_id

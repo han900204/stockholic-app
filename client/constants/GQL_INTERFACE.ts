@@ -172,7 +172,9 @@ export interface UpdateCommentResponse {
 
 export interface UpdateCommentPayload {
 	id: number;
-	description: string;
+	description?: string;
+	likes?: number;
+	dislikes?: number;
 }
 
 export interface DeleteCommentResponse {

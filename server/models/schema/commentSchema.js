@@ -161,6 +161,8 @@ comment.mutation.updateComment = {
 	args: {
 		id: { type: GraphQLInt },
 		description: { type: GraphQLString },
+		likes: { type: GraphQLInt },
+		dislikes: { type: GraphQLInt },
 	},
 	async resolve(parent, args) {
 		const sqlQuery = sql.getUpdateQuery(
