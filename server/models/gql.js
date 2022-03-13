@@ -1,13 +1,4 @@
-const db = require('./db');
-const {
-	GraphQLObjectType,
-	GraphQLInt,
-	GraphQLString,
-	GraphQLBoolean,
-	GraphQLList,
-	GraphQLSchema,
-	GraphQLFloat,
-} = require('graphql');
+const { GraphQLObjectType, GraphQLSchema } = require('graphql');
 const investor = require('./schema/investorSchema');
 const authentication = require('./schema/authenticationSchema');
 const forum = require('./schema/forumSchema');
@@ -19,14 +10,7 @@ const summary = require('./schema/summarySchema');
 const price = require('./schema/priceSchema');
 const portfolio = require('./schema/portfolioSchema');
 const portfolioItem = require('./schema/portfolioItemSchema');
-
-/**
- * Load .env file
- */
-if (process.env.NODE_ENV === 'development') {
-	const dotenv = require('dotenv');
-	dotenv.config();
-}
+const vote = require('./schema/voteSchema');
 
 /**
  * Root Query
@@ -48,6 +32,7 @@ const RootQueryType = new GraphQLObjectType({
 		getPrices: price.query.getPrices,
 		getPortfolios: portfolio.query.getPortfolios,
 		getPortfolioItems: portfolioItem.query.getPortfolioItems,
+		getVotes: vote.query.getVotes,
 	},
 });
 
@@ -76,6 +61,8 @@ const RootMutationType = new GraphQLObjectType({
 		createPortfolioItems: portfolioItem.mutation.postPortfolioItems,
 		deletePortfolioItem: portfolioItem.mutation.deletePortfolioItem,
 		updatePortfolioItem: portfolioItem.mutation.updatePortfolioItem,
+		createVote: vote.mutation.postVote,
+		deleteVote: vote.mutation.deleteVote,
 	},
 });
 

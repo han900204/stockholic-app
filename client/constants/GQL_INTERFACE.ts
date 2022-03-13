@@ -41,6 +41,9 @@ export interface QueryInterface {
 	CREATE_PORTFOLIO_ITEMS_QUERY: DocumentNode;
 	DELETE_PORTFOLIO_ITEM_QUERY: DocumentNode;
 	UPDATE_PORTFOLIO_ITEM_QUERY: DocumentNode;
+	GET_VOTES_QUERY: DocumentNode;
+	CREATE_VOTE_QUERY: DocumentNode;
+	DELETE_VOTE_QUERY: DocumentNode;
 }
 
 /**
@@ -172,7 +175,9 @@ export interface UpdateCommentResponse {
 
 export interface UpdateCommentPayload {
 	id: number;
-	description: string;
+	description?: string;
+	likes?: number;
+	dislikes?: number;
 }
 
 export interface DeleteCommentResponse {
@@ -445,4 +450,44 @@ export interface UpdatePortfolioItemPayload {
 
 export interface UpdatePortfolioItemResponse {
 	updatePortfolioItem: PortfolioItemData;
+}
+
+/**
+ * Vote Interfaces
+ */
+export interface VoteData {
+	id: number;
+	forum_id: number;
+	comment_id: number;
+	investor_id: number;
+	type: string;
+	date_created: string;
+}
+
+export interface GetVotesPayload {
+	forum_id: number;
+	investor_id: number | null;
+}
+
+export interface GetVotesResponse {
+	getVotes: VoteData[];
+}
+
+export interface CreateVotePayload {
+	forum_id: number;
+	investor_id: number;
+	comment_id: number;
+	type: 'likes' | 'dislikes';
+}
+
+export interface CreateVoteResponse {
+	createVote: VoteData;
+}
+
+export interface DeleteVotePayload {
+	id: number;
+}
+
+export interface DeleteVoteResponse {
+	deleteVote: VoteData;
 }

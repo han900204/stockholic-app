@@ -6,7 +6,7 @@ const initialState: SearchState = {
 };
 
 export const searchSlice = createSlice({
-	name: 'theme',
+	name: 'search',
 	initialState,
 	reducers: {
 		setStockSearch: (state, action: PayloadAction<string>) => {

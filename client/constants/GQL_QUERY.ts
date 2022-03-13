@@ -197,8 +197,18 @@ const GQL_QUERY: QueryInterface = {
 	`,
 
 	UPDATE_COMMENT_QUERY: gql`
-		mutation UpdateComment($id: Int!, $description: String!) {
-			updateComment(id: $id, description: $description) {
+		mutation UpdateComment(
+			$id: Int!
+			$description: String
+			$likes: Int
+			$dislikes: Int
+		) {
+			updateComment(
+				id: $id
+				description: $description
+				likes: $likes
+				dislikes: $dislikes
+			) {
 				id
 				owner_user_id
 				forum_id
@@ -552,6 +562,59 @@ const GQL_QUERY: QueryInterface = {
 				average_cost
 				current_price
 				short_name
+			}
+		}
+	`,
+
+	/**
+	 * Vote query
+	 */
+
+	GET_VOTES_QUERY: gql`
+		query GetVotes($investor_id: Int!, $forum_id: Int!) {
+			getVotes(investor_id: $investor_id, forum_id: $forum_id) {
+				id
+				forum_id
+				comment_id
+				investor_id
+				type
+				date_created
+			}
+		}
+	`,
+
+	CREATE_VOTE_QUERY: gql`
+		mutation CreateVote(
+			$investor_id: Int!
+			$comment_id: Int!
+			$type: String!
+			$forum_id: Int!
+		) {
+			createVote(
+				investor_id: $investor_id
+				comment_id: $comment_id
+				type: $type
+				forum_id: $forum_id
+			) {
+				id
+				forum_id
+				comment_id
+				investor_id
+				type
+				date_created
+			}
+		}
+	`,
+
+	DELETE_VOTE_QUERY: gql`
+		mutation DeleteVote($id: Int!) {
+			deleteVote(id: $id) {
+				id
+				forum_id
+				comment_id
+				investor_id
+				type
+				date_created
 			}
 		}
 	`,
