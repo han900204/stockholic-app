@@ -9,9 +9,14 @@ import {
 	CommentData,
 	UpdateCommentPayload,
 	DeleteCommentPayload,
+	CreateVotePayload,
+	DeleteVotePayload,
+	VoteData,
 } from '../constants/GQL_INTERFACE';
 import { useUpdateComment } from '../hooks/useUpdateComment';
 import { useDeleteComment } from '../hooks/useDeleteComment';
+import { useCreateVote } from '../hooks/useCreateVote';
+import { useDeleteVote } from '../hooks/useDeleteVote';
 import ThumbUp from '@mui/icons-material/ThumbUp';
 import ThumbDown from '@mui/icons-material/ThumbDown';
 import dateFormatter from '../utils/dateFormatter';
@@ -19,14 +24,36 @@ import dateFormatter from '../utils/dateFormatter';
 const CommentBox = ({
 	data,
 	investorId,
+	vote,
 }: {
 	data: CommentData;
 	investorId: number;
+	vote: VoteData | undefined;
 }) => {
 	const [comment, setComment] = useState('');
 	const [isEdit, setIsEdit] = useState(false);
 	const { updateComment } = useUpdateComment();
 	const { deleteComment } = useDeleteComment();
+	const { createVote } = useCreateVote();
+	const { deleteVote } = useDeleteVote();
+
+	const handleCreateVote = async (commentPayload, votePayload) => {
+		await updateComment({
+			variables: commentPayload,
+		});
+		await createVote({
+			variables: votePayload,
+		});
+	};
+
+	const handleDeleteVote = async (commentPayload, votePayload) => {
+		await updateComment({
+			variables: commentPayload,
+		});
+		await deleteVote({
+			variables: votePayload,
+		});
+	};
 
 	return (
 		<>
@@ -57,31 +84,89 @@ const CommentBox = ({
 							>
 								<Box>Posted By: {data.nick_name}</Box>
 								<Box>Posted on: {dateFormatter(data.date_created)}</Box>
-								{/* TODO: Add likes / dislikes icon and submit request to
-								increment in event of click */}
 								<Box>
 									<ThumbUp
 										fontSize='small'
-										onClick={async () => {
-											const updateCommentPayload: UpdateCommentPayload = {
-												id: data.id,
-												likes: Number(data.likes) + 1,
-											};
-											await updateComment({ variables: updateCommentPayload });
-										}}
+										color={vote?.type === 'likes' ? 'primary' : 'action'}
+										onClick={
+											!vote
+												? (e) => {
+														const updateCommentPayload: UpdateCommentPayload = {
+															id: data.id,
+															likes: Number(data.likes) + 1,
+														};
+
+														const createVotePayload: CreateVotePayload = {
+															forum_id: data.forum_id,
+															comment_id: data.id,
+															investor_id: investorId,
+															type: 'likes',
+														};
+														handleCreateVote(
+															updateCommentPayload,
+															createVotePayload
+														);
+												  }
+												: vote.type === 'likes'
+												? (e) => {
+														const updateCommentPayload: UpdateCommentPayload = {
+															id: data.id,
+															likes: Number(data.likes) - 1,
+														};
+
+														const deleteVotePayload: DeleteVotePayload = {
+															id: vote.id,
+														};
+														handleDeleteVote(
+															updateCommentPayload,
+															deleteVotePayload
+														);
+												  }
+												: undefined
+										}
 									/>
 									&nbsp;{data.likes}
 								</Box>
 								<Box>
 									<ThumbDown
 										fontSize='small'
-										onClick={async () => {
-											const updateCommentPayload: UpdateCommentPayload = {
-												id: data.id,
-												dislikes: Number(data.dislikes) + 1,
-											};
-											await updateComment({ variables: updateCommentPayload });
-										}}
+										color={vote?.type === 'dislikes' ? 'warning' : 'action'}
+										onClick={
+											!vote
+												? (e) => {
+														const updateCommentPayload: UpdateCommentPayload = {
+															id: data.id,
+															dislikes: Number(data.dislikes) + 1,
+														};
+
+														const createVotePayload: CreateVotePayload = {
+															forum_id: data.forum_id,
+															comment_id: data.id,
+															investor_id: investorId,
+															type: 'dislikes',
+														};
+														handleCreateVote(
+															updateCommentPayload,
+															createVotePayload
+														);
+												  }
+												: vote.type === 'dislikes'
+												? (e) => {
+														const updateCommentPayload: UpdateCommentPayload = {
+															id: data.id,
+															dislikes: Number(data.dislikes) - 1,
+														};
+
+														const deleteVotePayload: DeleteVotePayload = {
+															id: vote.id,
+														};
+														handleDeleteVote(
+															updateCommentPayload,
+															deleteVotePayload
+														);
+												  }
+												: undefined
+										}
 									/>
 									&nbsp;{data.dislikes}
 								</Box>

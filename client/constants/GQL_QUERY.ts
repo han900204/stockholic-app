@@ -565,6 +565,59 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
+	/**
+	 * Vote query
+	 */
+
+	GET_VOTES_QUERY: gql`
+		query GetVotes($investor_id: Int!, $forum_id: Int!) {
+			getVotes(investor_id: $investor_id, forum_id: $forum_id) {
+				id
+				forum_id
+				comment_id
+				investor_id
+				type
+				date_created
+			}
+		}
+	`,
+
+	CREATE_VOTE_QUERY: gql`
+		mutation CreateVote(
+			$investor_id: Int!
+			$comment_id: Int!
+			$type: String!
+			$forum_id: Int!
+		) {
+			createVote(
+				investor_id: $investor_id
+				comment_id: $comment_id
+				type: $type
+				forum_id: $forum_id
+			) {
+				id
+				forum_id
+				comment_id
+				investor_id
+				type
+				date_created
+			}
+		}
+	`,
+
+	DELETE_VOTE_QUERY: gql`
+		mutation DeleteVote($id: Int!) {
+			deleteVote(id: $id) {
+				id
+				forum_id
+				comment_id
+				investor_id
+				type
+				date_created
+			}
+		}
+	`,
 };
 
 export default GQL_QUERY;
