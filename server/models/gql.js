@@ -69,6 +69,8 @@ const RootMutationType = new GraphQLObjectType({
 const RootSubscriptionType = new GraphQLObjectType({
 	name: 'RootSubscription',
 	fields: {
+		subscribeRoom: room.subscription.subscribeRoom,
+		unsubscribeRoom: room.subscription.unsubscribeRoom,
 		subscribeMessage: message.subscription.subscribeMessage,
 	},
 });

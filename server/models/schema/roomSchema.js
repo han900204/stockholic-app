@@ -1,6 +1,8 @@
 const { Room } = require('../mongoModels/roomModel');
 const { Message } = require('../mongoModels/messageModel');
 const mongoose = require('mongoose');
+const pubsub = require('../../utils/pubsub');
+const { withFilter } = require('graphql-subscriptions');
 
 const {
 	GraphQLObjectType,
@@ -20,6 +22,7 @@ const room = {
 	type: null,
 	query: {},
 	mutation: {},
+	subscription: {},
 };
 
 const childMessagesType = new GraphQLObjectType({
@@ -80,6 +83,7 @@ room.mutation.postRoom = {
 			subscribers: args.subscribers,
 		});
 		console.log('room created', room);
+
 		return room;
 	},
 };
@@ -99,6 +103,14 @@ room.mutation.deleteRoom = {
 		});
 
 		console.log('room deleted', room);
+
+		pubsub.publish('ROOM_UNSUBSCRIBED', {
+			unsubscribeRoom: room,
+			subscribers: room.subscribers,
+		});
+
+		console.log('publishing "ROOM_UNSUBSCRIBED"');
+
 		return room;
 	},
 };
@@ -116,6 +128,14 @@ room.mutation.addSubscribers = {
 			{ new: true }
 		);
 		console.log('subscribers added to the room', room);
+
+		pubsub.publish('ROOM_SUBSCRIBED', {
+			subscribeRoom: room,
+			subscribers: args.subscribers,
+		});
+
+		console.log('publishing "ROOM_SUBSCRIBED"');
+
 		return room;
 	},
 };
@@ -133,8 +153,43 @@ room.mutation.removeSubscriber = {
 			{ new: true }
 		);
 		console.log('subscriber removed from the room', room);
+
 		return room;
 	},
+};
+
+room.subscription.subscribeRoom = {
+	type: room.type,
+	args: {
+		subscriber_id: { type: GraphQLInt },
+	},
+	subscribe: withFilter(
+		() => pubsub.asyncIterator('ROOM_SUBSCRIBED'),
+		(payload, variables) => {
+			console.log(
+				'room subscription filter result: ',
+				payload.subscribers.includes(variables.subscriber_id)
+			);
+			return payload.subscribers.includes(variables.subscriber_id);
+		}
+	),
+};
+
+room.subscription.unsubscribeRoom = {
+	type: room.type,
+	args: {
+		subscriber_id: { type: GraphQLInt },
+	},
+	subscribe: withFilter(
+		() => pubsub.asyncIterator('ROOM_UNSUBSCRIBED'),
+		(payload, variables) => {
+			console.log(
+				'room unsubscription filter result: ',
+				payload.subscribers.includes(variables.subscriber_id)
+			);
+			return payload.subscribers.includes(variables.subscriber_id);
+		}
+	),
 };
 
 module.exports = room;
