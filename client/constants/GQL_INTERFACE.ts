@@ -23,6 +23,8 @@ export interface QueryInterface {
 	GET_ROOMS_QUERY: DocumentNode;
 	CREATE_ROOM_QUERY: DocumentNode;
 	DELETE_ROOM_QUERY: DocumentNode;
+	SUBSCRIBE_ROOM_QUERY: DocumentNode;
+	UNSUBSCRIBE_ROOM_QUERY: DocumentNode;
 	GET_MESSAGES_QUERY: DocumentNode;
 	CREATE_MESSAGE_QUERY: DocumentNode;
 	DELETE_MESSAGE_QUERY: DocumentNode;
@@ -243,6 +245,18 @@ export interface RemoveSubscriberResponse {
 export interface RemoveSubscriberPayload {
 	_id: string;
 	subscriber: number | null;
+}
+
+export interface SubscribeRoomResponse {
+	subscribeRoom: RoomData;
+}
+
+export interface UnsubscribeRoomResponse {
+	unsubscribeRoom: RoomData;
+}
+
+export interface RoomSubscriptionPayload {
+	subscriber_id: number | null;
 }
 
 /**

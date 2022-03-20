@@ -314,6 +314,32 @@ const GQL_QUERY: QueryInterface = {
 		}
 	`,
 
+	SUBSCRIBE_ROOM_QUERY: gql`
+		subscription SubscribeRoom($subscriber_id: Int!) {
+			subscribeRoom(subscriber_id: $subscriber_id) {
+				_id
+				owner_user_id
+				nick_name
+				name
+				date_created
+				subscribers
+			}
+		}
+	`,
+
+	UNSUBSCRIBE_ROOM_QUERY: gql`
+		subscription UnsubscribeRoom($subscriber_id: Int!) {
+			unsubscribeRoom(subscriber_id: $subscriber_id) {
+				_id
+				owner_user_id
+				nick_name
+				name
+				date_created
+				subscribers
+			}
+		}
+	`,
+
 	/**
 	 * Message query
 	 */
