@@ -25,6 +25,7 @@ export interface QueryInterface {
 	DELETE_ROOM_QUERY: DocumentNode;
 	SUBSCRIBE_ROOM_QUERY: DocumentNode;
 	UNSUBSCRIBE_ROOM_QUERY: DocumentNode;
+	NOTIFY_DELETED_ROOM_QUERY: DocumentNode;
 	GET_MESSAGES_QUERY: DocumentNode;
 	CREATE_MESSAGE_QUERY: DocumentNode;
 	DELETE_MESSAGE_QUERY: DocumentNode;
@@ -253,6 +254,10 @@ export interface SubscribeRoomResponse {
 
 export interface UnsubscribeRoomResponse {
 	unsubscribeRoom: RoomData;
+}
+
+export interface NotifyDeletedRoomResponse {
+	notifyDeletedRoom: RoomData;
 }
 
 export interface RoomSubscriptionPayload {

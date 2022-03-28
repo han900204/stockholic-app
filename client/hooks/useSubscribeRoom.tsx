@@ -5,6 +5,7 @@ import {
 	SubscribeRoomResponse,
 	RoomSubscriptionPayload,
 	GetRoomsResponse,
+	RoomData,
 } from '../constants/GQL_INTERFACE';
 
 export function useSubscribeRoom(payload) {
@@ -23,13 +24,32 @@ export function useSubscribeRoom(payload) {
 			});
 
 			if (subscribedRoom && existingRooms) {
+				let isNewRoom = true;
+
+				const updatedRooms = existingRooms.getRooms.reduce(
+					(rooms: RoomData[], room) => {
+						if (room._id !== subscribedRoom._id) {
+							rooms.push(room);
+						} else {
+							isNewRoom = false;
+							rooms.push(subscribedRoom);
+						}
+						return rooms;
+					},
+					[]
+				);
+
+				if (isNewRoom) {
+					updatedRooms.push(subscribedRoom);
+				}
+
 				client.cache.writeQuery({
 					query: GQL_QUERY.GET_ROOMS_QUERY,
 					variables: {
 						owner_user_id: payload.subscriber_id,
 					},
 					data: {
-						getRooms: [...existingRooms?.getRooms, subscribedRoom],
+						getRooms: updatedRooms,
 					},
 				});
 			}

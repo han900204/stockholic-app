@@ -340,6 +340,19 @@ const GQL_QUERY: QueryInterface = {
 		}
 	`,
 
+	NOTIFY_DELETED_ROOM_QUERY: gql`
+		subscription NotifyDeletedRoom($subscriber_id: Int!) {
+			notifyDeletedRoom(subscriber_id: $subscriber_id) {
+				_id
+				owner_user_id
+				nick_name
+				name
+				date_created
+				subscribers
+			}
+		}
+	`,
+
 	/**
 	 * Message query
 	 */

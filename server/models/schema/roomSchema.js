@@ -104,12 +104,12 @@ room.mutation.deleteRoom = {
 
 		console.log('room deleted', room);
 
-		pubsub.publish('ROOM_UNSUBSCRIBED', {
-			unsubscribeRoom: room,
+		pubsub.publish('ROOM_DELETED', {
+			notifyDeletedRoom: room,
 			subscribers: room.subscribers,
 		});
 
-		console.log('publishing "ROOM_UNSUBSCRIBED"');
+		console.log('publishing "ROOM_DELETED"');
 
 		return room;
 	},
@@ -131,7 +131,7 @@ room.mutation.addSubscribers = {
 
 		pubsub.publish('ROOM_SUBSCRIBED', {
 			subscribeRoom: room,
-			subscribers: args.subscribers,
+			subscribers: room.subscribers,
 		});
 
 		console.log('publishing "ROOM_SUBSCRIBED"');
@@ -154,6 +154,13 @@ room.mutation.removeSubscriber = {
 		);
 		console.log('subscriber removed from the room', room);
 
+		pubsub.publish('ROOM_UNSUBSCRIBED', {
+			unsubscribeRoom: room,
+			subscribers: room.subscribers,
+		});
+
+		console.log('publishing "ROOM_UNSUBSCRIBED"');
+
 		return room;
 	},
 };
@@ -167,10 +174,13 @@ room.subscription.subscribeRoom = {
 		() => pubsub.asyncIterator('ROOM_SUBSCRIBED'),
 		(payload, variables) => {
 			console.log(
-				'room subscription filter result: ',
+				`room subscription filter result:  subscriber id ${variables.subscriber_id}`,
 				payload.subscribers.includes(variables.subscriber_id)
 			);
-			return payload.subscribers.includes(variables.subscriber_id);
+			return (
+				payload.subscribers.includes(variables.subscriber_id) ||
+				payload.subscribeRoom.owner_user_id === variables.subscriber_id
+			);
 		}
 	),
 };
@@ -184,7 +194,27 @@ room.subscription.unsubscribeRoom = {
 		() => pubsub.asyncIterator('ROOM_UNSUBSCRIBED'),
 		(payload, variables) => {
 			console.log(
-				'room unsubscription filter result: ',
+				`room unsubscription filter result: subscriber id ${variables.subscriber_id}`,
+				payload.subscribers.includes(variables.subscriber_id)
+			);
+			return (
+				payload.subscribers.includes(variables.subscriber_id) ||
+				payload.unsubscribeRoom.owner_user_id === variables.subscriber_id
+			);
+		}
+	),
+};
+
+room.subscription.notifyDeletedRoom = {
+	type: room.type,
+	args: {
+		subscriber_id: { type: GraphQLInt },
+	},
+	subscribe: withFilter(
+		() => pubsub.asyncIterator('ROOM_DELETED'),
+		(payload, variables) => {
+			console.log(
+				`room delete subscription filter result: subscriber id ${variables.subscriber_id}`,
 				payload.subscribers.includes(variables.subscriber_id)
 			);
 			return payload.subscribers.includes(variables.subscriber_id);

@@ -19,6 +19,7 @@ import ChatRoom from '../components/ChatRoom';
 import CreateRoomModal from '../components/CreateRoomModal';
 import { useSubscribeRoom } from '../hooks/useSubscribeRoom';
 import { useUnsubscribeRoom } from '../hooks/useUnsubscribeRoom';
+import { useNotifyDeletedRoom } from '../hooks/useNotifyDeletedRoom';
 
 const ChatContainer = () => {
 	const {
@@ -56,6 +57,7 @@ const ChatContainer = () => {
 
 	useSubscribeRoom(roomSubscriptionPayload);
 	useUnsubscribeRoom(roomSubscriptionPayload);
+	useNotifyDeletedRoom(roomSubscriptionPayload);
 
 	/**
 	 * Current Room to render
