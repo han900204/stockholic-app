@@ -199,7 +199,7 @@ export interface RoomData {
 	nick_name: string;
 	name: string;
 	date_created: string;
-	subscribers?: number[];
+	subscribers: number[];
 }
 
 export interface GetRoomsResponse {
