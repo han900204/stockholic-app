@@ -237,6 +237,7 @@ export interface AddSubscribersResponse {
 export interface AddSubscribersPayload {
 	_id: string;
 	subscribers: any[];
+	inviter: string;
 }
 
 export interface RemoveSubscriberResponse {

@@ -9,79 +9,81 @@ import { setNewSubscribers } from '../features/roomSlice';
 import MultiSelect from './styleComponents/MultiSelect';
 
 export default function AddSubscribersModal({
-  roomId,
-  newSubscribers,
-  investors,
+	roomId,
+	newSubscribers,
+	investors,
+	inviter,
 }) {
-  const dispatch = useDispatch();
+	const dispatch = useDispatch();
 
-  /**
-   * Add subscribers hook
-   */
-  const addSubscribersPayload: AddSubscribersPayload = {
-    _id: roomId,
-    subscribers: newSubscribers,
-  };
+	/**
+	 * Add subscribers hook
+	 */
+	const addSubscribersPayload: AddSubscribersPayload = {
+		_id: roomId,
+		subscribers: newSubscribers,
+		inviter: inviter,
+	};
 
-  const { addSubscribers } = useAddSubscribers();
+	const { addSubscribers } = useAddSubscribers();
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+	const handleSubmit = async (e: any) => {
+		e.preventDefault();
 
-    try {
-      await addSubscribers({ variables: addSubscribersPayload });
-      dispatch(setNewSubscribers([]));
-    } catch (e: any) {
-      console.log('ERROR: ', e);
-    }
-  };
+		try {
+			await addSubscribers({ variables: addSubscribersPayload });
+			dispatch(setNewSubscribers([]));
+		} catch (e: any) {
+			console.log('ERROR: ', e);
+		}
+	};
 
-  /**
-   *
-   * Convert keys for multi-select dropdown
-   */
+	/**
+	 *
+	 * Convert keys for multi-select dropdown
+	 */
 
-  const copyInvestors = JSON.parse(JSON.stringify(investors));
+	const copyInvestors = JSON.parse(JSON.stringify(investors));
 
-  for (let investor of copyInvestors) {
-    investor['value'] = investor['id'];
-    investor['label'] = investor['nick_name'];
-    delete investor['id'];
-    delete investor['nick_name'];
-  }
+	for (let investor of copyInvestors) {
+		investor['value'] = investor['id'];
+		investor['label'] = investor['nick_name'];
+		delete investor['id'];
+		delete investor['nick_name'];
+	}
 
-  const ModalComponent = (handleClose) => (
-    <div>
-      <Box
-        component='form'
-        onSubmit={(e) => {
-          handleSubmit(e);
-          handleClose();
-        }}
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '75%' },
-        }}
-        autoComplete='off'
-      >
-        <MultiSelect
-          items={copyInvestors}
-          dispatch={(ids) => {
-            dispatch(setNewSubscribers(ids));
-          }}
-          state={newSubscribers}
-        />
-        <br />
-        <Btn text='Invite' type='submit' />
-      </Box>
-    </div>
-  );
+	const ModalComponent = (handleClose) => (
+		<div>
+			<Box
+				component='form'
+				onSubmit={(e) => {
+					handleSubmit(e);
+					handleClose();
+				}}
+				sx={{
+					'& .MuiTextField-root': { m: 1, width: '75%' },
+				}}
+				autoComplete='off'
+			>
+				<MultiSelect
+					items={copyInvestors}
+					dispatch={(ids) => {
+						dispatch(setNewSubscribers(ids));
+					}}
+					state={newSubscribers}
+				/>
+				<br />
+				<Btn text='Invite' type='submit' />
+			</Box>
+		</div>
+	);
 
-  return (
-    <BasicModal
-      buttonName={'Invite'}
-      heading={'Invite Investors'}
-      Component={ModalComponent}
-      isMenu={true}
-    />
-  );
+	return (
+		<BasicModal
+			buttonName={'Invite'}
+			heading={'Invite Investors'}
+			Component={ModalComponent}
+			isMenu={true}
+		/>
+	);
 }

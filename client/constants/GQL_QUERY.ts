@@ -289,8 +289,12 @@ const GQL_QUERY: QueryInterface = {
 	`,
 
 	ADD_SUBSCRIBERS_QUERY: gql`
-		mutation AddSubscribers($_id: String!, $subscribers: [Int!]) {
-			addSubscribers(_id: $_id, subscribers: $subscribers) {
+		mutation AddSubscribers(
+			$_id: String!
+			$subscribers: [Int!]
+			$inviter: String!
+		) {
+			addSubscribers(_id: $_id, subscribers: $subscribers, inviter: $inviter) {
 				_id
 				owner_user_id
 				nick_name

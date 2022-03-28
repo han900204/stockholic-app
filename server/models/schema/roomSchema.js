@@ -3,6 +3,8 @@ const { Message } = require('../mongoModels/messageModel');
 const mongoose = require('mongoose');
 const pubsub = require('../../utils/pubsub');
 const { withFilter } = require('graphql-subscriptions');
+const db = require('../db');
+const sql = require('../../snippets/sqlQueryGenerator');
 
 const {
 	GraphQLObjectType,
@@ -120,8 +122,10 @@ room.mutation.addSubscribers = {
 	args: {
 		_id: { type: GraphQLString },
 		subscribers: { type: GraphQLList(GraphQLInt) },
+		inviter: { type: GraphQLString },
 	},
 	async resolve(parent, args) {
+		// Add subscribers to room
 		const room = await Room.findOneAndUpdate(
 			{ _id: mongoose.Types.ObjectId(args._id) },
 			{ $addToSet: { subscribers: args.subscribers } },
@@ -135,6 +139,35 @@ room.mutation.addSubscribers = {
 		});
 
 		console.log('publishing "ROOM_SUBSCRIBED"');
+
+		// Notify subscribers joined in chat room
+		const sqlQuery = sql.getSelectQuery(
+			'investor',
+			['nick_name'],
+			[`id IN (${args.subscribers.join(', ')})`]
+		);
+		const res = await db.query(sqlQuery);
+		const nicknames = res.rows.map((row) => row.nick_name);
+		const message = await Message.create({
+			_room: mongoose.Types.ObjectId(args._id),
+			sender_id: 0,
+			nick_name: 'System_Admin',
+			message:
+				nicknames.join(', ') +
+				` has been subscribed to the room by ${args.inviter}`,
+		});
+
+		await Room.findOneAndUpdate(
+			{ _id: mongoose.Types.ObjectId(args._id) },
+			{ $push: { messages: message._id } },
+			{ new: true }
+		);
+
+		console.log('message created', message);
+
+		pubsub.publish('MESSAGE_CREATED', { subscribeMessage: message });
+
+		console.log('publishing "MESSAGE_CREATED"');
 
 		return room;
 	},
@@ -160,6 +193,33 @@ room.mutation.removeSubscriber = {
 		});
 
 		console.log('publishing "ROOM_UNSUBSCRIBED"');
+
+		// Notify subscribers left in chat room
+		const sqlQuery = sql.getSelectQuery(
+			'investor',
+			['*'],
+			[`id = ${args.subscriber}`]
+		);
+		const res = await db.query(sqlQuery);
+
+		const message = await Message.create({
+			_room: mongoose.Types.ObjectId(args._id),
+			sender_id: 0,
+			nick_name: 'System_Admin',
+			message: `${res.rows[0].nick_name} has been unsubscribed from the room`,
+		});
+
+		await Room.findOneAndUpdate(
+			{ _id: mongoose.Types.ObjectId(args._id) },
+			{ $push: { messages: message._id } },
+			{ new: true }
+		);
+
+		console.log('message created', message);
+
+		pubsub.publish('MESSAGE_CREATED', { subscribeMessage: message });
+
+		console.log('publishing "MESSAGE_CREATED"');
 
 		return room;
 	},

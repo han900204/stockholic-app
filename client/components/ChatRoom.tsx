@@ -166,7 +166,25 @@ const ChatRoom = ({
 				>
 					<List>
 						{data?.getMessages.map((message, index) => {
-							return investorId === message.sender_id ? (
+							return message.sender_id === 0 ? (
+								// System messages
+								<ListItem key={index}>
+									<ListItemText
+										primaryTypographyProps={{
+											style: {
+												whiteSpace: 'normal',
+												fontStyle: 'italic',
+												color: '#808080',
+											},
+										}}
+										primary={
+											<>
+												<div>{message.message}</div>
+											</>
+										}
+									/>
+								</ListItem>
+							) : investorId === message.sender_id ? (
 								<ListItem key={index} style={{ textAlign: 'right' }}>
 									<ListItemText
 										primaryTypographyProps={{
@@ -250,6 +268,7 @@ const ChatRoom = ({
 												roomId={room._id}
 												newSubscribers={newSubscribers}
 												investors={investors}
+												inviter={nickName}
 											/>
 											{investorId === room.owner_user_id ? (
 												<MenuItem
