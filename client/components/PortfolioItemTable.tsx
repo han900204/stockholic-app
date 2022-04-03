@@ -12,12 +12,16 @@ import AdjQtyToStockModal from './AdjQtyToStockModal';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { DeletePortfolioItemPayload } from '../constants/GQL_INTERFACE';
 import { useDeletePortfolioItem } from '../hooks/useDeletePortfolioItem';
+import { useDispatch } from 'react-redux';
+import { removeItemsFromPortfolio } from '../features/stockSlice';
 
 function Row({ row }) {
 	const deletePortfolioItemPayload: DeletePortfolioItemPayload = {
 		id: row.id,
 	};
 	const { deletePortfolioItem } = useDeletePortfolioItem();
+
+	const dispatch = useDispatch();
 
 	return (
 		<React.Fragment>
@@ -66,6 +70,9 @@ function Row({ row }) {
 							await deletePortfolioItem({
 								variables: deletePortfolioItemPayload,
 							});
+							dispatch(
+								removeItemsFromPortfolio({ [row.portfolio_id]: row.id })
+							);
 						}}
 					/>
 				</TableCell>

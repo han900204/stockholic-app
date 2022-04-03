@@ -269,6 +269,7 @@ const ChatRoom = ({
 												newSubscribers={newSubscribers}
 												investors={investors}
 												inviter={nickName}
+												currentSubscribers={room.subscribers}
 											/>
 											{investorId === room.owner_user_id ? (
 												<MenuItem

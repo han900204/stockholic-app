@@ -3,11 +3,13 @@ import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
 import Field from './styleComponents/Field';
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
 	CreateInvestorPayload,
 	CreateAuthPayload,
+	GetInvestorsResponse,
+	GetSymbolsResponse,
 } from '../constants/GQL_INTERFACE';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -15,7 +17,9 @@ import {
 	setIsAuthenticated,
 	setInvestorId,
 	setNickName,
+	setInvestors,
 } from '../features/investorSlice';
+import { setSymbols } from '../features/stockSlice';
 
 const SignUpForm = () => {
 	const [firstName, setFirstName] = useState('');
@@ -42,11 +46,21 @@ const SignUpForm = () => {
 		investor_id: null,
 	};
 
+	const [getInvestors] = useLazyQuery<GetInvestorsResponse, null>(
+		GQL_QUERY.GET_INVESTORS_QUERY
+	);
+
+	const [getSymbols] = useLazyQuery<GetSymbolsResponse, null>(
+		GQL_QUERY.GET_SYMBOLS_QUERY
+	);
+
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 
 		try {
 			const res = await createInvestor({ variables: investorPayload });
+			const investors = await getInvestors();
+			const symbols = await getSymbols();
 
 			if (res.data.createInvestor.id) {
 				authPayload.investor_id = res.data.createInvestor.id;
@@ -54,11 +68,16 @@ const SignUpForm = () => {
 					(res) => res.data.createAuthentication.token
 				);
 				if (token) {
-					console.log('yo', res.data.createInvestor);
 					sessionStorage.setItem('token', token);
 					await dispatch(setIsAuthenticated(true));
 					await dispatch(setInvestorId(res.data.createInvestor.id));
 					await dispatch(setNickName(res.data.createInvestor.nick_name));
+					if (investors?.data?.getInvestors) {
+						await dispatch(setInvestors(investors.data.getInvestors));
+					}
+					if (symbols?.data?.getSymbols) {
+						await dispatch(setSymbols(symbols.data.getSymbols));
+					}
 					navigate('/forum');
 				}
 			}

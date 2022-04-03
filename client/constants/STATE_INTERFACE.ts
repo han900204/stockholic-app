@@ -25,4 +25,9 @@ export interface SearchState {
 
 export interface StockState {
 	symbols: SymbolData[];
+	currentPortfolios:
+		| {
+				[key: number]: number[];
+		  }
+		| {};
 }

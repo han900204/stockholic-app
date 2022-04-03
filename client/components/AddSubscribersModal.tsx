@@ -13,6 +13,7 @@ export default function AddSubscribersModal({
 	newSubscribers,
 	investors,
 	inviter,
+	currentSubscribers,
 }) {
 	const dispatch = useDispatch();
 
@@ -43,14 +44,15 @@ export default function AddSubscribersModal({
 	 * Convert keys for multi-select dropdown
 	 */
 
-	const copyInvestors = JSON.parse(JSON.stringify(investors));
-
-	for (let investor of copyInvestors) {
-		investor['value'] = investor['id'];
-		investor['label'] = investor['nick_name'];
-		delete investor['id'];
-		delete investor['nick_name'];
-	}
+	const copyInvestors = investors.reduce((acc, cur) => {
+		if (!currentSubscribers.includes(cur.id)) {
+			acc.push({
+				value: cur.id,
+				label: cur.nick_name,
+			});
+		}
+		return acc;
+	}, []);
 
 	const ModalComponent = (handleClose) => (
 		<div>
@@ -66,6 +68,7 @@ export default function AddSubscribersModal({
 				autoComplete='off'
 			>
 				<MultiSelect
+					fieldName='Choose Investors'
 					items={copyInvestors}
 					dispatch={(ids) => {
 						dispatch(setNewSubscribers(ids));

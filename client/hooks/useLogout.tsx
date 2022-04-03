@@ -26,7 +26,7 @@ const useLogout = () => {
 		await dispatch(setNickName(null));
 		await dispatch(setInvestors([]));
 		await dispatch(setSymbols([]));
-		navigate('/login');
+		navigate('/');
 	};
 	return {
 		logout,

@@ -6,17 +6,19 @@ const MultiSelect = ({
 	items,
 	dispatch,
 	state,
+	fieldName,
 }: {
 	items: MultiSelectOption[];
 	dispatch: (ids: number[]) => void;
 	state: number[];
+	fieldName: string;
 }) => {
 	const handleChange = (ids) => {
 		dispatch(ids);
 	};
 	return (
 		<MultipleSelect
-			label='Choose some options'
+			label={fieldName}
 			values={state}
 			options={items}
 			onChange={handleChange}
