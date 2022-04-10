@@ -5,7 +5,6 @@ from registerTickers import registerTickers
 from feedSummary import feedSummary
 from feedPrice import feedPrice
 
-
 # Instantiate Stock class
 stock = Stock()
 
