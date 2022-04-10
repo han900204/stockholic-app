@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Subheading from './styleComponents/Subheading';
-import TextBox from '../components/styleComponents/TextBox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
-import TextAreaField from './styleComponents/TextAreaField';
 import { useUpdateForum } from '../hooks/useUpdateForum';
 import {
 	ForumData,
@@ -14,10 +12,11 @@ import {
 import { useDeleteForum } from '../hooks/useDeleteForum';
 import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
+import TextEditor from './styleComponents/TextEditor';
 
 const ForumForm = ({ data, investorId }) => {
 	const [isEdit, setIsEdit] = useState(false);
-	const [desc, setDesc] = useState('');
+	const [description, setDescription] = useState('');
 	const navigate = useNavigate();
 
 	const forum: ForumData = data.getForum;
@@ -28,7 +27,7 @@ const ForumForm = ({ data, investorId }) => {
 
 	const updateForumPayload: UpdateForumPayload = {
 		id: forum.id,
-		description: desc,
+		description: description,
 	};
 
 	const deleteForumPayload: DeleteForumPayload = {
@@ -67,7 +66,12 @@ const ForumForm = ({ data, investorId }) => {
 				</Grid>
 				{!isEdit ? (
 					<>
-						<TextBox data={forum.description} />
+						<TextEditor
+							height={500}
+							state={forum.description}
+							setState={setDescription}
+							permission={isEdit}
+						/>
 						{investorId === forum.owner_user_id ? (
 							<>
 								<Stack
@@ -80,7 +84,7 @@ const ForumForm = ({ data, investorId }) => {
 										text='Edit'
 										type='button'
 										eHandler={() => {
-											setDesc(forum.description);
+											setDescription(forum.description);
 											setIsEdit(true);
 										}}
 									/>
@@ -100,15 +104,11 @@ const ForumForm = ({ data, investorId }) => {
 					</>
 				) : (
 					<>
-						<TextAreaField
-							label='Description'
-							type='text'
-							required={true}
-							eHandler={(e) => {
-								setDesc(e.target.value);
-							}}
-							defaultValue={forum.description}
-							rows={15}
+						<TextEditor
+							height={500}
+							state={description}
+							setState={setDescription}
+							permission={isEdit}
 						/>
 						<Stack
 							direction='row'
