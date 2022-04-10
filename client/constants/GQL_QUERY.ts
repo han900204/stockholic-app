@@ -289,8 +289,12 @@ const GQL_QUERY: QueryInterface = {
 	`,
 
 	ADD_SUBSCRIBERS_QUERY: gql`
-		mutation AddSubscribers($_id: String!, $subscribers: [Int!]) {
-			addSubscribers(_id: $_id, subscribers: $subscribers) {
+		mutation AddSubscribers(
+			$_id: String!
+			$subscribers: [Int!]
+			$inviter: String!
+		) {
+			addSubscribers(_id: $_id, subscribers: $subscribers, inviter: $inviter) {
 				_id
 				owner_user_id
 				nick_name
@@ -330,6 +334,19 @@ const GQL_QUERY: QueryInterface = {
 	UNSUBSCRIBE_ROOM_QUERY: gql`
 		subscription UnsubscribeRoom($subscriber_id: Int!) {
 			unsubscribeRoom(subscriber_id: $subscriber_id) {
+				_id
+				owner_user_id
+				nick_name
+				name
+				date_created
+				subscribers
+			}
+		}
+	`,
+
+	NOTIFY_DELETED_ROOM_QUERY: gql`
+		subscription NotifyDeletedRoom($subscriber_id: Int!) {
+			notifyDeletedRoom(subscriber_id: $subscriber_id) {
 				_id
 				owner_user_id
 				nick_name

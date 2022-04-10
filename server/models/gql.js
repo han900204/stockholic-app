@@ -71,6 +71,7 @@ const RootSubscriptionType = new GraphQLObjectType({
 	fields: {
 		subscribeRoom: room.subscription.subscribeRoom,
 		unsubscribeRoom: room.subscription.unsubscribeRoom,
+		notifyDeletedRoom: room.subscription.notifyDeletedRoom,
 		subscribeMessage: message.subscription.subscribeMessage,
 	},
 });

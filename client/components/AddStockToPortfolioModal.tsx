@@ -6,10 +6,17 @@ import BasicModal from './styleComponents/BasicModal';
 import { useCreatePortfolioItems } from '../hooks/useCreatePortfolioItem';
 import SingleSelect from './styleComponents/SingleSelect';
 import MultiSelect from './styleComponents/MultiSelect';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../app/store';
+import { addNewItemsToPortfolio } from '../features/stockSlice';
 
 export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 	const [portId, setPortId] = useState<number>(0);
 	const [symbolIds, setSymbolIds] = useState<number[]>([]);
+	const dispatch = useDispatch();
+
+	// Get current portfolio items state
+	const { currentPortfolios } = useSelector((state: RootState) => state.stock);
 
 	const { createPortfolioItems } = useCreatePortfolioItems();
 
@@ -25,6 +32,7 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 				await createPortfolioItems({
 					variables: createPortfolioItemsPayload,
 				});
+				dispatch(addNewItemsToPortfolio({ [portId]: symbolIds }));
 			} catch (e: any) {
 				console.log('ERROR: ', e);
 			}
@@ -49,15 +57,18 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 	 *
 	 * Convert symbols data for multi-select dropdown
 	 */
-
-	const copySymbols = JSON.parse(JSON.stringify(symbols));
-
-	for (let symbol of copySymbols) {
-		symbol['value'] = symbol['id'];
-		symbol['label'] = symbol['name'];
-		delete symbol['date_created'];
-		delete symbol['is_active'];
-	}
+	const copySymbols = symbols.reduce((acc, symbol) => {
+		if (portId) {
+			const existingSymbols = currentPortfolios[portId];
+			if (!existingSymbols.includes(symbol.id)) {
+				acc.push({
+					value: symbol.id,
+					label: symbol.name,
+				});
+			}
+		}
+		return acc;
+	}, []);
 
 	const ModalComponent = (handleClose) => (
 		<div>
@@ -82,6 +93,7 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 						options={copyPortfolios}
 					/>
 					<MultiSelect
+						fieldName='Choose Stocks'
 						items={copySymbols}
 						dispatch={(ids) => {
 							setSymbolIds(ids);

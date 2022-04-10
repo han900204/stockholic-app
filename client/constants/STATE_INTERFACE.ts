@@ -12,8 +12,7 @@ export interface InvestorState {
 export interface RoomState {
 	newMessage: string;
 	newSubscribers: number[];
-	currentRoom: string | '';
-	currentRoomOwnerId: number | null;
+	currentRoomId: string | '';
 }
 
 export interface ThemeState {
@@ -26,4 +25,9 @@ export interface SearchState {
 
 export interface StockState {
 	symbols: SymbolData[];
+	currentPortfolios:
+		| {
+				[key: number]: number[];
+		  }
+		| {};
 }

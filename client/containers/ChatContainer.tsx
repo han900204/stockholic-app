@@ -1,4 +1,5 @@
 import React from 'react';
+import Subheading from '../components/styleComponents/Subheading';
 import { RootState } from '../app/store';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@apollo/client';
@@ -8,8 +9,8 @@ import {
 	GetRoomsPayload,
 	InvestorData,
 	RoomSubscriptionPayload,
+	RoomData,
 } from '../constants/GQL_INTERFACE';
-import Subheading from '../components/styleComponents/Subheading';
 import Box from '@mui/material/Box';
 import ChatRoomList from '../components/ChatRoomList';
 import Grid from '@mui/material/Grid';
@@ -18,6 +19,7 @@ import ChatRoom from '../components/ChatRoom';
 import CreateRoomModal from '../components/CreateRoomModal';
 import { useSubscribeRoom } from '../hooks/useSubscribeRoom';
 import { useUnsubscribeRoom } from '../hooks/useUnsubscribeRoom';
+import { useNotifyDeletedRoom } from '../hooks/useNotifyDeletedRoom';
 
 const ChatContainer = () => {
 	const {
@@ -33,13 +35,11 @@ const ChatContainer = () => {
 	const {
 		newMessage,
 		newSubscribers,
-		currentRoom,
-		currentRoomOwnerId,
+		currentRoomId,
 	}: {
 		newMessage: string;
 		newSubscribers: number[];
-		currentRoom: string | '';
-		currentRoomOwnerId: number | null;
+		currentRoomId: string | '';
 	} = useSelector((state: RootState) => state.room);
 
 	const { loading, error, data } = useQuery<GetRoomsResponse, GetRoomsPayload>(
@@ -57,6 +57,15 @@ const ChatContainer = () => {
 
 	useSubscribeRoom(roomSubscriptionPayload);
 	useUnsubscribeRoom(roomSubscriptionPayload);
+	useNotifyDeletedRoom(roomSubscriptionPayload);
+
+	/**
+	 * Current Room to render
+	 */
+
+	const currentRoom: RoomData | undefined = data?.getRooms.find(
+		(room) => room._id === currentRoomId
+	);
 
 	if (loading) return <LoadingForm />;
 
@@ -67,22 +76,24 @@ const ChatContainer = () => {
 				width: '80%',
 			}}
 		>
-			<Subheading title={`${nickName}'s chat rooms`} />
 			<CreateRoomModal investorId={investorId} nickName={nickName} />
 			<Grid container spacing={2} sx={{ mb: 1 }}>
 				<Grid item xs={4}>
 					<ChatRoomList rooms={data?.getRooms} />
 				</Grid>
 				<Grid item xs={8}>
-					<ChatRoom
-						roomId={currentRoom}
-						investorId={investorId}
-						nickName={nickName}
-						newMessage={newMessage}
-						newSubscribers={newSubscribers}
-						investors={investors}
-						currentRoomOwnerId={currentRoomOwnerId}
-					/>
+					{!currentRoom ? (
+						<Subheading title='Please select the room' />
+					) : (
+						<ChatRoom
+							investorId={investorId}
+							nickName={nickName}
+							newMessage={newMessage}
+							newSubscribers={newSubscribers}
+							investors={investors}
+							room={currentRoom}
+						/>
+					)}
 				</Grid>
 			</Grid>
 		</Box>

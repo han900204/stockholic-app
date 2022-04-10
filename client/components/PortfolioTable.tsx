@@ -15,6 +15,7 @@ import {
 	UpdatePortfolioPayload,
 	GetPortfolioItemsPayload,
 	GetPortfolioItemsResponse,
+	PortfolioItemData,
 } from '../constants/GQL_INTERFACE';
 import { useQuery } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
@@ -24,8 +25,12 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CheckIcon from '@mui/icons-material/Check';
 import TextAreaField from './styleComponents/TextAreaField';
 import Grid from '@mui/material/Grid';
+import { useDispatch } from 'react-redux';
+import { setCurrentPortfolios } from '../features/stockSlice';
 
 const PortfolioTable = ({ data }) => {
+	const dispatch = useDispatch();
+
 	function createData(name: string, date_created: string, id: number) {
 		return {
 			name,
@@ -57,6 +62,18 @@ const PortfolioTable = ({ data }) => {
 			variables: { portfolio_id: row.id },
 			fetchPolicy: 'cache-and-network',
 		});
+
+		// Store portfolio data in redux store
+		if (data?.getPortfolioItems) {
+			const itemIds = data.getPortfolioItems.reduce(
+				(acc: number[], cur: PortfolioItemData) => {
+					acc.push(cur.symbol_id);
+					return acc;
+				},
+				[]
+			);
+			dispatch(setCurrentPortfolios({ [row.id]: itemIds }));
+		}
 
 		useEffect(() => {
 			setName(row.name);
