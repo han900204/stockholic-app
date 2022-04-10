@@ -7,6 +7,7 @@ import Btn from './styleComponents/Btn';
 import { CreateCommentPayload, VoteData } from '../constants/GQL_INTERFACE';
 import { useCreateComment } from '../hooks/useCreateComment';
 import CommentBox from './CommentBox';
+import TextEditor from './styleComponents/TextEditor';
 
 const CommentForm = ({ data, investorId, forumId, votes }) => {
 	const [comment, setComment] = useState('');
@@ -28,15 +29,11 @@ const CommentForm = ({ data, investorId, forumId, votes }) => {
 			>
 				<Subheading title='Comments' />
 
-				<TextAreaField
-					label='Add Comments'
-					type='text'
-					required={true}
-					eHandler={(e) => {
-						setComment(e.target.value);
-					}}
-					rows={5}
-					value={comment}
+				<TextEditor
+					height={300}
+					state={comment}
+					setState={setComment}
+					permission={true}
 				/>
 				<Stack
 					direction='row'

@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import TextAreaField from './styleComponents/TextAreaField';
 import Stack from '@mui/material/Stack';
 import Btn from './styleComponents/Btn';
-import TextBox from './styleComponents/TextBox';
 import Grid from '@mui/material/Grid';
 import {
 	CommentData,
@@ -20,6 +18,7 @@ import { useDeleteVote } from '../hooks/useDeleteVote';
 import ThumbUp from '@mui/icons-material/ThumbUp';
 import ThumbDown from '@mui/icons-material/ThumbDown';
 import dateFormatter from '../utils/dateFormatter';
+import TextEditor from './styleComponents/TextEditor';
 
 const CommentBox = ({
 	data,
@@ -59,17 +58,18 @@ const CommentBox = ({
 		<>
 			<Box sx={{ mt: 5 }}>
 				{!isEdit ? (
-					<TextBox data={data.description} height={150} />
+					<TextEditor
+						height={200}
+						state={data.description}
+						setState={setComment}
+						permission={isEdit}
+					/>
 				) : (
-					<TextAreaField
-						label='Comment'
-						type='text'
-						required={true}
-						eHandler={(e) => {
-							setComment(e.target.value);
-						}}
-						rows={7}
-						defaultValue={data.description}
+					<TextEditor
+						height={200}
+						state={comment}
+						setState={setComment}
+						permission={isEdit}
 					/>
 				)}
 
