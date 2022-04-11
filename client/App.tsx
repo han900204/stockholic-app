@@ -97,7 +97,6 @@ const App = () => {
 							<Route path='/chat/:investorId' element={<ChatContainer />} />
 							<Route path='/forum' element={<ForumListContainer />} />
 							<Route path='/forum/:id' element={<ForumContainer />} />
-							<Route path='/dashboard' element={<div>Dashboard</div>} />
 							<Route path='/stocks' element={<StockListContainer />} />
 							<Route path='/stocks/:symbolId' element={<StockContainer />} />
 						</Routes>

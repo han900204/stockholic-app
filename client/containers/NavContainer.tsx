@@ -25,7 +25,6 @@ const NavContainer = () => {
 	const { logout } = useLogout();
 
 	const pages: any[] = [
-		{ name: 'Dashboard', url: '/dashboard' },
 		{ name: 'Stocks', url: '/stocks' },
 		{ name: 'Portfolio', url: `/portfolio` },
 		{ name: 'Forums', url: '/forum' },
