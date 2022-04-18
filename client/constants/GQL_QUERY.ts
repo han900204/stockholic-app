@@ -665,6 +665,22 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
+	/**
+	 * Sign S3 query
+	 */
+	SIGN_S3_QUERY: gql`
+		mutation SignS3(
+			$fileName: String!
+			$fileType: String!
+			$directory: String!
+		) {
+			signS3(fileName: $fileName, fileType: $fileType, directory: $directory) {
+				signedRequest
+				url
+			}
+		}
+	`,
 };
 
 export default GQL_QUERY;

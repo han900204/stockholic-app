@@ -11,6 +11,7 @@ const price = require('./schema/priceSchema');
 const portfolio = require('./schema/portfolioSchema');
 const portfolioItem = require('./schema/portfolioItemSchema');
 const vote = require('./schema/voteSchema');
+const s3 = require('./schema/s3Schema');
 
 /**
  * Root Query
@@ -63,6 +64,7 @@ const RootMutationType = new GraphQLObjectType({
 		updatePortfolioItem: portfolioItem.mutation.updatePortfolioItem,
 		createVote: vote.mutation.postVote,
 		deleteVote: vote.mutation.deleteVote,
+		signS3: s3.mutation.signS3,
 	},
 });
 

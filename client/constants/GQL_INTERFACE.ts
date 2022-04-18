@@ -47,6 +47,7 @@ export interface QueryInterface {
 	GET_VOTES_QUERY: DocumentNode;
 	CREATE_VOTE_QUERY: DocumentNode;
 	DELETE_VOTE_QUERY: DocumentNode;
+	SIGN_S3_QUERY: DocumentNode;
 }
 
 /**
@@ -515,4 +516,18 @@ export interface DeleteVotePayload {
 
 export interface DeleteVoteResponse {
 	deleteVote: VoteData;
+}
+
+/**
+ * Sign S3 Interfaces
+ */
+export interface SignS3Response {
+	signedRequeest: string;
+	url: string;
+}
+
+export interface SignS3Payload {
+	fileName: string;
+	fileType: string;
+	directory: string;
 }

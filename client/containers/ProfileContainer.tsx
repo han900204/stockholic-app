@@ -4,14 +4,17 @@ import { RootState } from '../app/store';
 import Subheading from '../components/styleComponents/Subheading';
 import Subheading2 from '../components/styleComponents/Subheading2';
 import LoadingForm from '../components/LoadingForm';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import {
 	GetForumsPayload,
 	GetForumsResponse,
+	SignS3Response,
+	SignS3Payload,
 } from '../constants/GQL_INTERFACE';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import ForumTable from '../components/ForumTable';
 import Avatar from '@mui/material/Avatar';
+import axios from 'axios';
 
 const ProfileContainer = () => {
 	const [image, setImage] = useState<File | null>(null);
@@ -20,12 +23,26 @@ const ProfileContainer = () => {
 		(state: RootState) => state.investor
 	);
 
+	const [signS3] = useMutation<SignS3Response, SignS3Payload>(
+		GQL_QUERY.SIGN_S3_QUERY
+	);
+
 	const { loading, error, data } = useQuery<
 		GetForumsResponse,
 		GetForumsPayload
 	>(GQL_QUERY.GET_FORUMS_QUERY, {
 		variables: { owner_user_id: investorId },
 	});
+	console.log('image', image);
+
+	const uploadToS3 = async (file, signedRequest) => {
+		const options = {
+			headers: {
+				'Content-Type': file.type,
+			},
+		};
+		await axios.put(signedRequest, file, options);
+	};
 
 	if (loading) return <LoadingForm />;
 
@@ -48,8 +65,20 @@ const ProfileContainer = () => {
 				}}
 			/>
 			<button
-				onClick={(event) => {
-					console.log('Sending to server to process');
+				onClick={async (event) => {
+					let res: any = null;
+					if (image) {
+						res = await signS3({
+							variables: {
+								fileName: image.name,
+								fileType: image.type,
+								directory: 'profile',
+							},
+						});
+					}
+					console.log(res);
+					const upload = await uploadToS3(image, res.data.signS3.signedRequest);
+					console.log(upload);
 				}}
 			>
 				Upload
