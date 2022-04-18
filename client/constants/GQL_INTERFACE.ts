@@ -60,6 +60,7 @@ export interface InvestorData {
 	nick_name: string;
 	first_name?: string;
 	last_name?: string;
+	s3_location?: string;
 }
 
 export interface GetInvestorsResponse {
@@ -101,6 +102,10 @@ export interface ForumData {
 }
 export interface GetForumsResponse {
 	getForums: ForumData[];
+}
+
+export interface GetForumsPayload {
+	owner_user_id: number | null;
 }
 
 export interface GetForumResponse {

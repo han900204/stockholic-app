@@ -7,6 +7,7 @@ export interface InvestorState {
 	investorId: number | null;
 	nickName: string | null;
 	investors: InvestorData[];
+	s3_location: string | null;
 }
 
 export interface RoomState {

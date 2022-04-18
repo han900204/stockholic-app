@@ -30,6 +30,7 @@ investor.type = new GraphQLObjectType({
 		email: { type: GraphQLString },
 		password: { type: GraphQLString },
 		date_created: { type: DateTime },
+		s3_location: { type: GraphQLString },
 	}),
 });
 
@@ -88,6 +89,7 @@ investor.mutation.postInvestor = {
 				'email',
 				'password',
 				'date_created',
+				's3_location',
 			]
 		);
 

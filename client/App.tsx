@@ -14,6 +14,7 @@ import {
 	setInvestorId,
 	setNickName,
 	setInvestors,
+	setS3Location,
 } from './features/investorSlice';
 import { setSymbols } from './features/stockSlice';
 import GQL_QUERY from './constants/GQL_QUERY';
@@ -68,6 +69,7 @@ const App = () => {
 				await dispatch(setIsAuthenticated(true));
 				await dispatch(setInvestorId(res.data.getAuthentication.investor_id));
 				await dispatch(setNickName(res.data.getAuthentication.nick_name));
+				await dispatch(setS3Location(res.data.getAuthentication.s3_location));
 				if (investors?.data?.getInvestors) {
 					await dispatch(setInvestors(investors.data.getInvestors));
 				}

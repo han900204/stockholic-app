@@ -18,10 +18,10 @@ import MenuItem from '@mui/material/MenuItem';
 import ThemeToggle from '../components/styleComponents/ThemeToggle';
 
 const NavContainer = () => {
-	const investorId = useSelector(
-		(state: RootState) => state.investor.investorId
+	const { investorId, s3_location } = useSelector(
+		(state: RootState) => state.investor
 	);
-
+	console.log('nav', investorId, s3_location);
 	const { logout } = useLogout();
 
 	const pages: any[] = [
@@ -138,7 +138,7 @@ const NavContainer = () => {
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title='Open settings'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt='Remy Sharp' src='' />
+								<Avatar alt='Remy Sharp' src={s3_location ? s3_location : ''} />
 							</IconButton>
 						</Tooltip>
 						<Menu

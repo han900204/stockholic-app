@@ -22,6 +22,7 @@ const GQL_QUERY: QueryInterface = {
 			) {
 				id
 				nick_name
+				s3_location
 			}
 		}
 	`,
@@ -38,6 +39,7 @@ const GQL_QUERY: QueryInterface = {
 			getAuthentication(token: $token) {
 				investor_id
 				nick_name
+				s3_location
 			}
 		}
 	`,
@@ -46,6 +48,7 @@ const GQL_QUERY: QueryInterface = {
 			validateInvestor(email: $email, password: $password) {
 				id
 				nick_name
+				s3_location
 			}
 		}
 	`,
@@ -58,6 +61,7 @@ const GQL_QUERY: QueryInterface = {
 				nick_name
 				email
 				date_created
+				s3_location
 			}
 		}
 	`,
@@ -83,8 +87,8 @@ const GQL_QUERY: QueryInterface = {
 	 */
 
 	GET_FORUMS_QUERY: gql`
-		query GetForums {
-			getForums {
+		query GetForums($owner_user_id: Int) {
+			getForums(owner_user_id: $owner_user_id) {
 				id
 				name
 				description

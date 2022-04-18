@@ -28,6 +28,7 @@ authentication.type = new GraphQLObjectType({
 		token: { type: GraphQLString },
 		date_created: { type: DateTime },
 		nick_name: { type: GraphQLString },
+		s3_location: { type: GraphQLString },
 	}),
 });
 
@@ -42,12 +43,13 @@ authentication.query.getAuthentication = {
 				{
 					authentication: ['*'],
 				},
-				{ investor: ['nick_name'] },
+				{ investor: ['nick_name', 's3_location'] },
 			],
 			[{ authentication: 'investor_id', investor: 'id' }],
 			[{ authentication: [`token = '${args.token}'`] }]
 		);
 		const res = await db.query(sqlQuery);
+
 		return res.rows[0];
 	},
 };

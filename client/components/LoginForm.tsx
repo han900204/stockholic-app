@@ -18,6 +18,7 @@ import {
 	setInvestorId,
 	setNickName,
 	setInvestors,
+	setS3Location,
 } from '../features/investorSlice';
 import { setSymbols } from '../features/stockSlice';
 
@@ -67,6 +68,7 @@ const LoginForm = () => {
 					await dispatch(setIsAuthenticated(true));
 					await dispatch(setInvestorId(res.data.validateInvestor.id));
 					await dispatch(setNickName(res.data.validateInvestor.nick_name));
+					await dispatch(setS3Location(res.data.validateInvestor.s3_location));
 					if (investors?.data?.getInvestors) {
 						await dispatch(setInvestors(investors.data.getInvestors));
 					}
