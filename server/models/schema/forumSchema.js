@@ -34,7 +34,15 @@ forum.type = new GraphQLObjectType({
 
 forum.query.getForums = {
 	type: GraphQLList(forum.type),
+	args: {
+		owner_user_id: { type: GraphQLInt },
+	},
 	async resolve(parent, args) {
+		let filter = [];
+
+		if ('owner_user_id' in args) {
+			filter.push({ forum: [`owner_user_id = ${args.owner_user_id}`] });
+		}
 		const sqlQuery = sql.getSelectJoinQuery(
 			[
 				{
@@ -43,7 +51,7 @@ forum.query.getForums = {
 				{ investor: ['nick_name'] },
 			],
 			[{ forum: 'owner_user_id', investor: 'id' }],
-			[],
+			filter,
 			{
 				forum: 'id',
 				option: 'DESC',

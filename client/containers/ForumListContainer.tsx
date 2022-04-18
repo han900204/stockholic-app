@@ -10,22 +10,22 @@ import CreateForumModal from '../components/CreateForumModal';
 import Subheading from '../components/styleComponents/Subheading';
 
 const ForumListContainer = () => {
-  const investorId = useSelector(
-    (state: RootState) => state.investor.investorId
-  );
+	const investorId = useSelector(
+		(state: RootState) => state.investor.investorId
+	);
 
-  const { loading, error, data } = useQuery(GQL_QUERY.GET_FORUMS_QUERY);
+	const { loading, error, data } = useQuery(GQL_QUERY.GET_FORUMS_QUERY);
 
-  if (loading) return <LoadingForm />;
+	if (loading) return <LoadingForm />;
 
-  return (
-    <>
-      <Subheading title='Investor Forum' />
-      <CreateForumModal investorId={investorId} />
+	return (
+		<>
+			<Subheading title='Investor Forum' />
+			<CreateForumModal investorId={investorId} />
 
-      <ForumTable data={data} />
-    </>
-  );
+			<ForumTable data={data} />
+		</>
+	);
 };
 
 export default ForumListContainer;
