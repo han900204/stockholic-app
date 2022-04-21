@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import TextEditor from './styleComponents/TextEditor';
 
-const ForumForm = ({ data, investorId }) => {
+const ForumForm = ({ data, investorId, investorProfilePic }) => {
 	const [isEdit, setIsEdit] = useState(false);
 	const [description, setDescription] = useState('');
 	const navigate = useNavigate();

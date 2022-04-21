@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../app/store';
 import Subheading from '../components/styleComponents/Subheading';
 import Subheading2 from '../components/styleComponents/Subheading2';
@@ -10,14 +10,19 @@ import {
 	GetForumsResponse,
 	SignS3Response,
 	SignS3Payload,
+	UpdateProfilePicturePayload,
+	UpdateProfilePictureResponse,
 } from '../constants/GQL_INTERFACE';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import ForumTable from '../components/ForumTable';
 import Avatar from '@mui/material/Avatar';
-import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import { setS3Location } from '../features/investorSlice';
+import uploadToS3 from '../snippets/uploadToS3';
 
 const ProfileContainer = () => {
 	const [image, setImage] = useState<File | null>(null);
+	const dispatch = useDispatch();
 
 	const { investorId, nickName, s3_location } = useSelector(
 		(state: RootState) => state.investor
@@ -27,22 +32,17 @@ const ProfileContainer = () => {
 		GQL_QUERY.SIGN_S3_QUERY
 	);
 
+	const [updateProfilePicture] = useMutation<
+		UpdateProfilePictureResponse,
+		UpdateProfilePicturePayload
+	>(GQL_QUERY.UPDATE_PROFILE_PICTURE);
+
 	const { loading, error, data } = useQuery<
 		GetForumsResponse,
 		GetForumsPayload
 	>(GQL_QUERY.GET_FORUMS_QUERY, {
 		variables: { owner_user_id: investorId },
 	});
-	console.log('image', image);
-
-	const uploadToS3 = async (file, signedRequest) => {
-		const options = {
-			headers: {
-				'Content-Type': file.type,
-			},
-		};
-		await axios.put(signedRequest, file, options);
-	};
 
 	if (loading) return <LoadingForm />;
 
@@ -70,15 +70,26 @@ const ProfileContainer = () => {
 					if (image) {
 						res = await signS3({
 							variables: {
-								fileName: image.name,
+								fileName: `${investorId}-${uuidv4()}`,
 								fileType: image.type,
 								directory: 'profile',
 							},
 						});
 					}
-					console.log(res);
-					const upload = await uploadToS3(image, res.data.signS3.signedRequest);
-					console.log(upload);
+
+					const { signedRequest, url } = res.data.signS3;
+					const upload = await uploadToS3(image, signedRequest);
+					if (upload.status === 200) {
+						if (investorId) {
+							const updateStatus = await updateProfilePicture({
+								variables: {
+									id: investorId,
+									s3_location: url,
+								},
+							});
+							await dispatch(setS3Location(url));
+						}
+					}
 				}}
 			>
 				Upload

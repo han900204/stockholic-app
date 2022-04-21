@@ -19,8 +19,8 @@ import CommentForm from '../components/CommentForm';
 const ForumContainer = () => {
 	const params = useParams();
 
-	const investorId: number | null = useSelector(
-		(state: RootState) => state.investor.investorId
+	const { investorId, s3_location } = useSelector(
+		(state: RootState) => state.investor
 	);
 
 	const { loading, error, data } = useQuery<GetForumResponse, GetForumPayload>(
@@ -45,7 +45,11 @@ const ForumContainer = () => {
 
 	return (
 		<>
-			<ForumForm data={data} investorId={investorId} />
+			<ForumForm
+				data={data}
+				investorId={investorId}
+				investorProfilePic={s3_location}
+			/>
 			<CommentForm
 				data={comments.data}
 				investorId={investorId}

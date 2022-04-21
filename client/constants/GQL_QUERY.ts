@@ -26,6 +26,16 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
+	UPDATE_PROFILE_PICTURE: gql`
+		mutation UpdateProfilePicture($id: Int!, $s3_location: String!) {
+			updateProfilePicture(id: $id, s3_location: $s3_location) {
+				id
+				s3_location
+			}
+		}
+	`,
+
 	CREATE_AUTH_QUERY: gql`
 		mutation CreateAuthentication($investor_id: Int!) {
 			createAuthentication(investor_id: $investor_id) {
@@ -145,6 +155,7 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
 	DELETE_FORUM_QUERY: gql`
 		mutation DeleteForum($id: Int!) {
 			deleteForum(id: $id) {

@@ -21,7 +21,7 @@ const NavContainer = () => {
 	const { investorId, s3_location } = useSelector(
 		(state: RootState) => state.investor
 	);
-	console.log('nav', investorId, s3_location);
+
 	const { logout } = useLogout();
 
 	const pages: any[] = [

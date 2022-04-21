@@ -5,6 +5,7 @@ import { DocumentNode } from 'graphql';
  */
 export interface QueryInterface {
 	CREATE_INVESTOR_QUERY: DocumentNode;
+	UPDATE_PROFILE_PICTURE: DocumentNode;
 	CREATE_AUTH_QUERY: DocumentNode;
 	GET_AUTHENTICATION_QUERY: DocumentNode;
 	VALIDATE_INVESTOR_QUERY: DocumentNode;
@@ -62,6 +63,16 @@ export interface InvestorData {
 	first_name?: string;
 	last_name?: string;
 	s3_location?: string;
+}
+
+export interface UpdateProfilePictureResponse {
+	id: number;
+	s3_location: string;
+}
+
+export interface UpdateProfilePicturePayload {
+	id: number;
+	s3_location: string;
 }
 
 export interface GetInvestorsResponse {
