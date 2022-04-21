@@ -65,6 +65,10 @@ export interface InvestorData {
 	s3_location?: string;
 }
 
+export interface GetInvestorResponse {
+	getInvestor: InvestorData;
+}
+
 export interface UpdateProfilePictureResponse {
 	id: number;
 	s3_location: string;
