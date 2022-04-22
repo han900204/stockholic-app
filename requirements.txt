@@ -1,0 +1,5 @@
+random
+requests
+bs4
+pandas
+psycopg2
