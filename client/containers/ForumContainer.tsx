@@ -6,8 +6,6 @@ import {
 	GetForumResponse,
 	GetCommentsPayload,
 	GetCommentsResponse,
-	GetVotesPayload,
-	GetVotesResponse,
 } from '../constants/GQL_INTERFACE';
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
@@ -31,15 +29,7 @@ const ForumContainer = () => {
 		{ variables: { forum_id: Number(params.id) } }
 	);
 
-	const votes = useQuery<GetVotesResponse, GetVotesPayload>(
-		GQL_QUERY.GET_VOTES_QUERY,
-		{
-			variables: { forum_id: Number(params.id), investor_id: investorId },
-			fetchPolicy: 'cache-and-network',
-		}
-	);
-
-	if (loading || comments.loading || votes.loading) return <LoadingForm />;
+	if (loading || comments.loading) return <LoadingForm />;
 
 	return (
 		<>
@@ -48,7 +38,6 @@ const ForumContainer = () => {
 				data={comments.data}
 				investorId={investorId}
 				forumId={Number(params.id)}
-				votes={votes?.data?.getVotes}
 			/>
 		</>
 	);

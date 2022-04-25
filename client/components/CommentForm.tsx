@@ -4,12 +4,19 @@ import Box from '@mui/material/Box';
 import TextAreaField from './styleComponents/TextAreaField';
 import Stack from '@mui/material/Stack';
 import Btn from './styleComponents/Btn';
-import { CreateCommentPayload, VoteData } from '../constants/GQL_INTERFACE';
+import {
+	CreateCommentPayload,
+	VoteData,
+	GetVotesPayload,
+	GetVotesResponse,
+} from '../constants/GQL_INTERFACE';
+import GQL_QUERY from '../constants/GQL_QUERY';
+import { useQuery } from '@apollo/client';
 import { useCreateComment } from '../hooks/useCreateComment';
 import CommentBox from './CommentBox';
 import TextEditor from './styleComponents/TextEditor';
 
-const CommentForm = ({ data, investorId, forumId, votes }) => {
+const CommentForm = ({ data, investorId, forumId }) => {
 	const [comment, setComment] = useState('');
 	const { createComment } = useCreateComment();
 
@@ -18,6 +25,14 @@ const CommentForm = ({ data, investorId, forumId, votes }) => {
 		description: comment,
 		forum_id: forumId,
 	};
+
+	const votes = useQuery<GetVotesResponse, GetVotesPayload>(
+		GQL_QUERY.GET_VOTES_QUERY,
+		{
+			variables: { forum_id: forumId, investor_id: investorId },
+			fetchPolicy: 'cache-and-network',
+		}
+	);
 
 	return (
 		<>
@@ -60,7 +75,7 @@ const CommentForm = ({ data, investorId, forumId, votes }) => {
 							key={idx}
 							data={comment}
 							investorId={investorId}
-							vote={vote}
+							// vote={vote}
 						/>
 					);
 				})}

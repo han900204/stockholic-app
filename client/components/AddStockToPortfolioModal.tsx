@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CreatePortfolioItemsPayload } from '../constants/GQL_INTERFACE';
 import Box from '@mui/material/Box';
 import Btn from './styleComponents/Btn';
@@ -11,12 +11,9 @@ import { RootState } from '../app/store';
 import { addNewItemsToPortfolio } from '../features/stockSlice';
 
 export default function AddStockToPortfolioModal({ portfolios, symbols }) {
-	const [portId, setPortId] = useState<number>(0);
+	const [portId, setPortId] = useState<number | ''>('');
 	const [symbolIds, setSymbolIds] = useState<number[]>([]);
 	const dispatch = useDispatch();
-
-	// Get current portfolio items state
-	const { currentPortfolios } = useSelector((state: RootState) => state.stock);
 
 	const { createPortfolioItems } = useCreatePortfolioItems();
 
@@ -57,7 +54,14 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 	 *
 	 * Convert symbols data for multi-select dropdown
 	 */
+
+	// Get current portfolio items state
+	const currentPortfolios = useSelector(
+		(state: RootState) => state.stock.currentPortfolios
+	);
+
 	const copySymbols = symbols.reduce((acc, symbol) => {
+		console.log('check? portId', portId);
 		if (portId) {
 			const existingSymbols = currentPortfolios[portId];
 			if (!existingSymbols.includes(symbol.id)) {
@@ -76,7 +80,7 @@ export default function AddStockToPortfolioModal({ portfolios, symbols }) {
 				component='form'
 				onSubmit={(e) => {
 					handleSubmit(e);
-					setPortId(0);
+					setPortId('');
 					setSymbolIds([]);
 					handleClose();
 				}}

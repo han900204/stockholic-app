@@ -101,6 +101,7 @@ const App = () => {
 							<Route path='/forum/:id' element={<ForumContainer />} />
 							<Route path='/stocks' element={<StockListContainer />} />
 							<Route path='/stocks/:symbolId' element={<StockContainer />} />
+							<Route path='/*' element={<Navigate to='/forum' />} />
 						</Routes>
 					</div>
 				</Router>
@@ -109,9 +110,9 @@ const App = () => {
 			<Router>
 				<div>
 					<Routes>
-						<Route path='/' element={<Navigate to='/login' />} />
 						<Route path='/login' element={<LoginContainer />} />
 						<Route path='/signup' element={<SignUpContainer />} />
+						<Route path='/*' element={<Navigate to='/login' />} />
 					</Routes>
 				</div>
 			</Router>

@@ -1,57 +1,95 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Btn from './styleComponents/Btn';
 import Grid from '@mui/material/Grid';
+import { useMutation } from '@apollo/client';
+import GQL_QUERY from '../constants/GQL_QUERY';
 import {
 	CommentData,
 	UpdateCommentPayload,
 	DeleteCommentPayload,
 	CreateVotePayload,
+	CreateVoteResponse,
 	DeleteVotePayload,
+	DeleteVoteResponse,
 	VoteData,
 } from '../constants/GQL_INTERFACE';
 import { useUpdateComment } from '../hooks/useUpdateComment';
 import { useDeleteComment } from '../hooks/useDeleteComment';
-import { useCreateVote } from '../hooks/useCreateVote';
-import { useDeleteVote } from '../hooks/useDeleteVote';
+// import { useCreateVote } from '../hooks/useCreateVote';
+// import { useDeleteVote } from '../hooks/useDeleteVote';
 import ThumbUp from '@mui/icons-material/ThumbUp';
 import ThumbDown from '@mui/icons-material/ThumbDown';
 import dateFormatter from '../utils/dateFormatter';
 import TextEditor from './styleComponents/TextEditor';
+import { isNullableType } from 'graphql';
 
 const CommentBox = ({
 	data,
 	investorId,
-	vote,
-}: {
+}: // vote,
+{
 	data: CommentData;
 	investorId: number;
-	vote: VoteData | undefined;
+	// vote: VoteData | undefined;
 }) => {
 	const [comment, setComment] = useState('');
 	const [isEdit, setIsEdit] = useState(false);
 	const { updateComment } = useUpdateComment();
 	const { deleteComment } = useDeleteComment();
-	const { createVote } = useCreateVote();
-	const { deleteVote } = useDeleteVote();
+	const [currentVote, setCurrentVote] = useState<{
+		id: number | null;
+		type: string | null;
+	}>({
+		id: null,
+		type: null,
+	});
+	let vote = undefined;
+	// useEffect(() => {
+	// 	if (vote) {
+	// 		setCurrentVote({ ...currentVote, id: vote.id, type: vote.type });
+	// 	}
+	// }, []);
+	// const { createVote } = useCreateVote();
+	// const { deleteVote } = useDeleteVote();
 
+	const [createVote] = useMutation<CreateVoteResponse, CreateVotePayload>(
+		GQL_QUERY.CREATE_VOTE_QUERY
+	);
+	const [deleteVote] = useMutation<DeleteVoteResponse, DeleteVotePayload>(
+		GQL_QUERY.DELETE_VOTE_QUERY
+	);
 	const handleCreateVote = async (commentPayload, votePayload) => {
 		await updateComment({
 			variables: commentPayload,
 		});
-		await createVote({
+		const newVote = await createVote({
 			variables: votePayload,
 		});
+		if (newVote?.data?.createVote) {
+			setCurrentVote({
+				...currentVote,
+				id: newVote.data.createVote.id,
+				type: newVote.data.createVote.type,
+			});
+		}
 	};
 
 	const handleDeleteVote = async (commentPayload, votePayload) => {
 		await updateComment({
 			variables: commentPayload,
 		});
-		await deleteVote({
+		const deletedVote = await deleteVote({
 			variables: votePayload,
 		});
+		if (deletedVote?.data?.deleteVote) {
+			setCurrentVote({
+				...currentVote,
+				id: null,
+				type: null,
+			});
+		}
 	};
 
 	return (
@@ -87,9 +125,9 @@ const CommentBox = ({
 								<Box>
 									<ThumbUp
 										fontSize='small'
-										color={vote?.type === 'likes' ? 'primary' : 'action'}
+										color={currentVote.type === 'likes' ? 'primary' : 'action'}
 										onClick={
-											!vote
+											!currentVote.id
 												? (e) => {
 														const updateCommentPayload: UpdateCommentPayload = {
 															id: data.id,
@@ -107,15 +145,18 @@ const CommentBox = ({
 															createVotePayload
 														);
 												  }
-												: vote.type === 'likes'
+												: currentVote.type === 'likes'
 												? (e) => {
 														const updateCommentPayload: UpdateCommentPayload = {
 															id: data.id,
 															likes: Number(data.likes) - 1,
 														};
-
+														let id: any = null;
+														if (currentVote.id) {
+															id = currentVote.id;
+														}
 														const deleteVotePayload: DeleteVotePayload = {
-															id: vote.id,
+															id,
 														};
 														handleDeleteVote(
 															updateCommentPayload,
@@ -130,9 +171,11 @@ const CommentBox = ({
 								<Box>
 									<ThumbDown
 										fontSize='small'
-										color={vote?.type === 'dislikes' ? 'warning' : 'action'}
+										color={
+											currentVote.type === 'dislikes' ? 'warning' : 'action'
+										}
 										onClick={
-											!vote
+											!currentVote.id
 												? (e) => {
 														const updateCommentPayload: UpdateCommentPayload = {
 															id: data.id,
@@ -150,15 +193,18 @@ const CommentBox = ({
 															createVotePayload
 														);
 												  }
-												: vote.type === 'dislikes'
+												: currentVote.type === 'dislikes'
 												? (e) => {
 														const updateCommentPayload: UpdateCommentPayload = {
 															id: data.id,
 															dislikes: Number(data.dislikes) - 1,
 														};
-
+														let id: any = null;
+														if (currentVote.id) {
+															id = currentVote.id;
+														}
 														const deleteVotePayload: DeleteVotePayload = {
-															id: vote.id,
+															id,
 														};
 														handleDeleteVote(
 															updateCommentPayload,
