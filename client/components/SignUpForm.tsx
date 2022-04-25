@@ -80,7 +80,7 @@ const SignUpForm = () => {
 					if (symbols?.data?.getSymbols) {
 						await dispatch(setSymbols(symbols.data.getSymbols));
 					}
-					navigate('/forum');
+					navigate('/');
 				}
 			}
 		} catch (e: any) {

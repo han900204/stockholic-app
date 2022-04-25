@@ -26,6 +26,16 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
+	UPDATE_PROFILE_PICTURE: gql`
+		mutation UpdateProfilePicture($id: Int!, $s3_location: String!) {
+			updateProfilePicture(id: $id, s3_location: $s3_location) {
+				id
+				s3_location
+			}
+		}
+	`,
+
 	CREATE_AUTH_QUERY: gql`
 		mutation CreateAuthentication($investor_id: Int!) {
 			createAuthentication(investor_id: $investor_id) {
@@ -145,6 +155,7 @@ const GQL_QUERY: QueryInterface = {
 			}
 		}
 	`,
+
 	DELETE_FORUM_QUERY: gql`
 		mutation DeleteForum($id: Int!) {
 			deleteForum(id: $id) {
@@ -618,8 +629,8 @@ const GQL_QUERY: QueryInterface = {
 	 */
 
 	GET_VOTES_QUERY: gql`
-		query GetVotes($investor_id: Int!, $forum_id: Int!) {
-			getVotes(investor_id: $investor_id, forum_id: $forum_id) {
+		query GetVotes($investor_id: Int!, $comment_id: Int!) {
+			getVotes(investor_id: $investor_id, comment_id: $comment_id) {
 				id
 				forum_id
 				comment_id
@@ -662,6 +673,22 @@ const GQL_QUERY: QueryInterface = {
 				investor_id
 				type
 				date_created
+			}
+		}
+	`,
+
+	/**
+	 * Sign S3 query
+	 */
+	SIGN_S3_QUERY: gql`
+		mutation SignS3(
+			$fileName: String!
+			$fileType: String!
+			$directory: String!
+		) {
+			signS3(fileName: $fileName, fileType: $fileType, directory: $directory) {
+				signedRequest
+				url
 			}
 		}
 	`,

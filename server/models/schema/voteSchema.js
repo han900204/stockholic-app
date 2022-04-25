@@ -35,14 +35,14 @@ vote.type = new GraphQLObjectType({
 vote.query.getVotes = {
 	type: GraphQLList(vote.type),
 	args: {
-		forum_id: { type: GraphQLInt },
+		comment_id: { type: GraphQLInt },
 		investor_id: { type: GraphQLInt },
 	},
 	async resolve(parent, args) {
 		const sqlQuery = sql.getSelectQuery(
 			'vote',
 			['*'],
-			[`forum_id = ${args.forum_id} AND investor_id = ${args.investor_id}`]
+			[`comment_id = ${args.comment_id} AND investor_id = ${args.investor_id}`]
 		);
 		const res = await db.query(sqlQuery);
 		console.log(`${res.rows.length} votes retrieved`);

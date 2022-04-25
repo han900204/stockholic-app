@@ -17,7 +17,7 @@ export function useCreateVote() {
 			const existingVotes = cache.readQuery<GetVotesResponse>({
 				query: GQL_QUERY.GET_VOTES_QUERY,
 				variables: {
-					forum_id: newVote?.forum_id,
+					comment_id: newVote?.comment_id,
 					investor_id: newVote?.investor_id,
 				},
 			});
@@ -25,7 +25,7 @@ export function useCreateVote() {
 				cache.writeQuery({
 					query: GQL_QUERY.GET_VOTES_QUERY,
 					variables: {
-						forum_id: newVote?.forum_id,
+						comment_id: newVote?.comment_id,
 						investor_id: newVote?.investor_id,
 					},
 					data: {

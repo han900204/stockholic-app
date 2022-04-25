@@ -5,6 +5,7 @@ import { DocumentNode } from 'graphql';
  */
 export interface QueryInterface {
 	CREATE_INVESTOR_QUERY: DocumentNode;
+	UPDATE_PROFILE_PICTURE: DocumentNode;
 	CREATE_AUTH_QUERY: DocumentNode;
 	GET_AUTHENTICATION_QUERY: DocumentNode;
 	VALIDATE_INVESTOR_QUERY: DocumentNode;
@@ -47,6 +48,7 @@ export interface QueryInterface {
 	GET_VOTES_QUERY: DocumentNode;
 	CREATE_VOTE_QUERY: DocumentNode;
 	DELETE_VOTE_QUERY: DocumentNode;
+	SIGN_S3_QUERY: DocumentNode;
 }
 
 /**
@@ -61,6 +63,20 @@ export interface InvestorData {
 	first_name?: string;
 	last_name?: string;
 	s3_location?: string;
+}
+
+export interface GetInvestorResponse {
+	getInvestor: InvestorData;
+}
+
+export interface UpdateProfilePictureResponse {
+	id: number;
+	s3_location: string;
+}
+
+export interface UpdateProfilePicturePayload {
+	id: number;
+	s3_location: string;
 }
 
 export interface GetInvestorsResponse {
@@ -490,7 +506,7 @@ export interface VoteData {
 }
 
 export interface GetVotesPayload {
-	forum_id: number;
+	comment_id: number;
 	investor_id: number | null;
 }
 
@@ -515,4 +531,18 @@ export interface DeleteVotePayload {
 
 export interface DeleteVoteResponse {
 	deleteVote: VoteData;
+}
+
+/**
+ * Sign S3 Interfaces
+ */
+export interface SignS3Response {
+	signedRequeest: string;
+	url: string;
+}
+
+export interface SignS3Payload {
+	fileName: string;
+	fileType: string;
+	directory: string;
 }

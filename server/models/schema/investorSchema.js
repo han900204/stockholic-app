@@ -131,4 +131,33 @@ investor.mutation.validateInvestor = {
 	},
 };
 
+investor.mutation.updateProfilePicture = {
+	type: new GraphQLObjectType({
+		name: 'profile_picture',
+		fields: {
+			id: { type: GraphQLInt },
+			s3_location: { type: GraphQLString },
+		},
+	}),
+	args: {
+		id: { type: GraphQLInt },
+		s3_location: { type: GraphQLString },
+	},
+	async resolve(parent, args) {
+		const sqlQuery = sql.getUpdateQuery(
+			'investor',
+			args,
+			[`id = ${args.id}`],
+			['id', 's3_location']
+		);
+
+		// Update investor
+		const res = await db.query(sqlQuery);
+
+		console.log('investor updated', res.rows[0]);
+
+		return res.rows[0];
+	},
+};
+
 module.exports = investor;

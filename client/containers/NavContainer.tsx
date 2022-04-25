@@ -11,17 +11,17 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import ThemeToggle from '../components/styleComponents/ThemeToggle';
+import ProfilePic from '../components/styleComponents/ProfilePic';
 
 const NavContainer = () => {
 	const { investorId, s3_location } = useSelector(
 		(state: RootState) => state.investor
 	);
-	console.log('nav', investorId, s3_location);
+
 	const { logout } = useLogout();
 
 	const pages: any[] = [
@@ -138,7 +138,7 @@ const NavContainer = () => {
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title='Open settings'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt='Remy Sharp' src={s3_location ? s3_location : ''} />
+								<ProfilePic />
 							</IconButton>
 						</Tooltip>
 						<Menu

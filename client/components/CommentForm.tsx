@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Subheading from './styleComponents/Subheading';
 import Box from '@mui/material/Box';
-import TextAreaField from './styleComponents/TextAreaField';
 import Stack from '@mui/material/Stack';
 import Btn from './styleComponents/Btn';
-import { CreateCommentPayload, VoteData } from '../constants/GQL_INTERFACE';
+import { CreateCommentPayload } from '../constants/GQL_INTERFACE';
+import GQL_QUERY from '../constants/GQL_QUERY';
 import { useCreateComment } from '../hooks/useCreateComment';
 import CommentBox from './CommentBox';
 import TextEditor from './styleComponents/TextEditor';
 
-const CommentForm = ({ data, investorId, forumId, votes }) => {
+const CommentForm = ({ data, investorId, forumId }) => {
 	const [comment, setComment] = useState('');
 	const { createComment } = useCreateComment();
 
@@ -50,20 +50,9 @@ const CommentForm = ({ data, investorId, forumId, votes }) => {
 						}}
 					/>
 				</Stack>
-				{data?.getComments.map((comment, idx) => {
-					let vote: VoteData | undefined = undefined;
-					if (Array.isArray(votes)) {
-						vote = votes.filter((data) => data.comment_id === comment.id)[0];
-					}
-					return (
-						<CommentBox
-							key={idx}
-							data={comment}
-							investorId={investorId}
-							vote={vote}
-						/>
-					);
-				})}
+				{data?.getComments.map((comment, idx) => (
+					<CommentBox key={idx} commentData={comment} investorId={investorId} />
+				))}
 			</Box>
 		</>
 	);
