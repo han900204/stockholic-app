@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Btn from './styleComponents/Btn';
 import Grid from '@mui/material/Grid';
-import { useMutation } from '@apollo/client';
 import GQL_QUERY from '../constants/GQL_QUERY';
 import {
 	CommentData,
@@ -12,21 +11,17 @@ import {
 	DeleteCommentPayload,
 	GetVotesResponse,
 	GetVotesPayload,
-	CreateVotePayload,
-	CreateVoteResponse,
-	DeleteVotePayload,
-	DeleteVoteResponse,
 	VoteData,
 } from '../constants/GQL_INTERFACE';
 import { useUpdateComment } from '../hooks/useUpdateComment';
 import { useDeleteComment } from '../hooks/useDeleteComment';
 import { useCreateVote } from '../hooks/useCreateVote';
 import { useDeleteVote } from '../hooks/useDeleteVote';
-import ThumbUp from '@mui/icons-material/ThumbUp';
-import ThumbDown from '@mui/icons-material/ThumbDown';
 import dateFormatter from '../utils/dateFormatter';
 import TextEditor from './styleComponents/TextEditor';
 import LoadingForm from '../components/LoadingForm';
+import Likes from './Likes';
+import Dislikes from './Dislikes';
 
 const CommentBox = ({
 	commentData,
@@ -104,94 +99,22 @@ const CommentBox = ({
 								<Box>Posted By: {commentData.nick_name}</Box>
 								<Box>Posted on: {dateFormatter(commentData.date_created)}</Box>
 								<Box>
-									<ThumbUp
-										fontSize='small'
-										color={vote?.type === 'likes' ? 'primary' : 'action'}
-										onClick={
-											!vote
-												? (e) => {
-														const updateCommentPayload: UpdateCommentPayload = {
-															id: commentData.id,
-															likes: Number(commentData.likes) + 1,
-														};
-
-														const createVotePayload: CreateVotePayload = {
-															forum_id: commentData.forum_id,
-															comment_id: commentData.id,
-															investor_id: investorId,
-															type: 'likes',
-														};
-														handleCreateVote(
-															updateCommentPayload,
-															createVotePayload
-														);
-												  }
-												: vote.type === 'likes'
-												? (e) => {
-														const updateCommentPayload: UpdateCommentPayload = {
-															id: commentData.id,
-															likes: Number(commentData.likes) - 1,
-														};
-														let id: any = null;
-														if (vote?.id) {
-															id = vote.id;
-														}
-														const deleteVotePayload: DeleteVotePayload = {
-															id,
-														};
-														handleDeleteVote(
-															updateCommentPayload,
-															deleteVotePayload
-														);
-												  }
-												: undefined
-										}
+									<Likes
+										investorId={investorId}
+										commentData={commentData}
+										vote={vote}
+										handleCreateVote={handleCreateVote}
+										handleDeleteVote={handleDeleteVote}
 									/>
 									&nbsp;{commentData.likes}
 								</Box>
 								<Box>
-									<ThumbDown
-										fontSize='small'
-										color={vote?.type === 'dislikes' ? 'warning' : 'action'}
-										onClick={
-											!vote
-												? (e) => {
-														const updateCommentPayload: UpdateCommentPayload = {
-															id: commentData.id,
-															dislikes: Number(commentData.dislikes) + 1,
-														};
-
-														const createVotePayload: CreateVotePayload = {
-															forum_id: commentData.forum_id,
-															comment_id: commentData.id,
-															investor_id: investorId,
-															type: 'dislikes',
-														};
-														handleCreateVote(
-															updateCommentPayload,
-															createVotePayload
-														);
-												  }
-												: vote.type === 'dislikes'
-												? (e) => {
-														const updateCommentPayload: UpdateCommentPayload = {
-															id: commentData.id,
-															dislikes: Number(commentData.dislikes) - 1,
-														};
-														let id: any = null;
-														if (vote?.id) {
-															id = vote.id;
-														}
-														const deleteVotePayload: DeleteVotePayload = {
-															id,
-														};
-														handleDeleteVote(
-															updateCommentPayload,
-															deleteVotePayload
-														);
-												  }
-												: undefined
-										}
+									<Dislikes
+										investorId={investorId}
+										commentData={commentData}
+										vote={vote}
+										handleCreateVote={handleCreateVote}
+										handleDeleteVote={handleDeleteVote}
 									/>
 									&nbsp;{commentData.dislikes}
 								</Box>
