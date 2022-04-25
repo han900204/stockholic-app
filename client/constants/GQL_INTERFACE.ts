@@ -506,7 +506,7 @@ export interface VoteData {
 }
 
 export interface GetVotesPayload {
-	forum_id: number;
+	comment_id: number;
 	investor_id: number | null;
 }
 

@@ -18,7 +18,7 @@ export function useDeleteVote() {
 			const existingVotes = cache.readQuery<GetVotesResponse>({
 				query: GQL_QUERY.GET_VOTES_QUERY,
 				variables: {
-					forum_id: deletedVote?.forum_id,
+					comment_id: deletedVote?.comment_id,
 					investor_id: deletedVote?.investor_id,
 				},
 			});
@@ -26,7 +26,7 @@ export function useDeleteVote() {
 				cache.writeQuery({
 					query: GQL_QUERY.GET_VOTES_QUERY,
 					variables: {
-						forum_id: deletedVote?.forum_id,
+						comment_id: deletedVote?.comment_id,
 						investor_id: deletedVote?.investor_id,
 					},
 					data: {

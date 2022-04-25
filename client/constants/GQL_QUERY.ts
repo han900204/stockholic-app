@@ -629,8 +629,8 @@ const GQL_QUERY: QueryInterface = {
 	 */
 
 	GET_VOTES_QUERY: gql`
-		query GetVotes($investor_id: Int!, $forum_id: Int!) {
-			getVotes(investor_id: $investor_id, forum_id: $forum_id) {
+		query GetVotes($investor_id: Int!, $comment_id: Int!) {
+			getVotes(investor_id: $investor_id, comment_id: $comment_id) {
 				id
 				forum_id
 				comment_id
